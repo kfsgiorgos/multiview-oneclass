@@ -1,5 +1,7 @@
-setwd("~/R Language Default Dir/multiview-oneclass/")
+setwd("~/R Language Default Dir/Github-projects/multiview-oneclass/")
 source("R/load-packages.R")
+use_condaenv("r-reticulate")
+reticulate::source_python("Python/sklearn-outlier-algos.py")
 
 
 GetTabularOutlierScore <- function(datasetname) {
@@ -36,10 +38,24 @@ GetTabularOutlierScore <- function(datasetname) {
 # GetTabularOutlierScore(datasetname = "WDBC_withoutdupl_norm_v07.results")
 
 
-tt <- (list.files(path = "data/derived-data/"))
-for(i in tt){
-  dim(fread(i))
-}
-       
 
+# create csv from arff ----------------------------------------------------
+
+GetCsvFromArff <- function(datasetname) {
+  DT<- as.data.table(foreign::read.arff(paste0("data/downloaded-data/", datasetname, ".arff")))
+  setnames(DT, old = "outlier", "Label")
+  fwrite(DT, paste0("data/derived-data/", datasetname, ".csv"), nThread = 2)
   
+}
+
+
+GetCsvFromArff(datasetname = "Ionosphere_withoutdupl_norm")
+GetCsvFromArff(datasetname = "Pima_withoutdupl_norm_02_v01")
+GetCsvFromArff(datasetname = "Pima_withoutdupl_norm_02_v09")
+GetCsvFromArff(datasetname = "Pima_withoutdupl_norm_05_v07")
+GetCsvFromArff(datasetname = "Shuttle_withoutdupl_norm_v01")
+GetCsvFromArff(datasetname = "Shuttle_withoutdupl_norm_v05")
+GetCsvFromArff(datasetname = "Stamps_withoutdupl_norm_02_v06")
+GetCsvFromArff(datasetname = "Waveform_withoutdupl_norm_v01")
+GetCsvFromArff(datasetname = "Waveform_withoutdupl_norm_v02")
+GetCsvFromArff(datasetname = "WDBC_withoutdupl_norm_v07")

@@ -11,7 +11,7 @@ def calculate_OCSVM(DTtrain, DTtest):
   X_2 = pd.DataFrame(DTtest)
   Xtest = X_2.values
   Xtest_scores = clf.decision_function(Xtest)
-  return X_scores
+  return Xtest_scores
   
 
 
