@@ -1,5 +1,5 @@
 # install & load the required packages
-pkg <- c("ggplot2", "lubridate", "data.table", "purrr", "reticulate",
+pkg <- c("ggplot2", "lubridate", "data.table", "purrr", "reticulate", "foreign",
         "pROC", "caret", "dplyr", "esquisse", "stringr", "readtext")
 new.pkg <- pkg[!(pkg %in% installed.packages())]
 if (length(new.pkg)) {
