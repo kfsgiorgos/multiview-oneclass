@@ -202,7 +202,7 @@ run_unsupervised_multiview_multipletimes <- function(datasetname, percentage_OD,
   auc_all_iters_list <- list()
   
   for(Iter_normal in 1:Iters_normal_class){
-  print(Iter_normal)
+    print(Iter_normal)
     random_sample <- get_random_class_sample(datasetname = datasetname, 
                                              normal_sample_size = normal_size, Iter = 1)
     list_random_outlier_features <- list()
@@ -210,7 +210,7 @@ run_unsupervised_multiview_multipletimes <- function(datasetname, percentage_OD,
     final_DT_list <- list()
     all_views <- list()
     for(Iter_features in 1:Iter_outlier_features){
- 
+      
       
       print("Iter_features")
       print(Iter_features)
@@ -325,15 +325,15 @@ run_unsupervised_multiview_multipletimes <- function(datasetname, percentage_OD,
       # for this specific random sample we want to test the performance of 
       # the OCSVM on the originalview
       original_performance <<- get_original_view_scores(datasetname = datasetname, 
-                                                       Iter = 1, 
-                                                       random_normal = random_sample)
+                                                        Iter = 1, 
+                                                        random_normal = random_sample)
       print(DTs)
       print(original_performance)
       
       original_auc <<- data.table(V1 = original_performance[, auc(Label, Scores)][[1]],
-                                 Representation = "Original-View",
-                                 Normal_Size = normal_size,
-                                 Percentage_Random_Features = percentage_OD)
+                                  Representation = "Original-View",
+                                  Normal_Size = normal_size,
+                                  Percentage_Random_Features = percentage_OD)
       
       
       auc_DT_final <- rbindlist(list(auc_DT, original_auc))
@@ -353,7 +353,7 @@ run_unsupervised_multiview_multipletimes <- function(datasetname, percentage_OD,
       
       final_DT_list[[Iter_features]] <- final_scores_DT
       all_views[[Iter_features]] <- auc_DT_final
-
+      
       ii<- ii+1
     }
     scores_all_iters_list[[Iter_normal]] <- rbindlist(final_DT_list)
@@ -362,17 +362,10 @@ run_unsupervised_multiview_multipletimes <- function(datasetname, percentage_OD,
   
   DTscores <- rbindlist(scores_all_iters_list)
   DTauc <- rbindlist(auc_all_iters_list) 
-    return(list(DTscores, DTauc))
+  return(list(DTscores, DTauc))
 }
 
 
-
-res <- run_unsupervised_multiview_multipletimes(datasetname = "Pima_withoutdupl_norm_02_v01", 
-                                                percentage_OD = 0.1, 
-                                                mixed_view_features = 1, 
-                                                Iter_outlier_features = 3, 
-                                                normal_size = 0.01, 
-                                                Iters_normal_class = 2)
 
 
 

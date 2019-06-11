@@ -49,13 +49,17 @@ GetCsvFromArff <- function(datasetname) {
 }
 
 
-GetCsvFromArff(datasetname = "Ionosphere_withoutdupl_norm")
-GetCsvFromArff(datasetname = "Pima_withoutdupl_norm_02_v01")
-GetCsvFromArff(datasetname = "Pima_withoutdupl_norm_02_v09")
-GetCsvFromArff(datasetname = "Pima_withoutdupl_norm_05_v07")
-GetCsvFromArff(datasetname = "Shuttle_withoutdupl_norm_v01")
-GetCsvFromArff(datasetname = "Shuttle_withoutdupl_norm_v05")
-GetCsvFromArff(datasetname = "Stamps_withoutdupl_norm_02_v06")
-GetCsvFromArff(datasetname = "Waveform_withoutdupl_norm_v01")
-GetCsvFromArff(datasetname = "Waveform_withoutdupl_norm_v02")
-GetCsvFromArff(datasetname = "WDBC_withoutdupl_norm_v07")
+# GetCsvFromArff(datasetname = "Ionosphere_withoutdupl_norm")
+# GetCsvFromArff(datasetname = "Pima_withoutdupl_norm_02_v01")
+# GetCsvFromArff(datasetname = "Pima_withoutdupl_norm_02_v09")
+# GetCsvFromArff(datasetname = "Pima_withoutdupl_norm_05_v07")
+# GetCsvFromArff(datasetname = "Shuttle_withoutdupl_norm_v01")
+# GetCsvFromArff(datasetname = "Shuttle_withoutdupl_norm_v05")
+# GetCsvFromArff(datasetname = "Stamps_withoutdupl_norm_02_v06")
+# GetCsvFromArff(datasetname = "Waveform_withoutdupl_norm_v01")
+# GetCsvFromArff(datasetname = "Waveform_withoutdupl_norm_v02")
+# GetCsvFromArff(datasetname = "WDBC_withoutdupl_norm_v07")
+
+
+
+
