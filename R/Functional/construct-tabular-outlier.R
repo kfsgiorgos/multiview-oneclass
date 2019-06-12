@@ -5,7 +5,9 @@ reticulate::source_python("Python/sklearn-outlier-algos.py")
 
 
 GetTabularOutlierScore <- function(datasetname) {
-  
+
+  fnames <- list.files(paste0("~/Downloads/", datasetname,  "/"))
+    
   text.loaded <- readtext::readtext(paste0("data/downloaded-data/", datasetname, ".csv"))
   
   list.columns <- list()
@@ -59,6 +61,24 @@ GetCsvFromArff <- function(datasetname) {
 # GetCsvFromArff(datasetname = "Waveform_withoutdupl_norm_v01")
 # GetCsvFromArff(datasetname = "Waveform_withoutdupl_norm_v02")
 # GetCsvFromArff(datasetname = "WDBC_withoutdupl_norm_v07")
+
+
+# example: Get_multiple_CsvFromArff(datasetpath = "~/Downloads/ALOI/")
+Get_multiple_CsvFromArff <- function(datasetpath) {
+  
+  fnames <- list.files(datasetpath, pattern = "arff")
+   
+  for(i in 1:length(fnames)){
+    DT <- as.data.table(foreign::read.arff(paste0(datasetpath, fnames[[i]])))
+    print(DT)
+    names_tosave <- stringi::stri_split(str = fnames[[i]], fixed = ".arff")[[1]][1]
+    fwrite(DT, paste0(datasetpath, names_tosave, ".csv"), nThread = 2)
+  }
+  }
+
+
+
+
 
 
 
