@@ -223,7 +223,7 @@ run_unsupervised_multiview_multipletimes <- function(datasetname, percentage_OD,
       
       print("Iter_features")
       print(Iter_features)
-      list_DTview2 <- create_unsupervised_view(datasetname, percentage_OD, mixed_view_features)
+      list_DTview2 <<- create_unsupervised_view(datasetname, percentage_OD, mixed_view_features)
       # here I save all the data (features randomly selected) derived from the 
       # above function. It will help me to know which features have been selected 
       # at each random sampling. 
@@ -233,37 +233,35 @@ run_unsupervised_multiview_multipletimes <- function(datasetname, percentage_OD,
                                    "_perc_features", (100 * percentage_OD), 
                                    "_nor_class_", (100*normal_size), ".rds"))
       
-      list_random_outlier_features[[1]] <- purrr::map(list_DTview2, names)
+      # list_random_outlier_features[[1]] <- purrr::map(list_DTview2, names)
       
-      qq <- 0
-      for(w in list_DTview2){
-        qq <- qq + 1
-        if(length(which(w[, lapply(.SD, function(x) sum(is.infinite(x))), .SDcols = 1:(dim(w)[2]) ] != 0)) != 0){
-          #print(w[, lapply(.SD, function(x) sum(is.infinite(x))), .SDcols = 1:dim(w)[2]])
-          #print(qq)
-          hh <- data.table::transpose(as.data.table(w[, lapply(.SD, function(x) sum(is.infinite(x))), .SDcols = 1:dim(w)[2]]))
-          hh[, cols1:=names(w[, lapply(.SD, function(x) sum(is.infinite(x))), .SDcols = 1:dim(w)[2]])]
-          cols_to_delete <- hh[V1!=0, cols1]
-          DT <- list_DTview2[[qq]]
+      iter_dtasets <- 0
+      for(list_elements in list_DTview2){
+        iter_dtasets <- iter_dtasets + 1
+        dimension <- dim(list_elements)[2]
+        if(length(which(list_elements[, lapply(.SD, function(x) sum(is.infinite(x))), .SDcols = 1:dimension] != 0)) != 0){
+          tempDT <- data.table::transpose(as.data.table(list_elements[, lapply(.SD, function(x) sum(is.infinite(x))), .SDcols = 1:dimension]))
+          tempDT[, cols1:=names(list_elements[, lapply(.SD, function(x) sum(is.infinite(x))), .SDcols = 1:dimension])]
+          cols_to_delete <- tempDT[V1!=0, cols1]
+          DT <- list_DTview2[[iter_dtasets]]
           cols_to_keep <- setdiff(names(DT), cols_to_delete) 
-          list_DTview2[[qq]] <- DT[, .SD, .SDcols = cols_to_keep]
+          list_DTview2[[iter_dtasets]] <- DT[, .SD, .SDcols = cols_to_keep]
           
         }
       }
       
       # exclude columns that have NA values
-      qq <- 0
-      for(w in list_DTview2){
-        qq <- qq + 1
-        if(length(which(w[, lapply(.SD, function(x) sum(is.na(x))), .SDcols = 1:(dim(w)[2]) ] != 0)) != 0){
-          #print(w[, lapply(.SD, function(x) sum(is.na(x))), .SDcols = 1:dim(w)[2]])
-          #print(qq)
-          hh <- data.table::transpose(as.data.table(w[, lapply(.SD, function(x) sum(is.na(x))), .SDcols = 1:dim(w)[2]]))
-          hh[, cols1:=names(w[, lapply(.SD, function(x) sum(is.na(x))), .SDcols = 1:dim(w)[2]])]
-          cols_to_delete <- hh[V1!=0, cols1]
-          DT <- list_DTview2[[qq]]
+      iter_dtasets <- 0
+      for(list_elements in list_DTview2){
+        iter_dtasets <- iter_dtasets + 1
+        dimension <- dim(list_elements)[2]
+        if(length(which(list_elements[, lapply(.SD, function(x) sum(is.na(x))), .SDcols = 1:dimension ] != 0)) != 0){
+          tempDT <- data.table::transpose(as.data.table(list_elements[, lapply(.SD, function(x) sum(is.na(x))), .SDcols = 1:dimension]))
+          tempDT[, cols1:=names(list_elements[, lapply(.SD, function(x) sum(is.na(x))), .SDcols = 1:dimension])]
+          cols_to_delete <- tempDT[V1!=0, cols1]
+          DT <- list_DTview2[[iter_dtasets]]
           cols_to_keep <- setdiff(names(DT), cols_to_delete) 
-          list_DTview2[[qq]] <- DT[, .SD, .SDcols = cols_to_keep]
+          list_DTview2[[iter_dtasets]] <- DT[, .SD, .SDcols = cols_to_keep]
         }
       }
       
@@ -387,8 +385,6 @@ run_unsupervised_multiview_multipletimes <- function(datasetname, percentage_OD,
                        "perc_features", (100 * percentage_OD), "_nor_class_", (100*normal_size)), nThread = 5)
   return(list(DTscores, DTauc))
 }
-
-
 
 
 
