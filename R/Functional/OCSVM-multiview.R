@@ -208,11 +208,11 @@ run_unsupervised_multiview_multipletimes <- function(datasetname, percentage_OD,
     # here I save all the data (features randomly selected) derived from the 
     # above function. It will help me to know which features have been selected 
     # at each random sampling. 
-    saveRDS(random_sample, paste0("data/derived-data/OCSVM_reproduce_data/", 
-                                  datasetname, "_outlierviews_traintest_", 
-                                  "Iter_norm", Iter_normal, 
-                                  "_perc_features", (100 * percentage_OD), 
-                                  "_nor_class_", (100*normal_size), ".rds"))
+    #saveRDS(random_sample, paste0("data/derived-data/OCSVM_reproduce_data/", 
+    #                             datasetname, "_outlierviews_traintest_", 
+    #                              "Iter_norm", Iter_normal, 
+    #                             "_perc_features", (100 * percentage_OD), 
+    #                              "_nor_class_", (100*normal_size), ".rds"))
     
     list_random_outlier_features <- list()
     final_DT_list <- list()
@@ -227,11 +227,11 @@ run_unsupervised_multiview_multipletimes <- function(datasetname, percentage_OD,
       # here I save all the data (features randomly selected) derived from the 
       # above function. It will help me to know which features have been selected 
       # at each random sampling. 
-      saveRDS(list_DTview2, paste0("data/derived-data/OCSVM_reproduce_data/", 
-                                   datasetname, "_outlierviews_features_Iter", 
-                                   Iter_features, "Iter_norm", Iter_normal, 
-                                   "_perc_features", (100 * percentage_OD), 
-                                   "_nor_class_", (100*normal_size), ".rds"))
+      #saveRDS(list_DTview2, paste0("data/derived-data/OCSVM_reproduce_data/", 
+      #                            datasetname, "_outlierviews_features_Iter", 
+      #                             Iter_features, "Iter_norm", Iter_normal, 
+      #                             "_perc_features", (100 * percentage_OD), 
+      #                             "_nor_class_", (100*normal_size), ".rds"))
       
       # list_random_outlier_features[[1]] <- purrr::map(list_DTview2, names)
       
