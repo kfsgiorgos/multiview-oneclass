@@ -205,7 +205,9 @@ run_unsupervised_multiview_multipletimes <- function(datasetname, percentage_OD,
     print(Iter_normal)
     random_sample <- get_random_class_sample(datasetname = datasetname, 
                                              normal_sample_size = normal_size, Iter = 1)
-    
+    # here I save all the data (features randomly selected) derived from the 
+    # above function. It will help me to know which features have been selected 
+    # at each random sampling. 
     saveRDS(random_sample, paste0("data/derived-data/OCSVM_reproduce_data/", 
                                   datasetname, "_outlierviews_traintest_", 
                                   "Iter_norm", Iter_normal, 
