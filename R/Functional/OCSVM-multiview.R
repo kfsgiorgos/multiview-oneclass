@@ -205,16 +205,32 @@ run_unsupervised_multiview_multipletimes <- function(datasetname, percentage_OD,
     print(Iter_normal)
     random_sample <- get_random_class_sample(datasetname = datasetname, 
                                              normal_sample_size = normal_size, Iter = 1)
+    
+    saveRDS(random_sample, paste0("data/derived-data/OCSVM_reproduce_data/", 
+                                  datasetname, "_outlierviews_traintest_", 
+                                  "Iter_norm", Iter_normal, 
+                                  "_perc_features", (100 * percentage_OD), 
+                                  "_nor_class_", (100*normal_size), ".rds"))
+    
     list_random_outlier_features <- list()
-    ii <- 1
     final_DT_list <- list()
     all_views <- list()
+    ii <- 1
     for(Iter_features in 1:Iter_outlier_features){
       
       
       print("Iter_features")
       print(Iter_features)
       list_DTview2 <- create_unsupervised_view(datasetname, percentage_OD, mixed_view_features)
+      # here I save all the data (features randomly selected) derived from the 
+      # above function. It will help me to know which features have been selected 
+      # at each random sampling. 
+      saveRDS(list_DTview2, paste0("data/derived-data/OCSVM_reproduce_data/", 
+                                   datasetname, "_outlierviews_features_Iter", 
+                                   Iter_features, "Iter_norm", Iter_normal, 
+                                   "_perc_features", (100 * percentage_OD), 
+                                   "_nor_class_", (100*normal_size), ".rds"))
+      
       list_random_outlier_features[[1]] <- purrr::map(list_DTview2, names)
       
       qq <- 0
@@ -324,9 +340,9 @@ run_unsupervised_multiview_multipletimes <- function(datasetname, percentage_OD,
       # original-view resulted performance ----------------------------------------------------
       # for this specific random sample we want to test the performance of 
       # the OCSVM on the originalview
-      original_performance <<- get_original_view_scores(datasetname = datasetname, 
-                                                        Iter = 1, 
-                                                        random_normal = random_sample)
+      original_performance <- get_original_view_scores(datasetname = datasetname, 
+                                                       Iter = 1, 
+                                                       random_normal = random_sample)
       print(DTs)
       print(original_performance)
       
@@ -362,6 +378,11 @@ run_unsupervised_multiview_multipletimes <- function(datasetname, percentage_OD,
   
   DTscores <- rbindlist(scores_all_iters_list)
   DTauc <- rbindlist(auc_all_iters_list) 
+  
+  fwrite(DTscores, paste0("data/derived-data/OCSVM-multiview/", datasetname, "_OCSVMscores_", 
+                          "perc_features", (100 * percentage_OD), "_nor_class_", (100*normal_size)), nThread = 5)
+  fwrite(DTauc, paste0("data/derived-data/OCSVM-multiview/", datasetname, "_OCSVMscores_", 
+                       "perc_features", (100 * percentage_OD), "_nor_class_", (100*normal_size)), nThread = 5)
   return(list(DTscores, DTauc))
 }
 
