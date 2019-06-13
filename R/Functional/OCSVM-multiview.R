@@ -8,7 +8,7 @@ reticulate::source_python("Python/sklearn-outlier-algos.py")
 create_unsupervised_view <- function(datasetname, percentage_OD, mixed_view_features) {
   
   # DToutliers1 <- fread(paste0("data/derived-data/", datasetname, ".results.csv"))
-  DToutliers1 <- fread(paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname, ".results.csv"))
+  # DToutliers1 <- fread(paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname, ".results.csv"))
   
   KNNs1 <- paste0("KNN-00", 1:9)
   KNNs2 <- paste0("KNN-0", 10:99)
@@ -147,9 +147,9 @@ create_unsupervised_view <- function(datasetname, percentage_OD, mixed_view_feat
 get_random_class_sample <- function(normal_sample_size, datasetname, Iter) {
   
   # DToriginal <- fread(paste0("data/derived-data/", datasetname,".csv"))
-  DToriginal <- fread(paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname,".csv"))
+  # DToriginal <- fread(paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname,".csv"))
   # The outlier column has to be renamed to Label for consistency.
-  setnames(DToriginal, "outlier", "Label")
+  #setnames(DToriginal, "outlier", "Label")
   
   list_train_id <- list()
   list_test_id <- list()
@@ -164,12 +164,12 @@ get_random_class_sample <- function(normal_sample_size, datasetname, Iter) {
 
 get_original_view_scores <- function(datasetname, Iter, random_normal) {
   
-  # DToriginal <- fread(paste0("data/derived-data/", datasetname,".csv"))
   
-  # Cahne paths to make it work for multiple datsets. 
-  DToriginal <- fread(paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname,".csv"))
+  # Change paths to make it work for multiple datsets. 
+  # DToriginal <- fread(paste0("data/derived-data/", datasetname,".csv"))
+  # DToriginal <- fread(paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname,".csv"))
   # The outlier column has to be renamed to Label for consistency.
-  setnames(DToriginal, "outlier", "Label")
+  #setnames(DToriginal, "outlier", "Label")
   
   random_sample <- random_normal
   
@@ -206,8 +206,9 @@ get_original_view_scores <- function(datasetname, Iter, random_normal) {
 run_unsupervised_multiview_multipletimes <- function(datasetname, percentage_OD, mixed_view_features, Iter_outlier_features, normal_size, Iters_normal_class) {
   
 
-  DToriginal <- fread(paste0("data/derived-data/", datasetname,".csv"))
-  setnames(DToriginal, "outlier", "Label")
+  # DToriginal <- fread(paste0("data/derived-data/", datasetname,".csv"))
+  # DToriginal <- fread(paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname,".csv"))
+  #setnames(DToriginal, "outlier", "Label")
   scores_all_iters_list <- list()
 
   auc_all_iters_list <- list()
@@ -384,10 +385,11 @@ run_unsupervised_multiview_multipletimes <- function(datasetname, percentage_OD,
 }
 
 
-run_unsupervised_multiviem_1random <- function(datasetname, mixed_view_features, Iter_outlier_features, normal_size, Iters_normal_class, percentage_OD) {
+run_unsupervised_multiview_1random <- function(datasetname, mixed_view_features, Iter_outlier_features, normal_size, Iters_normal_class, percentage_OD) {
   
-  DToriginal <- fread(paste0("data/derived-data/", datasetname,".csv"))
-  
+  # DToriginal <- fread(paste0("data/derived-data/", datasetname,".csv"))
+  # DToriginal <- fread(paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname,".csv"))
+  # setnames(DToriginal, "outlier", "Label")
   scores_outter_iters_list <- list()
   auc_outter_iters_list <- list()
   for(Iter_normal in 1:Iters_normal_class){
@@ -405,20 +407,18 @@ run_unsupervised_multiviem_1random <- function(datasetname, mixed_view_features,
       print(glue("Normal sampling iteration {Iter_normal} ."))
       print(glue("Features sampling iteration {Iter_features} ."))
       list_DTview2 <- create_unsupervised_view(datasetname, percentage_OD, mixed_view_features)
-      list_elements <- list_DTview2$mixed_arthur
+      list_elements <<- list_DTview2$mixed_arthur
       dimension <- dim(list_elements)[2]
       
       
       
-      if(length(which(list_elements[, lapply(.SD, function(x) sum(is.infinite(x))), .SDcols = 1:dimension] != 0)) != 0){
-        tempDT <- data.table::transpose(as.data.table(list_elements[, lapply(.SD, function(x) sum(is.infinite(x))), .SDcols = 1:dimension]))
+      if(length(which(list_elements[, lapply(.SD, function(x) sum(is.infinite(x))), .SDcols = 1:dimension] != 0))){
+        tempDT <<- data.table::transpose(as.data.table(list_elements[, lapply(.SD, function(x) sum(is.infinite(x))), .SDcols = 1:dimension]))
         tempDT[, cols1:=names(list_elements[, lapply(.SD, function(x) sum(is.infinite(x))), .SDcols = 1:dimension])]
-        cols_to_delete <- tempDT[V1!=0, cols1]
-        
+        cols_to_delete <<- tempDT[V1!=0, cols1]
+        print(cols_to_delete)
         cols_to_keep <- setdiff(names(list_elements), cols_to_delete)
-        DT <- copy(list_elements[, .SD, .SDcols = cols_to_keep])
-      }else{
-        DT <- copy(list_elements)
+        DT <- list_elements[, .SD, .SDcols = cols_to_keep]
       }
       
       # exclude columns that have NA values
@@ -426,11 +426,9 @@ run_unsupervised_multiviem_1random <- function(datasetname, mixed_view_features,
         tempDT <- data.table::transpose(as.data.table(list_elements[, lapply(.SD, function(x) sum(is.na(x))), .SDcols = 1:dimension]))
         tempDT[, cols1:=names(list_elements[, lapply(.SD, function(x) sum(is.na(x))), .SDcols = 1:dimension])]
         cols_to_delete <- tempDT[V1!=0, cols1]
-        
+        print(cols_to_delete)
         cols_to_keep <- setdiff(names(list_elements), cols_to_delete)
         DT <- copy(list_elements[, .SD, .SDcols = cols_to_keep])
-      }else{
-        DT <- copy(list_elements)
       }
       
       dataset_view <- copy(DT)
@@ -472,11 +470,9 @@ run_unsupervised_multiviem_1random <- function(datasetname, mixed_view_features,
       original_performance[, `:=` (Normal_Size = normal_size, Iteration = NULL)]
       Iter_scores_DT <- rbindlist(list(DT_scores, original_performance))
       
-      Iter_auc_DT[, `:=` (Iteration_Features = Iter_normal, 
-                          Normal_Iteration = Iter_normal, 
+      Iter_auc_DT[, `:=` (Normal_Iteration = Iter_normal, 
                           Features_Iteration = Iter_features)]
-      Iter_scores_DT[, `:=` (Iteration_Features = Iter_normal, 
-                             Normal_Iteration = Iter_normal,
+      Iter_scores_DT[, `:=` (Normal_Iteration = Iter_normal,
                              Features_Iteration = Iter_features)]
       
       
@@ -497,8 +493,81 @@ run_unsupervised_multiviem_1random <- function(datasetname, mixed_view_features,
   return(list(DTscores, DTauc))
 }
 
-# system.time({t <- run_unsupervised_multiviem_1random(datasetname = "Ionosphere_withoutdupl_norm", 
-#                                                 mixed_view_features = 1, 
-#                                                 Iter_outlier_features = 10, 
-#                                                 normal_size = 0.2, 
-#                                                 Iters_normal_class = 2, percentage_OD = 1)})
+
+
+
+run_unsupervised_multiview_per_dataset <- function(datasetname){
+  
+  iterations_normal <- 50
+  
+  list_winners <- list()
+  list_auc_ensemble <- list()
+  for(normal_ratio in c(0.01, 0.05, 0.1, 0.2)){
+    iter <- 1
+    results_unsupervised <<- run_unsupervised_multiview_1random(datasetname = datasetname, 
+                                                               mixed_view_features = 1, 
+                                                               Iter_outlier_features = 30, 
+                                                               normal_size = normal_ratio, 
+                                                               percentage_OD = 1, 
+                                                               Iters_normal_class = iterations_normal)
+    
+    
+    auc_results <- results_unsupervised[[2]]
+    auc_results[, Features_Iteration:= as.factor(Features_Iteration)]
+    
+    p <- ggplot(data = auc_results) +
+      aes(x = Features_Iteration, y = V1, fill = Representation) +
+      geom_boxplot() +
+      theme_minimal() +
+      theme_minimal() + scale_y_continuous(breaks = seq(0.3, 1.0,0.05)) +
+      labs(title = paste0("Multiple-views vs Original-views ", datasetname, 
+                          ". Random normal-class: ", normal_ratio), y = "AUC")
+    
+    p
+    # ggsave(plot = p, filename = paste0(path_name, ".pdf"), 
+    #        width = 12, height = 6, units = "in", dpi = 300)
+    # 
+    
+    scores_results <<- results_unsupervised[[1]]
+    average_ensemble <<- scores_results[, mean(Scores), by = c("Representation", "Normal_Iteration", "id")]
+    Labels <<- scores_results[Normal_Iteration == 1 & Representation == "12-Scores-random" & Features_Iteration == 1, Label]
+    times_datapoints_unique <<- dim(average_ensemble)[1]/length(Labels)
+    
+    average_ensemble[, Label:= rep(Labels, times_datapoints_unique)]
+    auc_ensemble <- average_ensemble[, auc(Label, V1), by =  c("Representation", "Normal_Iteration")]
+    
+    winner_me <- 0
+    winner_original <- 0
+    for(i in 1:iterations_normal){
+      
+      tempDT <- auc_ensemble[Normal_Iteration==i]
+      if(tempDT[Representation == "12-Scores-random", V1] > tempDT[Representation == "Original-View", V1]){
+        winner_me <- winner_me + 1
+      } else{
+        winner_original <- winner_original + 1
+      }
+    }
+    list_winners[[iter]] <- c(winner_me, winner_original)
+    list_auc_ensemble[[iter]] <- auc_ensemble
+    
+    p1 <- ggplot(data = auc_ensemble) +
+      aes(x = Representation, y = V1, fill = Representation) +
+      geom_boxplot() +
+      theme_minimal() +
+      theme_minimal() + scale_y_continuous(breaks = seq(0.3, 1.0,0.05)) +
+      theme(legend.position = "none") +
+      labs(y = "AUC")
+    
+    # ggsave(plot = p1, filename = paste0(path_name, ".pdf"), 
+    #        width = 12, height = 6, units = "in", dpi = 300)
+    p1
+    iter <- iter + 1
+  }
+  
+  return(list(list_winners, list_auc_ensemble))
+  }
+
+
+run_unsupervised_multiview_per_dataset(datasetname = "Ionosphere_withoutdupl_norm")
+
+
