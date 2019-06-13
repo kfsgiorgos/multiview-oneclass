@@ -497,8 +497,8 @@ run_unsupervised_multiviem_1random <- function(datasetname, mixed_view_features,
   return(list(DTscores, DTauc))
 }
 
-system.time({t <- run_unsupervised_multiviem_1random(datasetname = "Ionosphere_withoutdupl_norm", 
-                                                mixed_view_features = 1, 
-                                                Iter_outlier_features = 10, 
-                                                normal_size = 0.2, 
-                                                Iters_normal_class = 2, percentage_OD = 1)})
+# system.time({t <- run_unsupervised_multiviem_1random(datasetname = "Ionosphere_withoutdupl_norm", 
+#                                                 mixed_view_features = 1, 
+#                                                 Iter_outlier_features = 10, 
+#                                                 normal_size = 0.2, 
+#                                                 Iters_normal_class = 2, percentage_OD = 1)})
