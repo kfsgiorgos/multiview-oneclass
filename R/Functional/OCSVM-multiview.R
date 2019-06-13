@@ -216,15 +216,7 @@ run_unsupervised_multiview_multipletimes <- function(datasetname, percentage_OD,
     print(Iter_normal)
     random_sample <- get_random_class_sample(datasetname = datasetname, 
                                              normal_sample_size = normal_size, Iter = 1)
-    # following I save all the data (features randomly selected) derived from the 
-    # above function. It will help me to know which features have been selected 
-    # at each random sampling. 
-    # saveRDS(random_sample, paste0("data/derived-data/OCSVM_reproduce_data/", 
-    #                               datasetname, "_outlierviews_traintest_", 
-    #                               "Iter_norm", Iter_normal, 
-    #                               "_perc_features", (100 * percentage_OD), 
-    #                               "_nor_class_", (100*normal_size), ".rds"))
-    
+
     list_random_outlier_features <- list()
     final_DT_list <- list()
     all_views <- list()
@@ -235,16 +227,6 @@ run_unsupervised_multiview_multipletimes <- function(datasetname, percentage_OD,
       print("Iter_features")
       print(Iter_features)
       list_DTview2 <<- create_unsupervised_view(datasetname, percentage_OD, mixed_view_features)
-      # following I save all the data (features randomly selected) derived from the 
-      # above function. It will help me to know which features have been selected 
-      # at each random sampling. 
-      
-      # saveRDS(list_DTview2, paste0("data/derived-data/OCSVM_reproduce_data/", 
-      #                              datasetname, "_outlierviews_features_Iter", 
-      #                              Iter_features, "Iter_norm", Iter_normal, 
-      #                              "_perc_features", (100 * percentage_OD), 
-      #                              "_nor_class_", (100*normal_size), ".rds"))
-      
 
       iter_dtasets <- 0
       for(list_elements in list_DTview2){
