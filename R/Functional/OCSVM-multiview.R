@@ -198,7 +198,7 @@ run_unsupervised_multiview_multipletimes <- function(datasetname, percentage_OD,
   
   DToriginal <- fread(paste0("data/derived-data/", datasetname,".csv"))
   
-  scores_all_iters_list <- list()
+  scores_all_iters_list <<- list()
   auc_all_iters_list <- list()
   
   for(Iter_normal in 1:Iters_normal_class){
@@ -215,7 +215,7 @@ run_unsupervised_multiview_multipletimes <- function(datasetname, percentage_OD,
     #                              "_nor_class_", (100*normal_size), ".rds"))
     
     list_random_outlier_features <- list()
-    final_DT_list <- list()
+    final_DT_list <<- list()
     all_views <- list()
     ii <- 1
     for(Iter_features in 1:Iter_outlier_features){
@@ -223,7 +223,7 @@ run_unsupervised_multiview_multipletimes <- function(datasetname, percentage_OD,
       
       print("Iter_features")
       print(Iter_features)
-      list_DTview2 <<- create_unsupervised_view(datasetname, percentage_OD, mixed_view_features)
+      list_DTview2 <- create_unsupervised_view(datasetname, percentage_OD, mixed_view_features)
       # here I save all the data (features randomly selected) derived from the 
       # above function. It will help me to know which features have been selected 
       # at each random sampling. 
@@ -372,7 +372,7 @@ run_unsupervised_multiview_multipletimes <- function(datasetname, percentage_OD,
       
       ii<- ii+1
     }
-    scores_all_iters_list[[Iter_normal]] <- rbindlist(final_DT_list)
+    scores_all_iters_list[[Iter_normal]] <<- rbindlist(final_DT_list)
     auc_all_iters_list[[Iter_normal]] <- rbindlist(all_views)
   }
   
@@ -387,4 +387,121 @@ run_unsupervised_multiview_multipletimes <- function(datasetname, percentage_OD,
 }
 
 
+run_unsupervised_multiviem_1random <- function(datasetname, mixed_view_features, Iter_outlier_features, normal_size, Iters_normal_class, percentage_OD) {
+  
+  DToriginal <- fread(paste0("data/derived-data/", datasetname,".csv"))
+  
+  scores_outter_iters_list <- list()
+  auc_outter_iters_list <- list()
+  for(Iter_normal in 1:Iters_normal_class){
+    
+    
+    
+    random_sample <- get_random_class_sample(datasetname = datasetname, 
+                                             normal_sample_size = normal_size, Iter = 1)
+    
+    
+    scores_inner_iters_list <- list()
+    auc_inner_iters_list <- list()
+    
+    for(Iter_features in 1:Iter_outlier_features){
+      print(glue("Normal sampling iteration {Iter_normal} ."))
+      print(glue("Features sampling iteration {Iter_features} ."))
+      list_DTview2 <- create_unsupervised_view(datasetname, percentage_OD, mixed_view_features)
+      list_elements <- list_DTview2$mixed_arthur
+      dimension <- dim(list_elements)[2]
+      
+      
+      
+      if(length(which(list_elements[, lapply(.SD, function(x) sum(is.infinite(x))), .SDcols = 1:dimension] != 0)) != 0){
+        tempDT <- data.table::transpose(as.data.table(list_elements[, lapply(.SD, function(x) sum(is.infinite(x))), .SDcols = 1:dimension]))
+        tempDT[, cols1:=names(list_elements[, lapply(.SD, function(x) sum(is.infinite(x))), .SDcols = 1:dimension])]
+        cols_to_delete <- tempDT[V1!=0, cols1]
+        
+        cols_to_keep <- setdiff(names(list_elements), cols_to_delete)
+        DT <- copy(list_elements[, .SD, .SDcols = cols_to_keep])
+      }else{
+        DT <- copy(list_elements)
+      }
+      
+      # exclude columns that have NA values
+      if(length(which(list_elements[, lapply(.SD, function(x) sum(is.na(x))), .SDcols = 1:dimension] != 0)) != 0){
+        tempDT <- data.table::transpose(as.data.table(list_elements[, lapply(.SD, function(x) sum(is.na(x))), .SDcols = 1:dimension]))
+        tempDT[, cols1:=names(list_elements[, lapply(.SD, function(x) sum(is.na(x))), .SDcols = 1:dimension])]
+        cols_to_delete <- tempDT[V1!=0, cols1]
+        
+        cols_to_keep <- setdiff(names(list_elements), cols_to_delete)
+        DT <- copy(list_elements[, .SD, .SDcols = cols_to_keep])
+      }else{
+        DT <- copy(list_elements)
+      }
+      
+      dataset_view <- copy(DT)
+      dataset_view[, Label:= DToriginal$Label]
+      dataset_view[, id:= DToriginal$id]
+      
+      train_id_outliers <- random_sample[["train"]][[1]]
+      test_id_outliers <- random_sample[["test"]][[1]]
+      
+      traindataset_view <- dataset_view[id %in% train_id_outliers]
+      specificsDTtrain <- copy(traindataset_view[, .(id, Label)])
+      traindataset_view[, `:=`(id = NULL, Label = NULL)]
+      
+      testdataset_view <- dataset_view[id %in% test_id_outliers]
+      specificsDTtest <- copy(testdataset_view[, .(id, Label)])
+      testdataset_view[, `:=`(id = NULL, Label = NULL)]
+      
+      OCSVM_scoresDT_out <- data.table(Scores = calculate_OCSVM(DTtrain = traindataset_view, DTtest = testdataset_view),
+                                       Label = specificsDTtest$Label,
+                                       id = specificsDTtest$id)
+      
+      
+      auc_DT <- as.data.table(OCSVM_scoresDT_out[, auc(Label, Scores)][[1]])
+      auc_DT[, `:=` (Normal_Size = normal_size, Representation = "12-Scores-random")]
+      
+      original_performance <- get_original_view_scores(datasetname = datasetname, 
+                                                       Iter = 1, 
+                                                       random_normal = random_sample)
+      original_auc <- data.table(V1 = original_performance[, auc(Label, Scores)][[1]],
+                                 Normal_Size = normal_size,
+                                 Representation = "Original-View")
+      Iter_auc_DT <- rbindlist(list(auc_DT, original_auc))
+      
+      
+      DT_scores <- data.table::copy(OCSVM_scoresDT_out)
+      DT_scores[, `:=` (Representation = "12-Scores-random", 
+                        Normal_Size = normal_size)]
+      
+      original_performance[, `:=` (Normal_Size = normal_size, Iteration = NULL)]
+      Iter_scores_DT <- rbindlist(list(DT_scores, original_performance))
+      
+      Iter_auc_DT[, `:=` (Iteration_Features = Iter_normal, 
+                          Normal_Iteration = Iter_normal, 
+                          Features_Iteration = Iter_features)]
+      Iter_scores_DT[, `:=` (Iteration_Features = Iter_normal, 
+                             Normal_Iteration = Iter_normal,
+                             Features_Iteration = Iter_features)]
+      
+      
+      scores_inner_iters_list[[Iter_features]] <- Iter_scores_DT
+      auc_inner_iters_list[[Iter_features]] <- Iter_auc_DT
+    }
+    
+    scores_outter_iters_list[[Iter_normal]] <- rbindlist(scores_inner_iters_list)
+    auc_outter_iters_list[[Iter_normal]] <- rbindlist(auc_inner_iters_list)
+    
+  }
+    DTscores <- rbindlist(scores_outter_iters_list)
+    DTauc <- rbindlist(auc_outter_iters_list) 
+  
+  fwrite(DTscores, paste0("data/derived-data/OCSVM-multiview/", datasetname, "_OCSVM_scores_1random_normal_class_", 100*normal_size, ".csv"), nThread = 5)
 
+  fwrite(DTauc, paste0("data/derived-data/OCSVM-multiview/", datasetname, "_OCSVM_auc_1random_normal_class_", 100*normal_size, ".csv"), nThread = 5)
+  return(list(DTscores, DTauc))
+}
+
+system.time({t <- run_unsupervised_multiviem_1random(datasetname = "Ionosphere_withoutdupl_norm", 
+                                                mixed_view_features = 1, 
+                                                Iter_outlier_features = 10, 
+                                                normal_size = 0.2, 
+                                                Iters_normal_class = 2, percentage_OD = 1)})
