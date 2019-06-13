@@ -544,3 +544,33 @@ ggsave(plot = p,
 #             "Pima_withoutdupl_norm_05_v07", "Stamps_withoutdupl_norm_02_v06", 
 #             "Waveform_withoutdupl_norm_v02")
 
+
+
+Original_data <- fread("data/derived-data/Ionosphere_withoutdupl_norm.csv")
+temp <- run_unsupervised_multiview_multipletimes(datasetname = "Ionosphere_withoutdupl_norm", 
+                                                  percentage_OD = 0.2, 
+                                                  mixed_view_features = 1, 
+                                                  Iter_outlier_features = 2, 
+                                                  normal_size = 0.1, 
+                                                  Iters_normal_class = 2)
+temp1 <- temp[[1]]
+featuresKNN <- temp1[Representation=="KNN"  & Percentage_Random_Features==0.2&Normal_Iteration ==2]
+tt1 <- as.data.table(featuresKNN[Iteration_Features==1, .(Scores, Label)])
+tt1[, Feature:= "Features-Random-Sample 1"]
+tt2 <- as.data.table(featuresKNN[Iteration_Features==2, Scores])
+tt2[, Feature:= "Features-Random-Sample 2"]
+tt <- dplyr::bind_cols(tt1, tt2)
+tt[, Feature:= as.factor(Feature)]
+
+
+original <- Original_data[id %in% temp1[Normal_Iteration==1, id], c(1, 3)]
+temp_viz <- dplyr::bind_cols(tt, original)
+esquisse::esquisser()
+
+
+plot(x = featuresKNN[Iteration_Features==1, Scores], y= featuresKNN[Iteration_Features==2, Scores])
+featureKNN2 <- temp1[Representation=="KNN" & Iteration_Features==1 & Percentage_Random_Features==0.2&Normal_Iteration==2]
+
+
+
+
