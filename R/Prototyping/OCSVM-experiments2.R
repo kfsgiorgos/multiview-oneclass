@@ -1,11 +1,3 @@
-setwd("~/R Language Default Dir/Github-projects/multiview-oneclass/")
-source("R/load-packages.R")
-use_condaenv("r-reticulate")
-reticulate::source_python("Python/sklearn-outlier-algos.py")
-
-
-
-
 OCSVM_repeated_ODsampling <- function(datasetname, input_normal_sample_size, percentage_OD) {
   
   DToriginal <- fread(paste0("data/derived-data/", datasetname,".csv"))

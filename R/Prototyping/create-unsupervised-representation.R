@@ -1,11 +1,3 @@
-# load packages & source scripts ------------------------------------------
-
-setwd("~/R Language Default Dir/Github-projects/multiview-oneclass/")
-source("R/load-packages.R")
-use_condaenv("r-reticulate")
-reticulate::source_python("Python/sklearn-outlier-algos.py")
-
-
 run_unsupervised_view <- function(datasetname, percentage_OD, mixed_view_features) {
   
   DToutliers1 <- fread(paste0("data/derived-data/", datasetname, ".results.csv"))
