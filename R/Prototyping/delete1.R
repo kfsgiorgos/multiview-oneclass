@@ -1,9 +1,3 @@
-# load packages & source scripts ------------------------------------------
-setwd("~/GitHub_projects/multiview-oneclass/")
-source("R/Functional/OCSVM-multiview.R")
-source("R/Functional/construct-tabular-outlier.R")
-
-
 fnames <- list.files("~/Downloads/DAMI_datasets/derived_data/", pattern = "results")
 fnames[20]
 # Get_multiple_TabularOutlierScore(fnames[1])

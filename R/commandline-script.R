@@ -1,9 +1,3 @@
-# load packages & source scripts ------------------------------------------
-setwd("~/GitHub_projects/multiview-oneclass/")
-source("R/Functional/OCSVM-multiview.R")
-source("R/Functional/construct-tabular-outlier.R")
-
-
 # arff to csv -------------------------------------------------------------
 Get_multiple_CsvFromArff(datasetspath = "~/Downloads/DAMI_datasets/", dataset_name = "Annthyroid", dataset_pattern= "withoutdupl_norm_02_.*.arff", just_observe = "yes")
 Get_multiple_CsvFromArff(datasetspath = "~/Downloads/DAMI_datasets/", dataset_name = "Annthyroid", dataset_pattern= "withoutdupl_norm_02_.*.arff", just_observe = "no")
