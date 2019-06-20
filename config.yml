@@ -1,0 +1,4 @@
+default:
+  directory: "~/R Language Default Dir/Github-projects/multiview-oneclass/"
+  conda_env: "r-reticulate"
+  source_scripts: "R/load-packages.R"
