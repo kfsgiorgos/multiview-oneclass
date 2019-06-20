@@ -28,7 +28,7 @@ create_unsupervised_view <- function(datasetname, percentage_OD, mixed_view_feat
   sampleLOFs <- sample(x = LOFs, size = percentage_OD * length(LOFs), replace = F)
   DToutliersLOFs <- DToutliers1[, .SD, .SDcols = sampleLOFs]
   
-  SimplifiedLOFs1 <- paste0("SimplifiedLOF-00", 1:9)
+  SimplifiedLOFs1 <- paste0("SimplifiedLOF-00", 2:9)
   SimplifiedLOFs2 <- paste0("SimplifiedLOF-0", 10:99)
   SimplifiedLOFs <- c(SimplifiedLOFs1, SimplifiedLOFs2, "SimplifiedLOF-100")
   sampleSimplifiedLOFs <- sample(x = SimplifiedLOFs, size = percentage_OD * length(SimplifiedLOFs), replace = F)
@@ -76,7 +76,7 @@ create_unsupervised_view <- function(datasetname, percentage_OD, mixed_view_feat
   sampleINFLOs <- sample(x = INFLOs, size = percentage_OD * length(INFLOs), replace = F)
   DToutliersINFLOs <- DToutliers1[, .SD, .SDcols = sampleINFLOs]
   
-  COFs1 <- paste0("COF-00", 1:9)
+  COFs1 <- paste0("COF-00", 2:9)
   COFs2 <- paste0("COF-0", 10:99)
   COFs <- c(COFs1, COFs2, "COF-100")
   sampleCOFs <- sample(x = COFs, size = percentage_OD * length(COFs), replace = F)
@@ -149,7 +149,7 @@ get_random_class_sample <- function(normal_sample_size, datasetname, Iter) {
   # DToriginal <- fread(paste0("data/derived-data/", datasetname,".csv"))
   DToriginal <- fread(paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname,".csv"))
   # The outlier column has to be renamed to Label for consistency.
-  setnames(DToriginal, "outlier", "Label")
+  setnames(DToriginal, "outlier", "Label", skip_absent = T)
   
   list_train_id <- list()
   list_test_id <- list()
@@ -169,7 +169,7 @@ get_original_view_scores <- function(datasetname, Iter, random_normal) {
 
   # DToriginal <- fread(paste0("data/derived-data/", datasetname,".csv"))
   DToriginal <- fread(paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname,".csv"))
-  setnames(DToriginal, "outlier", "Label")
+  setnames(DToriginal, "outlier", "Label", skip_absent = T)
   # The outlier column has to be renamed to Label for consistency.
   
   
@@ -210,7 +210,7 @@ run_unsupervised_multiview_multipletimes <- function(datasetname, percentage_OD,
 
   # DToriginal <- fread(paste0("data/derived-data/", datasetname,".csv"))
   DToriginal <- fread(paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname,".csv"))
-  setnames(DToriginal, "outlier", "Label")
+  setnames(DToriginal, "outlier", "Label", skip_absent = T)
   
   scores_all_iters_list <- list()
   auc_all_iters_list <- list()
@@ -393,7 +393,7 @@ run_unsupervised_multiview_1random <- function(datasetname, mixed_view_features,
   
   # DToriginal <- fread(paste0("data/derived-data/", datasetname,".csv"))
   DToriginal <- fread(paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname,".csv"))
-  setnames(DToriginal, "outlier", "Label")
+  setnames(DToriginal, "outlier", "Label", skip_absent = T)
   
   scores_outter_iters_list <- list()
   auc_outter_iters_list <- list()
@@ -409,6 +409,7 @@ run_unsupervised_multiview_1random <- function(datasetname, mixed_view_features,
     for(Iter_features in 1:Iter_outlier_features){
       print(glue("Normal sampling iteration {Iter_normal} ."))
       print(glue("Features sampling iteration {Iter_features} ."))
+      print(glue("Dataset: {datasetname} ."))
       list_DTview2 <- create_unsupervised_view(datasetname, percentage_OD, mixed_view_features)
       list_elements <- list_DTview2$mixed_arthur
       dimension <- dim(list_elements)[2]
@@ -421,9 +422,11 @@ run_unsupervised_multiview_1random <- function(datasetname, mixed_view_features,
         cols_to_delete <<- tempDT[V1!=0, cols1]
         print(cols_to_delete)
         cols_to_keep <- setdiff(names(list_elements), cols_to_delete)
+        #DT <- list_elements[, .SD, .SDcols = cols_to_keep]
+        #dataset_view <- copy(DT)
         DT <- list_elements[, .SD, .SDcols = cols_to_keep]
-        dataset_view <- copy(DT)
-      }
+      }else{DT <- list_elements}
+      
       
       # exclude columns that have NA values
       if(length(which(list_elements[, lapply(.SD, function(x) sum(is.na(x))), .SDcols = 1:dimension] != 0)) != 0){
@@ -432,11 +435,13 @@ run_unsupervised_multiview_1random <- function(datasetname, mixed_view_features,
         cols_to_delete <- tempDT[V1!=0, cols1]
         print(cols_to_delete)
         cols_to_keep <- setdiff(names(list_elements), cols_to_delete)
-        DT <- copy(list_elements[, .SD, .SDcols = cols_to_keep])
-        dataset_view <- copy(DT)
-      }
+        #DT <- copy(list_elements[, .SD, .SDcols = cols_to_keep])
+        #dataset_view <- copy(DT)
+        DT <- list_elements[, .SD, .SDcols = cols_to_keep]
+      }else{DT <- list_elements}
       
-      dataset_view <- copy(list_elements)
+      
+      dataset_view <- copy(DT)
       dataset_view[, Label:= DToriginal$Label]
       dataset_view[, id:= DToriginal$id]
       
@@ -584,6 +589,8 @@ run_unsupervised_multiview_per_dataset <- function(datasetname){
   
   return(list(list_winners, list_auc_ensemble))
   }
+
+
 
 
 
