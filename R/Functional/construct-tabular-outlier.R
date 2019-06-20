@@ -1,12 +1,6 @@
-# setwd("~/R Language Default Dir/Github-projects/multiview-oneclass/")
-setwd("~/GitHub_projects/multiview-oneclass/")
-source("R/load-packages.R")
-#use_condaenv("r-reticulate")
-reticulate::source_python("Python/sklearn-outlier-algos.py")
-
-
 GetTabularOutlierScore <- function(datasetname) {
-
+  
+  # The dataset name must always have the ".results" suffix
   fnames <- list.files(paste0("~/Downloads/", datasetname,  "/"))
     
   text.loaded <- readtext::readtext(paste0("data/downloaded-data/", datasetname, ".csv"))
