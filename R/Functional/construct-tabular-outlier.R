@@ -7,7 +7,7 @@ reticulate::source_python("Python/sklearn-outlier-algos.py")
 
 GetTabularOutlierScore <- function(datasetname) {
 
-  fnames <- list.files(paste0("~/Downloads/", datasetname,  "/"))
+  # fnames <- list.files(paste0("~/Downloads/", datasetname,  "/"))
     
   text.loaded <- readtext::readtext(paste0("data/downloaded-data/", datasetname, ".csv"))
   
@@ -46,9 +46,11 @@ GetTabularOutlierScore <- function(datasetname) {
 
 GetCsvFromArff <- function(datasetname) {
   #This function works only when you have the arff data in one directory
-  DT<- as.data.table(foreign::read.arff(paste0("data/downloaded-data/", datasetname, ".arff")))
+  # DT<- as.data.table(foreign::read.arff(paste0("data/downloaded-data/", datasetname, ".arff")))
+  DT<- as.data.table(foreign::read.arff(paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname, ".arff")))
   setnames(DT, old = "outlier", "Label")
-  fwrite(DT, paste0("data/derived-data/", datasetname, ".csv"), nThread = 2)
+  #fwrite(DT, paste0("data/derived-data/", datasetname, ".csv"), nThread = 2)
+  fwrite(DT, paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname, ".csv"), nThread = 2)
   
 }
 
@@ -88,8 +90,6 @@ Get_multiple_CsvFromArff <- function(datasetspath, dataset_name, dataset_pattern
     }
   }
   }
-
-
 
 
 Get_multiple_TabularOutlierScore <- function(dataset_name) {
