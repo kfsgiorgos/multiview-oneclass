@@ -30,19 +30,6 @@ comb1 <- combn(unique(dt1$Representation), m = 2)
 KNN <- comb1[, 14]
 dt1[Representation == KNN[1], V1] > dt1[Representation == KNN[2], V1]
 
-KNN <- comb1[, 27] 
-KNN <- comb1[, 39]
-KNN <- comb1[, 50]
-KNN <- comb1[, 60]
-KNN <- comb1[, 69]
-KNN <- comb1[, 77]
-KNN <- comb1[, 84]
-KNN <- comb1[, 90]
-KNN <- comb1[, 95]
-KNN <- comb1[, 99]
-KNN <- comb1[, 102]
-KNN <- comb1[, 104]
-KNN <- comb1[, 105]
 
 
 # esquisser()
@@ -75,3 +62,66 @@ ggsave(plot = p, filename = paste0("figures/sample_OD_many/", datasetname1,
 
 ee[[2]][, mean(V1), by = c("Normal_Iteration", "Representation")][, max(V1), by =Representation]
 ee[[2]][, mean(V1), by = c("Normal_Iteration", "Representation")][, mean(V1), by =Representation]
+
+
+
+# 1 random experiments ----------------------------------------------------
+
+
+system.time({t <- run_unsupervised_multiviem_1random(datasetname = "InternetAds_withoutdupl_norm_02_v10",
+                                                     mixed_view_features = 1,
+                                                     Iter_outlier_features = 10,
+                                                     normal_size = 0.2,
+                                                     Iters_normal_class = 50, percentage_OD = 1)})
+temp22 <- t[[2]]
+temp22[, Features_Iteration:= as.factor(Features_Iteration)]
+
+
+p <- ggplot(data = temp22) +
+  aes(x = Features_Iteration, y = V1, fill = Representation) +
+  geom_boxplot() +
+  theme_minimal() +
+  theme_minimal() + scale_y_continuous(breaks = seq(0.3, 1.0,0.05)) +
+  labs(y = "AUC")
+p
+
+
+
+temp33 <- t[[1]]
+average_ense <- temp33[, mean(Scores), by = c("Representation", "Normal_Iteration", "id")]
+Labels <- temp33[Normal_Iteration == 1 & Representation == "12-Scores-random", Label]
+average_ense[, Label:= rep(Labels, 4)]
+auc_res <- average_ense[, auc(Label, V1), by =  c("Representation", "Normal_Iteration")]
+
+winner_me <- 0
+winner_original <- 0
+for(i in 1:10){
+  hh <- auc_res[Normal_Iteration==i]
+  if(hh[Representation == "12-Scores-random", V1] > hh[Representation == "Original-View", V1]){
+    winner_me <- winner_me + 1
+  } else{
+    winner_original <- winner_original + 1
+  }
+}
+
+p1 <- ggplot(data = auc_res) +
+  aes(x = Representation, y = V1, fill = Representation) +
+  geom_boxplot() +
+  theme_minimal() +
+  theme_minimal() + scale_y_continuous(breaks = seq(0.3, 1.0,0.05)) +
+  theme(legend.position = "none") +
+  labs(y= "AUC")
+# +
+#   labs(title = paste0("Ensmble multiple view vs Original view"),
+#        subtitle = paste0("Dataset: "), y = "AUC") +
+
+
+p1
+
+
+
+run_unsupervised_multiview_per_dataset(datasetname = "Annthyroid_withoutdupl_norm_02_v03")
+
+
+
+
