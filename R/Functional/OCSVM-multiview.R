@@ -1,15 +1,8 @@
 create_unsupervised_view <- function(datasetname, percentage_OD, mixed_view_features) {
   
-<<<<<<< HEAD
-  DToutliers1 <- fread(paste0("data/derived-data/", datasetname, ".results.csv"))
-  # DToutliers1 <- fread(paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname, ".results.csv"))
-||||||| merged common ancestors
-  # DToutliers1 <- fread(paste0("data/derived-data/", datasetname, ".results.csv"))
-  # DToutliers1 <- fread(paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname, ".results.csv"))
-=======
-  # DToutliers1 <- fread(paste0("data/derived-data/", datasetname, ".results.csv"))
-  DToutliers1 <- fread(paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname, ".results.csv"))
->>>>>>> 86a6771abdcc71186927fc878f711139f121580c
+
+  #DToutliers1 <- fread(paste0("data/derived-data/", datasetname, ".results.csv"))
+  #DToutliers1 <- fread(paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname, ".results.csv"))
   
   KNNs1 <- paste0("KNN-00", 1:9)
   KNNs2 <- paste0("KNN-0", 10:99)
