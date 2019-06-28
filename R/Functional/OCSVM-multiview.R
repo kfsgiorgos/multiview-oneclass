@@ -1,8 +1,14 @@
+
 create_unsupervised_view <- function(datasetname, percentage_OD, mixed_view_features) {
   
-
-  #DToutliers1 <- fread(paste0("data/derived-data/", datasetname, ".results.csv"))
-  #DToutliers1 <- fread(paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname, ".results.csv"))
+  path_to_save <- config::get("path_to_save_derived_datasets", 
+                              file = config_file_path,
+                              config = loaded_config_type)
+  path_to_read <- config::get("path_to_read_datasets", 
+                              file = config_file_path,
+                              config = loaded_config_type)
+  DToutliers1 <- fread(paste0(path_to_read, "/", datasetname, ".results.csv"))
+  
   
   KNNs1 <- paste0("KNN-00", 1:9)
   KNNs2 <- paste0("KNN-0", 10:99)
@@ -140,11 +146,17 @@ create_unsupervised_view <- function(datasetname, percentage_OD, mixed_view_feat
 
 get_random_class_sample <- function(normal_sample_size, datasetname, Iter) {
   
-  # DToriginal <- fread(paste0("data/derived-data/", datasetname,".csv"))
-  # DToriginal <- fread(paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname,".csv"))
+  path_to_save <- config::get("path_to_save_derived_datasets", 
+                              file = config_file_path,
+                              config = loaded_config_type)
+  path_to_read <- config::get("path_to_read_datasets", 
+                              file = config_file_path,
+                              config = loaded_config_type)
+  DToriginal <- fread(paste0(path_to_read, "/", datasetname,".csv"))
+  
 
   # The outlier column has to be renamed to Label for consistency.
-  # setnames(DToriginal, "outlier", "Label")
+  setnames(DToriginal, "outlier", "Label", skip_absent =T)
   
   list_train_id <- list()
   list_test_id <- list()
@@ -159,11 +171,15 @@ get_random_class_sample <- function(normal_sample_size, datasetname, Iter) {
 
 get_original_view_scores <- function(datasetname, Iter, random_normal) {
   
+  path_to_save <- config::get("path_to_save_derived_datasets", 
+                              file = config_file_path,
+                              config = loaded_config_type)
+  path_to_read <- config::get("path_to_read_datasets", 
+                              file = config_file_path,
+                              config = loaded_config_type)
   
-  # Change paths to make it work for multiple datsets. 
-  # DToriginal <- fread(paste0("data/derived-data/", datasetname,".csv"))
-  # DToriginal <- fread(paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname,".csv"))
-  #setnames(DToriginal, "outlier", "Label", skip_absent = T)
+  DToriginal <- fread(paste0(path_to_read, "/", datasetname,".csv"))
+  setnames(DToriginal, "outlier", "Label", skip_absent = T)
 
   random_sample <- random_normal
   
@@ -186,8 +202,6 @@ get_original_view_scores <- function(datasetname, Iter, random_normal) {
     
     OCSVM_scoresDT_original[, Iteration:=j]
     auc_original[[j]] <- OCSVM_scoresDT_original
-    #rm(trainDToriginal)
-    #rm(testDToriginal)
   }
   
   auc_original <- as.data.table(rbindlist(auc_original))
@@ -197,15 +211,25 @@ get_original_view_scores <- function(datasetname, Iter, random_normal) {
 }
 
 
-run_unsupervised_multiview_multipletimes <- function(datasetname, percentage_OD, mixed_view_features, Iter_outlier_features, normal_size, Iters_normal_class) {
+run_unsupervised_multiview_multipletimes <- function(datasetname, percentage_OD, mixed_view_features, Iter_outlier_features, normal_size, Iters_normal_class, experiments) {
   
-
-
-  # DToriginal <- fread(paste0("data/derived-data/", datasetname,".csv"))
-  # DToriginal <- fread(paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname,".csv"))
-  # setnames(DToriginal, "outlier", "Label", skip_absent = T)
-
-
+  path_to_read <- config::get("path_to_read_datasets", 
+                              file = config_file_path,
+                              config = loaded_config_type)
+  path_to_save <- config::get("path_to_save_derived_datasets", 
+                              file = config_file_path,
+                              config = loaded_config_type)
+  
+  if(experiments == "OC_combined"){
+    folder_to_save <- config::get("OC_combined_experiments", 
+                                  file = config_file_path,
+                                  config = loaded_config_type)
+    final_path_to_save <- paste0(paste0(path_to_save, folder_to_save))
+    }
+  
+  
+  DToriginal <- fread(paste0(path_to_read, "/", datasetname,".csv"))
+  setnames(DToriginal, "outlier", "Label", skip_absent = T)
 
   scores_all_iters_list <- list()
   auc_all_iters_list <- list()
@@ -287,9 +311,9 @@ run_unsupervised_multiview_multipletimes <- function(datasetname, percentage_OD,
         jj <- jj + 1
       }
       datapoints <- dim(DT_list[[1]])[1]
-      DTs <<- copy(rbindlist(DT_list))
+      DTs <- copy(rbindlist(DT_list))
       
-      auc_DT <<- copy(as.data.table(unlist(auc_DT_list)))
+      auc_DT <- copy(as.data.table(unlist(auc_DT_list)))
       auc_DT[, Representation:=   c(rep("KNN", 1),
                                     rep("KNNW", 1),
                                     rep("LOF", 1),
@@ -359,10 +383,8 @@ run_unsupervised_multiview_multipletimes <- function(datasetname, percentage_OD,
       
       final_DT_list[[Iter_features]] <- final_scores_DT
       all_views[[Iter_features]] <- auc_DT_final
-      
       ii<- ii+1
-
-    }
+      }
     scores_all_iters_list[[Iter_normal]] <<- rbindlist(final_DT_list)
     auc_all_iters_list[[Iter_normal]] <- rbindlist(all_views)
   }
@@ -370,25 +392,35 @@ run_unsupervised_multiview_multipletimes <- function(datasetname, percentage_OD,
   DTscores <- rbindlist(scores_all_iters_list)
   DTauc <- rbindlist(auc_all_iters_list) 
   
-  # fwrite(DTscores, paste0("~/Downloads/DAMI_datasets/derived_data/OCSVM-1random/", datasetname, 
-  #                         "_OCSVM_scores_1random_normal_class_", 100*normal_size, ".csv"), nThread = 5)
-  # fwrite(DTauc, paste0("~/Downloads/DAMI_datasets/derived_data/OCSVM-1random/", datasetname, 
-  #                      "_OCSVM_auc_1random_normal_class_", 100*normal_size, ".csv"), nThread = 5)
-  
-  # fwrite(DTscores, paste0("data/derived-data/OCSVM-multiview/", datasetname, 
-  #                         "_OCSVM_scores_1random_normal_class_", 100*normal_size, ".csv"), nThread = 5)
-  # fwrite(DTauc, paste0("data/derived-data/OCSVM-multiview/", datasetname, 
-  #                      "_OCSVM_auc_1random_normal_class_", 100*normal_size, ".csv"), nThread = 5)
+  fwrite(DTscores, paste0(final_path_to_save, datasetname,
+                          "_OCSVM_scores_", 100*normal_size, ".csv"), nThread = 3)
+  fwrite(DTauc, paste0(final_path_to_save, datasetname,
+                       "_OCSVM_auc_", 100*normal_size, ".csv"), nThread = 3 )
   return(list(DTscores, DTauc))
 }
 
 
 
-run_unsupervised_multiview_1random <- function(datasetname, mixed_view_features, Iter_outlier_features, normal_size, Iters_normal_class, percentage_OD) {
+run_unsupervised_multiview_1random <- function(datasetname, mixed_view_features, Iter_outlier_features, normal_size, Iters_normal_class, percentage_OD, experiments) {
   
-  # DToriginal <- fread(paste0("data/derived-data/", datasetname,".csv"))
-  # DToriginal <- fread(paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname,".csv"))
-  # setnames(DToriginal, "outlier", "Label", skip_absent = T)
+  
+  path_to_read <- config::get("path_to_read_datasets", 
+                              file = config_file_path,
+                              config = loaded_config_type)
+  path_to_save <- config::get("path_to_save_derived_datasets", 
+                              file = config_file_path,
+                              config = loaded_config_type)
+  
+  if(experiments == "OC_combined"){
+    folder_to_save <- config::get("OC_combined_experiments", 
+                                  file = config_file_path,
+                                  config = loaded_config_type)
+    final_path_to_save <- paste0(paste0(path_to_save, folder_to_save))
+  }
+  
+  DToriginal <- fread(paste0(path_to_read, "/", datasetname,".csv"))
+  setnames(DToriginal, "outlier", "Label", skip_absent = T)
+  
 
   
   scores_outter_iters_list <- list()
@@ -501,15 +533,10 @@ run_unsupervised_multiview_1random <- function(datasetname, mixed_view_features,
     DTscores <- rbindlist(scores_outter_iters_list)
     DTauc <- rbindlist(auc_outter_iters_list)   
     
-    # fwrite(DTscores, paste0("~/Downloads/DAMI_datasets/derived_data/OCSVM-1random/", 
-    #                         datasetname, "_Scores_1random_normal_class_", 100*normal_size, ".csv"), nThread = 5)
-    # fwrite(DTauc, paste0("~/Downloads/DAMI_datasets/derived_data/OCSVM-1random/", 
-    #                      datasetname, "_AUC_1random_normal_class_", 100*normal_size, ".csv"), nThread = 5)
-    
-    
-  # fwrite(DTscores, paste0("data/derived-data/OCSVM-multiview/", datasetname, "_OCSVM_scores_1random_normal_class_", 100*normal_size, ".csv"), nThread = 5)
-  # 
-  # fwrite(DTauc, paste0("data/derived-data/OCSVM-multiview/", datasetname, "_OCSVM_auc_1random_normal_class_", 100*normal_size, ".csv"), nThread = 5)
+    fwrite(DTscores, paste0(final_path_to_save, datasetname,
+                            "_OCSVM_scores_", 100*normal_size, ".csv"), nThread = 3)
+    fwrite(DTauc, paste0(final_path_to_save, datasetname,
+                         "_OCSVM_auc_", 100*normal_size, ".csv"), nThread = 3 )
   return(list(DTscores, DTauc))
 }
 
@@ -517,7 +544,22 @@ run_unsupervised_multiview_1random <- function(datasetname, mixed_view_features,
 
 
 
-run_unsupervised_multiview_per_dataset <- function(datasetname){
+run_unsupervised_multiview_per_dataset <- function(datasetname, config_type, experiments){
+  
+  # The argument experiments can take values: i) "OC_combined", ii) 
+  path_to_read <- config::get("path_to_read_datasets", 
+                              file = config_file_path,
+                              config = loaded_config_type)
+  path_to_save <- config::get("path_to_save_derived_datasets", 
+                              file = config_file_path,
+                              config = loaded_config_type)
+  
+  if(experiments == "OC_combined"){
+    folder_to_save <- config::get("OC_combined_experiments", 
+                                  file = config_file_path,
+                                  config = loaded_config_type)
+    final_path_to_save <- paste0(paste0(path_to_save, folder_to_save))
+  }
   
   iterations_normal <- 50
   
@@ -531,28 +573,34 @@ run_unsupervised_multiview_per_dataset <- function(datasetname){
                                                                Iter_outlier_features = 30, 
                                                                normal_size = normal_ratio, 
                                                                percentage_OD = 1, 
-                                                               Iters_normal_class = iterations_normal)
+                                                               Iters_normal_class = iterations_normal,
+                                                               experiments = experiments)
     
     
     auc_results <- results_unsupervised[[2]]
     auc_results[, Features_Iteration:= as.factor(Features_Iteration)]
+    baselines <- auc_results[Representation == "Original-View", c(median(V1), quantile(V1, 0.25), quantile(V1, 0.75))]
     
-    p <- ggplot(data = auc_results) +
+    p <- ggplot(data = auc_results[Representation == "12-Scores-random"]) +
       aes(x = Features_Iteration, y = V1, fill = Representation) +
       geom_boxplot() +
       theme_minimal() +
       theme_minimal() + scale_y_continuous(breaks = seq(0.3, 1.0,0.05)) +
       labs(title = paste0("Multiple-views vs Original-views ", datasetname, 
-                          ". Random normal-class: ", normal_ratio), y = "AUC")
-    
+                          ". Random normal-class: ", normal_ratio), y = "AUC")+
+      geom_hline(yintercept = baselines[[1]], color='green', size = 1.5)+
+      geom_hline(yintercept = baselines[[2]], color='yellow', size = 1.5)+
+      geom_hline(yintercept = baselines[[3]], color='red', size = 1.5)
+  
+  
     ggsave(plot = p, filename = paste0("~/Downloads/DAMI_datasets/figures_OCSVM_1random/",  
                                        datasetname, "_Normalperc_", 100*normal_ratio, "_features_iterations",".pdf"),
            width = 12, height = 6, units = "in", dpi = 300)
     
     
-    scores_results <<- results_unsupervised[[1]]
-    average_ensemble <<- scores_results[, mean(Scores), by = c("Representation", "Normal_Iteration", "id")]
-    Labels <<- scores_results[Normal_Iteration == 1 & Representation == "12-Scores-random" & Features_Iteration == 1, Label]
+    scores_results <- results_unsupervised[[1]]
+    average_ensemble <- scores_results[, mean(Scores), by = c("Representation", "Normal_Iteration", "id")]
+    Labels <- scores_results[Normal_Iteration == 1 & Representation == "12-Scores-random" & Features_Iteration == 1, Label]
     times_datapoints_unique <<- dim(average_ensemble)[1]/length(Labels)
     
     average_ensemble[, Label:= rep(Labels, times_datapoints_unique)]
