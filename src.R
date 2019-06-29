@@ -25,7 +25,3 @@ if(selected_configuration == "sherlock"){
   loaded_config_type <- "production"
 }
 
-
-
-
-
