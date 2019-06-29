@@ -1,6 +1,5 @@
 # ------- Run just once the following two functions
 
-
 # 1. consrtuct the csv with all the outliers for each method i.e. KNN, LOF, etc
 GetTabularOutlierScore(datasetname = "SpamBase_withoutdupl_norm_02_v01.results")
 # 2. convert arff datasets to csv

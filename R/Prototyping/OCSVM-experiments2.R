@@ -209,7 +209,7 @@ OCSVM_repeated_ODsampling <- function(datasetname, input_normal_sample_size, per
   
   
   ggsave(plot = p, filename = paste0("figures/", datasetname, 
-                                     "_normalsize_", input_normal_sample_size, 
+                                     "_normal_Size_", input_normal_sample_size, 
                                      "_percentageOD_", percentage_OD, ".pdf"), 
          width = 12, height = 6, units = "in", dpi = 300)
   # scores_DT <- dplyr::bind_cols(OCSVM_scoresDT_original, OCSVM_scoresDT_out)
