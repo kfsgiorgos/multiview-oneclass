@@ -11,10 +11,10 @@ if(selected_configuration == "macBook"){
                      config = "default"))
   use_condaenv(config::get("conda_env", config = "default"))
   loaded_config_type <- "default"
-  }
+}
 
 
-if(selected_configuration == "sherlock"){
+if(selected_configuration == "Sherlock"){
   config_file_path <- "~/GitHub_projects/multiview-oneclass/config.yml"
   setwd(config::get("directory", 
                     file = config_file_path,

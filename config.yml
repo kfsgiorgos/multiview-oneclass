@@ -8,7 +8,7 @@ default:
   
 
 production:
-  directory: "~/R Language Default Dir/Github-projects/multiview-oneclass/"
+  directory: "~/GitHub_projects/multiview-oneclass/"
   source_scripts: "R/load-packages.R"
   path_to_save_derived_datasets: "~/Downloads/DAMI_datasets/derived_data"
   OC_combined_experiments: "/OC_Combined/"
