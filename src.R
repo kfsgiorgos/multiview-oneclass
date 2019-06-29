@@ -5,7 +5,11 @@ if(selected_configuration == "macBook"){
   setwd(config::get("directory"))
   source(config::get("source_scripts"))
   use_condaenv(config::get("conda_env"))
-  }
+}
+
+
+
+
 
 
 

@@ -2,3 +2,8 @@ default:
   directory: "~/R Language Default Dir/Github-projects/multiview-oneclass/"
   conda_env: "r-reticulate"
   source_scripts: "R/load-packages.R"
+  path_to_save_derived_datasets: "~/Downloads/DAMI_datasets/derived_data/"
+  path_to_read_datasets: "~/Downloads/DAMI_datasets/derived_data/"
+  
+
+production:
