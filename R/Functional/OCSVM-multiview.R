@@ -559,7 +559,7 @@ run_unsupervised_multiview_1random <- function(datasetname, mixed_view_features,
 
 
 
-run_unsupervised_multiview_per_dataset <- function(datasetname, experiments, input_mixed_view_features){
+run_unsupervised_multiview_per_dataset <- function(datasetname, experiments, input_mixed_view_features, subfolder_name){
   set.seed(191984)
   # The argument experiments can take values: i) "OC_combined", ii) 
   path_to_read <- config::get("path_to_read_datasets", 
@@ -573,10 +573,10 @@ run_unsupervised_multiview_per_dataset <- function(datasetname, experiments, inp
     folder_to_save <- config::get("OC_combined_experiments", 
                                   file = config_file_path,
                                   config = loaded_config_type)
-    final_path_to_save <- paste0(paste0(path_to_save, folder_to_save))
+    final_path_to_save <<- paste0(paste0(path_to_save, folder_to_save))
   }
   
-  iterations_normal <- 50
+  iterations_normal <- 2#50
   
   # list_winners <- list()
   list_auc_ensemble <- list()
@@ -584,7 +584,7 @@ run_unsupervised_multiview_per_dataset <- function(datasetname, experiments, inp
   for(normal_ratio in c(0.01, 0.05, 0.1, 0.2, 0.3, 0.5, 0.7, 0.8)){
     results_unsupervised <<- run_unsupervised_multiview_1random(datasetname = datasetname, 
                                                                mixed_view_features = input_mixed_view_features, 
-                                                               Iter_outlier_features = 30, 
+                                                               Iter_outlier_features = 3,#30, 
                                                                normal_size = normal_ratio, 
                                                                percentage_OD = 1, 
                                                                Iters_normal_class = iterations_normal,
@@ -632,7 +632,7 @@ run_unsupervised_multiview_per_dataset <- function(datasetname, experiments, inp
            y = "Standard Deviations of Mean AUC of Original-View", x = "")
     
     ggsave(plot = p1, filename = paste0(final_path_to_save, "figures/",  
-                                       datasetname, "_",
+                                        subfolder_name, "/", datasetname, "_",
                                        input_mixed_view_features, "_mixedViewFeat",
                                        "_Normalperc_", 100*normal_ratio, "_AllNormal",".pdf"),
            width = 12, height = 6, units = "in", dpi = 300)
@@ -648,9 +648,11 @@ run_unsupervised_multiview_per_dataset <- function(datasetname, experiments, inp
       labs(title = paste0("Boxplot of AUC in Standard Deviations for variants of the Combined-Space and each Normal Class Sample."), 
            subtitle = paste0("Baseline is the Original-view ", datasetname, ". Normal class used: ", 100 * normal_ratio, 
                              "% & Number of random parameters per OD method: ",  input_mixed_view_features ), 
-           y = "Standard Deviations of Mean AUC of Original-View", x = "")
+           y = "Standard Deviations of Mean AUC of Original-View", x = "")+
+    scale_fill_manual(values=c("#386994"))
+    
     ggsave(plot = p2, filename = paste0(final_path_to_save, "figures/",  
-                                        datasetname, "_",
+                                        subfolder_name, "/", datasetname, "_",
                                         input_mixed_view_features, "_mixedViewFeat",
                                         "_Normalperc_", 100*normal_ratio, "_Normal_iterations",".pdf"),
            width = 12, height = 6, units = "in", dpi = 300)
@@ -675,8 +677,8 @@ run_unsupervised_multiview_per_dataset <- function(datasetname, experiments, inp
                                                                   quantile(V1, 0.25), 
                                                                   quantile(V1, 0.75))]
     
-    
-    p3 <- ggplot(data = auc_ensemble[Representation == "Combined-Space"]) +
+    auc_ensemble[Representation == "Combined-Space", Representation:= "Ensemble of Combined Space"]
+    p3 <- ggplot(data = auc_ensemble[Representation == "Ensemble of Combined Space"]) +
       aes(x = Representation, y = V2, fill = Representation) +
       geom_boxplot() +
       theme_minimal() + #scale_y_continuous(breaks = seq(0.3, 1.0,0.05)) +
@@ -684,15 +686,15 @@ run_unsupervised_multiview_per_dataset <- function(datasetname, experiments, inp
                           ". Random normal-class: ", normal_ratio), 
            subtitle = , y = "AUC")+
       theme(legend.position = "none")+ 
-      scale_y_continuous(breaks = seq(-4, 10, 0.5))+
       labs(title = paste0("Boxplot of AUC in Standard Deviations for the Ensemble Combined-Space"), 
-           subtitle = paste0("Baseline is the Original-view ", datasetname, ". Normal class used: ", 100 * normal_ratio, 
+           subtitle = paste0("Baseline is the Original-view of ", datasetname, ". Normal class used: ", 100 * normal_ratio, 
                              "% & Number of random parameters per OD method: ",  input_mixed_view_features ), 
-           y = "Standard Deviations of Mean AUC of Original-View", x = "")
+           y = "Standard Deviations of Mean AUC of Original-View", x = "") +
+      scale_fill_manual(values=c("#4d8e66"))
      
     
     ggsave(plot = p3, filename = paste0(final_path_to_save, "figures/",  
-                                        datasetname, "_XXXXXXXX",
+                                        subfolder_name, "/", datasetname, "_",
                                         input_mixed_view_features, "_mixedViewFeat",
                                         "_Normalperc_", 100*normal_ratio, "_Ensemble", ".pdf"),
            width = 12, height = 6, units = "in", dpi = 300) 
@@ -706,7 +708,7 @@ run_unsupervised_multiview_per_dataset <- function(datasetname, experiments, inp
   # saveRDS(list_winners, paste0("~/Downloads/DAMI_datasets/derived_data/OCSVM-1random/", 
   #                              datasetname, "_Winners_1random_normal_class_", 100*normal_ratio, ".rds"))
   fwrite(auc_ensemble1, paste0(final_path_to_save, "figures/", 
-                              datasetname, "_",
+                               subfolder_name, "/", datasetname, "_",
                               input_mixed_view_features, "_mixedViewFeat",
                               "_AUCensemble", ".csv"))
   

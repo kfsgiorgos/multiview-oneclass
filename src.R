@@ -1,4 +1,4 @@
-# selected_configuration <- "macBook"
+selected_configuration <- "macBook"
 # selected_configuration <- "Sherlock"
 
 if(selected_configuration == "macBook"){
