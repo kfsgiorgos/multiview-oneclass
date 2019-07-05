@@ -1,22 +1,35 @@
 # Sys.setenv('R_MAX_VSIZE'=32000000000)
 # Sys.getenv('R_MAX_VSIZE')
 
+# Select the correct path for the src.R file
+# source("~/GitHub_projects/multiview-oneclass/src.R")
+# source("~/R Language Default Dir/Github-projects/multiview-oneclass/src.R")
 args <- commandArgs(TRUE)
 arg1 <- args[1]
+arg2 <- args[2]
+
+<<<<<<< HEAD
+
+=======
+>>>>>>> e626a54d2a88b30b67d7b3fd948c3530d9306a3e
 
 
-
+# arg1 <- "Shuttle_withoutdupl_norm_v01"
+# arg2 <- "Shuttle_v01"
 temp1 <- run_unsupervised_multiview_per_dataset(datasetname = arg1,
                                                 experiments = "OC_combined",
-                                                input_mixed_view_features = 1)
+                                                input_mixed_view_features = 1,
+                                                subfolder_name = arg2)
 
 temp2 <- run_unsupervised_multiview_per_dataset(datasetname = arg1, 
                                                 experiments = "OC_combined",
-                                                input_mixed_view_features = 2)
+                                                input_mixed_view_features = 2,
+                                                subfolder_name = arg2)
 
 temp3 <- run_unsupervised_multiview_per_dataset(datasetname = arg1, 
                                                 experiments = "OC_combined",
-                                                input_mixed_view_features = 3)
+                                                input_mixed_view_features = 3,
+                                                subfolder_name = arg2)
 
 
 temp <- rbindlist(list(temp1, temp2, temp3))
@@ -31,11 +44,11 @@ p4 <- ggplot(data = temp) +
   labs(title = paste0("Boxplot of AUC Combined-Spaces with different number of OD parameters and multiple Normal Class percentages."), 
      subtitle = paste0( "Dataset: ", arg1),
      y = "Standard Deviations of Mean AUC of Original-View", x = "")
-p4 <- p4+theme(legend.position="top")
-p4
+p5 <- p4+theme(legend.position="top") + scale_fill_manual(values=c("#b1cb49", "#515f58"))
+p5
 
-ggsave(plot = p4, filename = paste0(final_path_to_save, "figures/",  
-                                    arg1, ".pdf"),
+ggsave(plot = p5, filename = paste0(final_path_to_save, "figures/",  
+                                    arg2,"/",arg1, ".pdf"),
        width = 12, height = 6, units = "in", dpi = 300)
 
 
