@@ -9,7 +9,9 @@ if(selected_configuration == "macBook"){
   source(config::get("source_scripts", 
                      file = config_file_path, 
                      config = "default"))
-  use_condaenv(config::get("conda_env", config = "default"))
+  use_condaenv(config::get("conda_env", 
+                           file = config_file_path,
+                           config = "default"))
   loaded_config_type <- "default"
 }
 
