@@ -1,4 +1,3 @@
-
 create_unsupervised_view <- function(datasetname, percentage_OD, mixed_view_features) {
   
   path_to_save <- config::get("path_to_save_derived_datasets", 
@@ -427,14 +426,14 @@ run_unsupervised_multiview_1random <- function(datasetname, mixed_view_features,
   auc_outter_iters_list <- list()
   all_1random_outlier_list <- list()
   for(Iter_normal in 1:Iters_normal_class){
-  
+
+    gc()
     random_sample <- get_random_class_sample(datasetname = datasetname, 
                                              normal_sample_size = normal_size, Iter = 1)
     
     
     scores_inner_iters_list <- list()
     auc_inner_iters_list <- list()
-    list_1random_outlier <- list()
     
     for(Iter_features in 1:Iter_outlier_features){
       print(glue("Normal sampling iteration {Iter_normal} ."))
@@ -444,11 +443,9 @@ run_unsupervised_multiview_1random <- function(datasetname, mixed_view_features,
       
       list_DTview2 <- create_unsupervised_view(datasetname, percentage_OD, mixed_view_features)
       list_elements <- list_DTview2$mixed_arthur
-
+      
+      # check if any column contains infinite or NaN values 
       dimension <- dim(list_elements)[2]
-      list_1random_outlier[[Iter_features]] <- list_elements
-      
-      
       if(length(which(list_elements[, lapply(.SD, function(x) sum(is.infinite(x))), .SDcols = 1:dimension] != 0))){
         tempDT <<- data.table::transpose(as.data.table(list_elements[, lapply(.SD, function(x) sum(is.infinite(x))), .SDcols = 1:dimension]))
         tempDT[, cols1:=names(list_elements[, lapply(.SD, function(x) sum(is.infinite(x))), .SDcols = 1:dimension])]
@@ -478,6 +475,18 @@ run_unsupervised_multiview_1random <- function(datasetname, mixed_view_features,
       dataset_view[, Label:= DToriginal$Label]
       dataset_view[, id:= DToriginal$id]
       
+      # The following command works for experiments where we evaluate the 
+      # features of the Outlier Scores. 12 random are selected
+      if(experiments == "multiple-view"){
+        print("multiple-view")
+      } 
+      # We test with our experimemts the combined feature space. 
+      # Original datset & 12 random outlier scores
+      if(experiments == "OC_combined"){
+        dataset_view <<- dplyr::bind_cols(DToriginal[, .SD, .SDcols = !(c("Label", "id"))], dataset_view)
+      }  
+      
+      
       train_id_outliers <- random_sample[["train"]][[1]]
       test_id_outliers <- random_sample[["test"]][[1]]
       
@@ -495,10 +504,11 @@ run_unsupervised_multiview_1random <- function(datasetname, mixed_view_features,
       
       
       auc_DT <- as.data.table(OCSVM_scoresDT_out[, auc(Label, Scores)][[1]])
-      auc_DT[, `:=` (Normal_Size = normal_size, Representation = "12-Scores-random")]
+      # auc_DT[, `:=` (Normal_Size = normal_size, Representation = "12-Scores-random")]
+      auc_DT[, `:=` (Normal_Size = normal_size, Representation = "Combined-Space")]
       
       # OCSVM on the original view 
-      original_performance <- get_original_view_scores(datasetname = datasetname, 
+      original_performance <<- get_original_view_scores(datasetname = datasetname, 
                                                        Iter = 1, 
                                                        random_normal = random_sample)
       original_auc <- data.table(V1 = original_performance[, auc(Label, Scores)][[1]],
@@ -508,7 +518,9 @@ run_unsupervised_multiview_1random <- function(datasetname, mixed_view_features,
       
       
       DT_scores <- data.table::copy(OCSVM_scoresDT_out)
-      DT_scores[, `:=` (Representation = "12-Scores-random", 
+      # DT_scores[, `:=` (Representation = "12-Scores-random", 
+      #                   Normal_Size = normal_size)]
+      DT_scores[, `:=` (Representation = "Combined-Space", 
                         Normal_Size = normal_size)]
       
       original_performance[, `:=` (Normal_Size = normal_size, Iteration = NULL)]
@@ -528,24 +540,27 @@ run_unsupervised_multiview_1random <- function(datasetname, mixed_view_features,
     
     scores_outter_iters_list[[Iter_normal]] <- rbindlist(scores_inner_iters_list)
     auc_outter_iters_list[[Iter_normal]] <- rbindlist(auc_inner_iters_list)
-    all_1random_outlier_list[[Iter_normal]] <- list_1random_outlier
+    gc()
   }
-    DTscores <- rbindlist(scores_outter_iters_list)
-    DTauc <- rbindlist(auc_outter_iters_list)   
+    DTscores <<- rbindlist(scores_outter_iters_list)
+    DTauc <<- rbindlist(auc_outter_iters_list)   
     
     fwrite(DTscores, paste0(final_path_to_save, datasetname,
-                            "_OCSVM_scores_", 100*normal_size, ".csv"), nThread = 3)
+                            "_OCSVM_scores_Normalsize_", 100*normal_size, 
+                            "_mixedViewFeat_", mixed_view_features, 
+                            ".csv"), nThread = 3)
     fwrite(DTauc, paste0(final_path_to_save, datasetname,
-                         "_OCSVM_auc_", 100*normal_size, ".csv"), nThread = 3 )
+                         "_OCSVM_auc_Normalsize_", 100*normal_size, 
+                         "_mixedViewFeat_", mixed_view_features, 
+                         ".csv"), nThread = 3 )
+    gc()
   return(list(DTscores, DTauc))
 }
 
 
 
-
-
-run_unsupervised_multiview_per_dataset <- function(datasetname, config_type, experiments){
-  
+run_unsupervised_multiview_per_dataset <- function(datasetname, experiments, input_mixed_view_features){
+  set.seed(191984)
   # The argument experiments can take values: i) "OC_combined", ii) 
   path_to_read <- config::get("path_to_read_datasets", 
                               file = config_file_path,
@@ -563,13 +578,12 @@ run_unsupervised_multiview_per_dataset <- function(datasetname, config_type, exp
   
   iterations_normal <- 50
   
-  list_winners <- list()
+  # list_winners <- list()
   list_auc_ensemble <- list()
-  for(normal_ratio in c(0.01, 0.05, 0.1, 0.2)){
-    iter <- 1
-
-    results_unsupervised <- run_unsupervised_multiview_1random(datasetname = datasetname, 
-                                                               mixed_view_features = 1, 
+  iter <- 1
+  for(normal_ratio in c(0.01, 0.05, 0.1, 0.2, 0.3, 0.5, 0.7, 0.8)){
+    results_unsupervised <<- run_unsupervised_multiview_1random(datasetname = datasetname, 
+                                                               mixed_view_features = input_mixed_view_features, 
                                                                Iter_outlier_features = 30, 
                                                                normal_size = normal_ratio, 
                                                                percentage_OD = 1, 
@@ -579,66 +593,123 @@ run_unsupervised_multiview_per_dataset <- function(datasetname, config_type, exp
     
     auc_results <- results_unsupervised[[2]]
     auc_results[, Features_Iteration:= as.factor(Features_Iteration)]
-    baselines <- auc_results[Representation == "Original-View", c(median(V1), quantile(V1, 0.25), quantile(V1, 0.75))]
+    baselines <- auc_results[Representation == "Original-View", c(median(V1), 
+                                                                  quantile(V1, 0.25), 
+                                                                  quantile(V1, 0.75), 
+                                                                  mean(V1), 
+                                                                  sd(V1))]
     
-    p <- ggplot(data = auc_results[Representation == "12-Scores-random"]) +
-      aes(x = Features_Iteration, y = V1, fill = Representation) +
+    auc_results[Representation == "Combined-Space", V2:= (mean(V1) - V1)/sd(V1), by = "Normal_Iteration"]
+    auc_results[Representation == "Original-View", V2:= (mean(V1) - V1)/sd(V1), by = "Normal_Iteration"]
+    auc_results[, Normal_Iteration:=as.factor(Normal_Iteration)]
+    
+    # p <- ggplot(data = auc_results[Representation == "Combined-Space"]) +
+    #   aes(x = Features_Iteration, y = V1, fill = Representation) +
+    #   geom_boxplot() +
+    #   theme_minimal() + scale_y_continuous(breaks = seq(0.3, 1.0,0.05)) +
+    #   labs(title = paste0("Combined-Space vs Original-views ", datasetname, 
+    #                       ". Random normal-class: ", normal_ratio), y = "AUC")+
+    #   geom_hline(yintercept = baselines[[1]], color='green', size = 1.5)+
+    #   geom_hline(yintercept = baselines[[2]], color='yellow', size = 1.5)+
+    #   geom_hline(yintercept = baselines[[3]], color='red', size = 1.5) 
+
+    # ggsave(plot = p, filename = paste0(final_path_to_save, "figures/",  
+    #                                    datasetname, "_",
+    #                                    input_mixed_view_features, "_mixedViewFeat",
+    #                                    "_Normalperc_", 100*normal_ratio, "_features_iterations",".pdf"),
+    #        width = 12, height = 6, units = "in", dpi = 300)
+    
+    
+    p1 <- ggplot(data = auc_results[Representation == "Combined-Space"]) +
+      aes(x = Representation, y = V2, fill = Representation) +
       geom_boxplot() +
       theme_minimal() +
-      theme_minimal() + scale_y_continuous(breaks = seq(0.3, 1.0,0.05)) +
-      labs(title = paste0("Multiple-views vs Original-views ", datasetname, 
-                          ". Random normal-class: ", normal_ratio), y = "AUC")+
-      geom_hline(yintercept = baselines[[1]], color='green', size = 1.5)+
-      geom_hline(yintercept = baselines[[2]], color='yellow', size = 1.5)+
-      geom_hline(yintercept = baselines[[3]], color='red', size = 1.5)
-  
-  
-    ggsave(plot = p, filename = paste0("~/Downloads/DAMI_datasets/figures_OCSVM_1random/",  
-                                       datasetname, "_Normalperc_", 100*normal_ratio, "_features_iterations",".pdf"),
+      theme(legend.position="top")+
+      scale_y_continuous(breaks=seq(-10,10,1)) + 
+      labs(title = paste0("Boxplot of AUC in Standard Deviations for all the Combined-Spaces and all the Normal Class Samples."), 
+           subtitle = paste0( "Baseline is the Original-view ", datasetname, ". Normal class used: ", 100 * normal_ratio, 
+                             "% & Number of random parameters per OD method: ",  input_mixed_view_features ), 
+           y = "Standard Deviations of Mean AUC of Original-View", x = "")
+    
+    ggsave(plot = p1, filename = paste0(final_path_to_save, "figures/",  
+                                       datasetname, "_",
+                                       input_mixed_view_features, "_mixedViewFeat",
+                                       "_Normalperc_", 100*normal_ratio, "_AllNormal",".pdf"),
            width = 12, height = 6, units = "in", dpi = 300)
     
     
+    
+    p2 <- ggplot(data = auc_results[Representation == "Combined-Space"]) +
+      aes(x = Normal_Iteration, y = V2, fill = Representation) +
+      geom_boxplot() +
+      theme_minimal() +
+      theme(legend.position="top")+
+      scale_y_continuous(breaks=seq(-10,10,0.5)) +
+      labs(title = paste0("Boxplot of AUC in Standard Deviations for variants of the Combined-Space and each Normal Class Sample."), 
+           subtitle = paste0("Baseline is the Original-view ", datasetname, ". Normal class used: ", 100 * normal_ratio, 
+                             "% & Number of random parameters per OD method: ",  input_mixed_view_features ), 
+           y = "Standard Deviations of Mean AUC of Original-View", x = "")
+    ggsave(plot = p2, filename = paste0(final_path_to_save, "figures/",  
+                                        datasetname, "_",
+                                        input_mixed_view_features, "_mixedViewFeat",
+                                        "_Normalperc_", 100*normal_ratio, "_Normal_iterations",".pdf"),
+           width = 12, height = 6, units = "in", dpi = 300)
+    
+    
+
     scores_results <- results_unsupervised[[1]]
-    average_ensemble <- scores_results[, mean(Scores), by = c("Representation", "Normal_Iteration", "id")]
-    Labels <- scores_results[Normal_Iteration == 1 & Representation == "12-Scores-random" & Features_Iteration == 1, Label]
+    # auc_DT <- scores_results[, auc(Label, Scores), by =  c("Representation", "Normal_Iteration", "Features_Iteration")]
+    # auc_DT[, `:=` (Normal_Iteration = as.factor(Normal_Iteration), Features_Iteration = as.factor(Features_Iteration))]
+    # esquisse::esquisser()
+    average_ensemble <<- scores_results[, mean(Scores), by = c("Representation", "Normal_Iteration", "id")]
+    Labels <- scores_results[Normal_Iteration == 1 & Representation == "Combined-Space" & Features_Iteration == 1, Label]
     times_datapoints_unique <<- dim(average_ensemble)[1]/length(Labels)
     
     average_ensemble[, Label:= rep(Labels, times_datapoints_unique)]
-    auc_ensemble <- average_ensemble[, auc(Label, V1), by =  c("Representation", "Normal_Iteration")]
+    print(average_ensemble)
+    auc_ensemble <<- average_ensemble[, auc(Label, V1), by =  c("Representation", "Normal_Iteration")]
+    auc_ensemble[, Normal_size:= normal_ratio]
+    auc_ensemble[Representation == "Combined-Space", V2:= (V1 - auc_ensemble[Representation == "Original-View", mean(V1)])/ auc_ensemble[Representation == "Original-View", sd(V1)]]
+    #auc_ensemble[, Representation:= as.factor(Representation)]
+    baselines1 <- auc_ensemble[Representation == "Original-View", c(median(V1), 
+                                                                  quantile(V1, 0.25), 
+                                                                  quantile(V1, 0.75))]
     
-    winner_me <- 0
-    winner_original <- 0
-    for(i in 1:iterations_normal){
-      
-      tempDT <- auc_ensemble[Normal_Iteration==i]
-      if(tempDT[Representation == "12-Scores-random", V1] > tempDT[Representation == "Original-View", V1]){
-        winner_me <- winner_me + 1
-      } else{
-        winner_original <- winner_original + 1
-      }
-    }
-    list_winners[[iter]] <- c(winner_me, winner_original)
-    list_auc_ensemble[[iter]] <- auc_ensemble
     
-    p1 <- ggplot(data = auc_ensemble) +
-      aes(x = Representation, y = V1, fill = Representation) +
+    p3 <- ggplot(data = auc_ensemble[Representation == "Combined-Space"]) +
+      aes(x = Representation, y = V2, fill = Representation) +
       geom_boxplot() +
-      theme_minimal() +
-      theme_minimal() + scale_y_continuous(breaks = seq(0.3, 1.0,0.05)) +
-      theme(legend.position = "none") +
-      labs(y = "AUC")
+      theme_minimal() + #scale_y_continuous(breaks = seq(0.3, 1.0,0.05)) +
+      labs(title = paste0("Combined-Space vs Original-Space ", datasetname, 
+                          ". Random normal-class: ", normal_ratio), 
+           subtitle = , y = "AUC")+
+      theme(legend.position = "none")+ 
+      scale_y_continuous(breaks = seq(-4, 10, 0.5))+
+      labs(title = paste0("Boxplot of AUC in Standard Deviations for the Ensemble Combined-Space"), 
+           subtitle = paste0("Baseline is the Original-view ", datasetname, ". Normal class used: ", 100 * normal_ratio, 
+                             "% & Number of random parameters per OD method: ",  input_mixed_view_features ), 
+           y = "Standard Deviations of Mean AUC of Original-View", x = "")
+     
     
-    ggsave(plot = p1, filename = paste0("~/Downloads/DAMI_datasets/figures_OCSVM_1random/", 
-                                        datasetname, "_Normalperc_", 100*normal_ratio, "_Ensemble", ".pdf"),
-           width = 12, height = 6, units = "in", dpi = 300)
-    p1
+    ggsave(plot = p3, filename = paste0(final_path_to_save, "figures/",  
+                                        datasetname, "_XXXXXXXX",
+                                        input_mixed_view_features, "_mixedViewFeat",
+                                        "_Normalperc_", 100*normal_ratio, "_Ensemble", ".pdf"),
+           width = 12, height = 6, units = "in", dpi = 300) 
+    
+    list_auc_ensemble[[iter]] <- auc_ensemble
     iter <- iter + 1
+    
   }
-  saveRDS(list_winners, paste0("~/Downloads/DAMI_datasets/derived_data/OCSVM-1random/", 
-                               datasetname, "_Winners_1random_normal_class_", 100*normal_ratio, ".rds"))
-  saveRDS(list_auc_ensemble, paste0("~/Downloads/DAMI_datasets/derived_data/OCSVM-1random/", 
-                        datasetname, "_AUCensemble_1random_normal_class_", 100*normal_ratio, ".rds"))
+  auc_ensemble1 <<- rbindlist(list_auc_ensemble)
+  auc_ensemble1[, mixedViewFeat:= input_mixed_view_features]
+  # saveRDS(list_winners, paste0("~/Downloads/DAMI_datasets/derived_data/OCSVM-1random/", 
+  #                              datasetname, "_Winners_1random_normal_class_", 100*normal_ratio, ".rds"))
+  fwrite(auc_ensemble1, paste0(final_path_to_save, "figures/", 
+                              datasetname, "_",
+                              input_mixed_view_features, "_mixedViewFeat",
+                              "_AUCensemble", ".csv"))
   
-  return(list(list_winners, list_auc_ensemble, p, p1, results_unsupervised[[3]]))
+  return(auc_ensemble1)
   }
 
