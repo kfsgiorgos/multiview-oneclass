@@ -8,11 +8,6 @@ args <- commandArgs(TRUE)
 arg1 <- args[1]
 arg2 <- args[2]
 
-<<<<<<< HEAD
-
-=======
->>>>>>> e626a54d2a88b30b67d7b3fd948c3530d9306a3e
-
 
 # arg1 <- "Shuttle_withoutdupl_norm_v01"
 # arg2 <- "Shuttle_v01"
