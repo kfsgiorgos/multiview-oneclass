@@ -2,7 +2,7 @@
 # Sys.getenv('R_MAX_VSIZE')
 
 # Select the correct path for the src.R file
-# source("~/GitHub_projects/multiview-oneclass/src.R")
+source("~/GitHub_projects/multiview-oneclass/src.R")
 # source("~/R Language Default Dir/Github-projects/multiview-oneclass/src.R")
 args <- commandArgs(TRUE)
 arg1 <- args[1]

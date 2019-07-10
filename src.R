@@ -1,10 +1,6 @@
-<<<<<<< HEAD
+
 # selected_configuration <- "macBook"
 selected_configuration <- "Sherlock"
-=======
-selected_configuration <- "macBook"
-# selected_configuration <- "Sherlock"
->>>>>>> e626a54d2a88b30b67d7b3fd948c3530d9306a3e
 
 if(selected_configuration == "macBook"){
   config_file_path <- "~/R Language Default Dir/Github-projects/multiview-oneclass/config.yml"
