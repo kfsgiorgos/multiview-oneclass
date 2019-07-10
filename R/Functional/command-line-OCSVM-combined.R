@@ -11,40 +11,42 @@ arg2 <- args[2]
 
 # arg1 <- "Shuttle_withoutdupl_norm_v01"
 # arg2 <- "Shuttle_v01"
-temp1 <- run_unsupervised_multiview_per_dataset(datasetname = arg1,
+res1 <- run_unsupervised_ensemble_per_dataset(datasetname = arg1,
                                                 experiments = "OC_combined",
                                                 input_mixed_view_features = 1,
                                                 subfolder_name = arg2)
 
-temp2 <- run_unsupervised_multiview_per_dataset(datasetname = arg1, 
+res2 <- run_unsupervised_ensemble_per_dataset(datasetname = arg1, 
                                                 experiments = "OC_combined",
                                                 input_mixed_view_features = 2,
                                                 subfolder_name = arg2)
 
-temp3 <- run_unsupervised_multiview_per_dataset(datasetname = arg1, 
+res3 <- run_unsupervised_ensemble_per_dataset(datasetname = arg1, 
                                                 experiments = "OC_combined",
                                                 input_mixed_view_features = 3,
                                                 subfolder_name = arg2)
 
 
-temp <- rbindlist(list(temp1, temp2, temp3))
-temp[, mixedViewFeat:= as.factor(paste0(mixedViewFeat, "-OD parameters"))]
+res <- rbindlist(list(res1, res2, res3))
+res[, mixedViewFeat:= as.factor(paste0(mixedViewFeat, "-OD parameters"))]
+res[, Normal_Size_1:= as.factor(Normal_Size_1)]
 
-p4 <- ggplot(data = temp) +
-  aes(x = mixedViewFeat, y = V1, fill = Representation) +
+p <- ggplot(data = res) +
+  aes(x = mixedViewFeat, y = V2, fill = Representation) +
   geom_boxplot() +
   theme_minimal() +
-  facet_wrap(vars(Normal_size)) + 
-  scale_y_continuous(breaks = seq(0.4, 0.9, 0.04))+
-  labs(title = paste0("Boxplot of AUC Combined-Spaces with different number of OD parameters and multiple Normal Class percentages."), 
+  facet_wrap(~Normal_Size_1, scale = "free") +
+  geom_hline(yintercept = 0, color='red', size = 1.5) +
+  #scale_y_continuous(breaks = seq(0.4, 0.9, 0.04))+
+  labs(title = paste0("Ensemble on Combined-Spaces. Boxplots with different number of random selected Outlier Detection parameters and multiple Normal Class Training percentages."), 
      subtitle = paste0( "Dataset: ", arg1),
      y = "Standard Deviations of Mean AUC of Original-View", x = "")
-p5 <- p4+theme(legend.position="top") + scale_fill_manual(values=c("#b1cb49", "#515f58"))
-p5
+p1 <- p+theme(legend.position="top") + scale_fill_manual(values=c("#b1cb49", "#515f58"))
+p1
 
-ggsave(plot = p5, filename = paste0(final_path_to_save, "figures/",  
+ggsave(plot = p1, filename = paste0(final_path_to_save, "figures/",  
                                     arg2,"/",arg1, ".pdf"),
-       width = 12, height = 6, units = "in", dpi = 300)
+       width = 18, height = 10, units = "in", dpi = 300)
 
 
 
