@@ -738,7 +738,7 @@ run_unsupervised_ensemble_per_dataset <- function(datasetname, experiments, inpu
     final_path_to_save <<- paste0(paste0(path_to_save, folder_to_save))
   }
   
-  iterations_normal <- 3
+  iterations_normal <- 30
   
   # list_winners <- list()
   list_auc_ensemble <- list()
@@ -747,7 +747,7 @@ run_unsupervised_ensemble_per_dataset <- function(datasetname, experiments, inpu
   for(normal_ratio in c(0.01, 0.05, 0.1, 0.2, 0.3, 0.5, 0.7, 0.8)){
     list_results_unsupervised[[iter]] <- run_unsupervised_multiview_1random(datasetname = datasetname, 
                                                                 mixed_view_features = input_mixed_view_features, 
-                                                                Iter_outlier_features = 10, 
+                                                                Iter_outlier_features = 25, 
                                                                 normal_size = normal_ratio, 
                                                                 percentage_OD = 1, 
                                                                 Iters_normal_class = iterations_normal,

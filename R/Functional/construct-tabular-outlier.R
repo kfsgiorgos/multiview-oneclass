@@ -2,10 +2,12 @@ GetTabularOutlierScore <- function(datasetname) {
 
   
   # The dataset name must always have the ".results" suffix
+
   # fnames <- list.files(paste0("~/Downloads/", datasetname,  "/"))
   # text.loaded <- readtext::readtext(paste0("data/downloaded-data/", datasetname, ".csv"))
-  
   text.loaded <- readtext::readtext(paste0("~/Downloads/", datasetname, ".csv"))
+  # text.loaded <- readtext::readtext(paste0("data/downloaded-data/", datasetname, ".csv"))
+
   
   list.columns <- list()
   for (i in 1:dim(text.loaded)[1]) {
@@ -21,13 +23,15 @@ GetTabularOutlierScore <- function(datasetname) {
       list.columns[[i]] <- DT
     }
     DTtabular <- dplyr::bind_cols(list.columns)
+
     
     # fwrite(DTtabular, paste0("data/derived-data/", datasetname, ".csv"), nThread = 2)
     fwrite(DTtabular, paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname, ".csv"), nThread = 2)
-    
-  }
-  }
 
+  }
+}
+
+# Examples:
 # GetTabularOutlierScore(datasetname = "Ionosphere_withoutdupl_norm.results")
 # GetTabularOutlierScore(datasetname = "Pima_withoutdupl_norm_02_v01.results")
 # GetTabularOutlierScore(datasetname = "Pima_withoutdupl_norm_02_v09.results")
@@ -38,14 +42,27 @@ GetTabularOutlierScore <- function(datasetname) {
 # GetTabularOutlierScore(datasetname = "Waveform_withoutdupl_norm_v01.results")
 # GetTabularOutlierScore(datasetname = "Waveform_withoutdupl_norm_v02.results")
 # GetTabularOutlierScore(datasetname = "WDBC_withoutdupl_norm_v07.results")
-
-
+# system.time({GetTabularOutlierScore(datasetname = "WDBC_withoutdupl_norm_v01.results")})
+# system.time({GetTabularOutlierScore(datasetname = "Arrhythmia_withoutdupl_norm_02_v01.results")})
+# system.time({GetTabularOutlierScore(datasetname = "Arrhythmia_withoutdupl_norm_02_v02.results")})
+# system.time({GetTabularOutlierScore(datasetname = "Arrhythmia_withoutdupl_norm_02_v03.results")})
+# system.time({GetTabularOutlierScore(datasetname = "Cardiotocography_withoutdupl_norm_05_v03.results")})
+# system.time({GetTabularOutlierScore(datasetname = "Cardiotocography_withoutdupl_norm_05_v08.results")})
+# system.time({GetTabularOutlierScore(datasetname = "Glass_withoutdupl_norm.results")})
+# system.time({GetTabularOutlierScore(datasetname = "Ionosphere_withoutdupl_norm.results")})
+# system.time({GetTabularOutlierScore(datasetname = "Pima_withoutdupl_norm_02_v01.results")})
+# system.time({GetTabularOutlierScore(datasetname = "Pima_withoutdupl_norm_02_v02.results")})
+# system.time({GetTabularOutlierScore(datasetname = "Pima_withoutdupl_norm_02_v03.results")})
+# system.time({GetTabularOutlierScore(datasetname = "Shuttle_withoutdupl_norm_v01.results")})
+# system.time({GetTabularOutlierScore(datasetname = "Shuttle_withoutdupl_norm_v02.results")})
+# system.time({GetTabularOutlierScore(datasetname = "Shuttle_withoutdupl_norm_v03.results")})
+# system.time({GetTabularOutlierScore(datasetname = "Parkinson_withoutdupl_norm_05_v03.results")})
 
 # create csv from arff ----------------------------------------------------
 
 GetCsvFromArff <- function(datasetname) {
   #This function works only when you have the arff data in one directory
-  # DT<- as.data.table(foreign::read.arff(paste0("data/downloaded-data/", datasetname, ".arff")))
+  # DT <- as.data.table(foreign::read.arff(paste0("data/downloaded-data/", datasetname, ".arff")))
   DT<- as.data.table(foreign::read.arff(paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname, ".arff")))
   setnames(DT, old = "outlier", "Label")
   #fwrite(DT, paste0("data/derived-data/", datasetname, ".csv"), nThread = 2)
@@ -56,14 +73,40 @@ GetCsvFromArff <- function(datasetname) {
 
 # GetCsvFromArff(datasetname = "Ionosphere_withoutdupl_norm")
 # GetCsvFromArff(datasetname = "Pima_withoutdupl_norm_02_v01")
-# GetCsvFromArff(datasetname = "Pima_withoutdupl_norm_02_v09")
-# GetCsvFromArff(datasetname = "Pima_withoutdupl_norm_05_v07")
+# GetCsvFromArff(datasetname = "Pima_withoutdupl_norm_02_v02")
+# GetCsvFromArff(datasetname = "Pima_withoutdupl_norm_02_v03")
 # GetCsvFromArff(datasetname = "Shuttle_withoutdupl_norm_v01")
-# GetCsvFromArff(datasetname = "Shuttle_withoutdupl_norm_v05")
+# GetCsvFromArff(datasetname = "Shuttle_withoutdupl_norm_v02")
+# GetCsvFromArff(datasetname = "Arrhythmia_withoutdupl_norm_02_v01")
+# GetCsvFromArff(datasetname = "Arrhythmia_withoutdupl_norm_02_v02")
+# GetCsvFromArff(datasetname = "Arrhythmia_withoutdupl_norm_02_v03")
+# GetCsvFromArff(datasetname = "Glass_withoutdupl_norm")
+# GetCsvFromArff(datasetname = "Parkinson_withoutdupl_norm_05_v01")
+# GetCsvFromArff(datasetname = "Parkinson_withoutdupl_norm_05_v02")
+# GetCsvFromArff(datasetname = "Parkinson_withoutdupl_norm_05_v03")
+# GetCsvFromArff(datasetname = "Pima_withoutdupl_norm_02_v03")
+# GetCsvFromArff(datasetname = "Shuttle_withoutdupl_norm_v03")
 # GetCsvFromArff(datasetname = "Stamps_withoutdupl_norm_02_v06")
 # GetCsvFromArff(datasetname = "Waveform_withoutdupl_norm_v01")
 # GetCsvFromArff(datasetname = "Waveform_withoutdupl_norm_v02")
-# GetCsvFromArff(datasetname = "WDBC_withoutdupl_norm_v07")
+# GetCsvFromArff(datasetname = "WDBC_withoutdupl_norm_v01")
+
+print(Sys.time())
+# system.time({GetCsvFromArff(datasetname = "WDBC_withoutdupl_norm_v01")})
+# system.time({GetCsvFromArff(datasetname = "Arrhythmia_withoutdupl_norm_02_v01")})
+# system.time({GetCsvFromArff(datasetname = "Arrhythmia_withoutdupl_norm_02_v02")})
+# system.time({GetCsvFromArff(datasetname = "Arrhythmia_withoutdupl_norm_02_v03")})
+# system.time({GetCsvFromArff(datasetname = "Cardiotocography_withoutdupl_norm_05_v03")})
+# system.time({GetCsvFromArff(datasetname = "Cardiotocography_withoutdupl_norm_05_v08")})
+# system.time({GetCsvFromArff(datasetname = "Glass_withoutdupl_norm")})
+# system.time({GetCsvFromArff(datasetname = "Ionosphere_withoutdupl_norm")})
+# system.time({GetCsvFromArff(datasetname = "Pima_withoutdupl_norm_02_v01")})
+# system.time({GetCsvFromArff(datasetname = "Pima_withoutdupl_norm_02_v02")})
+# system.time({GetCsvFromArff(datasetname = "Pima_withoutdupl_norm_02_v03")})
+# system.time({GetCsvFromArff(datasetname = "Shuttle_withoutdupl_norm_v01")})
+# system.time({GetCsvFromArff(datasetname = "Shuttle_withoutdupl_norm_v02")})
+
+
 
 
 # example: Get_multiple_CsvFromArff(datasetpath = "~/Downloads/ALOI/")
