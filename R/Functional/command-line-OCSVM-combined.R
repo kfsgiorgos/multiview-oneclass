@@ -9,24 +9,24 @@ arg1 <- args[1]
 arg2 <- args[2]
 
 
-# arg1 <- "Shuttle_withoutdupl_norm_v01"
-# arg2 <- "Shuttle_v01"
+# arg1 <- "Parkinson_withoutdupl_norm_05_v03"
+# arg2 <- "Parkinson"
 res1 <- run_unsupervised_ensemble_per_dataset(datasetname = arg1,
                                                 experiments = "OC_combined",
                                                 input_mixed_view_features = 1,
                                                 subfolder_name = arg2)
-
+gc()
 res2 <- run_unsupervised_ensemble_per_dataset(datasetname = arg1, 
                                                 experiments = "OC_combined",
                                                 input_mixed_view_features = 2,
                                                 subfolder_name = arg2)
-
+gc()
 res3 <- run_unsupervised_ensemble_per_dataset(datasetname = arg1, 
                                                 experiments = "OC_combined",
                                                 input_mixed_view_features = 3,
                                                 subfolder_name = arg2)
 
-
+gc()
 res <- rbindlist(list(res1, res2, res3))
 res[, mixedViewFeat:= as.factor(paste0(mixedViewFeat, "-OD parameters"))]
 res[, Normal_Size_1:= as.factor(Normal_Size_1)]
