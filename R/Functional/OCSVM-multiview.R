@@ -855,7 +855,7 @@ run_unsupervised_ensemble_per_dataset <- function(datasetname, experiments, inpu
     
     
     auc_ensemble[, mixedViewFeat:= input_mixed_view_features]
-    auc_ensemble[, 5:=NULL]
+    # auc_ensemble[, 5:=NULL]
     
     fwrite(auc_ensemble, paste0(final_path_to_save, "figures/", 
                                  subfolder_name, "/", datasetname, "_",
