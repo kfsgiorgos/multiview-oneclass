@@ -4,6 +4,7 @@ default:
   source_scripts: "R/load-packages.R"
   path_to_save_derived_datasets: "data/derived-data"
   OC_combined_experiments: "/OC_Combined/"
+  OC_CV_combined_experiments: "/OC_Combined_CV/"
   path_to_read_datasets: "data/derived-data"
   
 
@@ -12,5 +13,6 @@ production:
   source_scripts: "R/load-packages.R"
   path_to_save_derived_datasets: "~/Downloads/DAMI_datasets/derived_data"
   OC_combined_experiments: "/OC_Combined/"
+  OC_CV_combined_experiments: "/OC_Combined_CV/"
   path_to_read_datasets: "~/Downloads/DAMI_datasets/derived_data"
   

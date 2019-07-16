@@ -112,25 +112,10 @@ create_unsupervised_view <- function(datasetname, percentage_OD, mixed_view_feat
                                       DToutliersKDEOSs[, .SD, .SDcols = sample(names(DToutliersKDEOSs), size = random_sample, replace = F)],
                                       DToutliersLDFs[, .SD, .SDcols = sample(names(DToutliersLDFs), size = random_sample, replace = F)],
                                       DToutliersINFLOs[, .SD, .SDcols = sample(names(DToutliersINFLOs), size = random_sample, replace = F)],
-                                      DToutliersCOFs[, .SD, .SDcols = sample(names(DToutliersCOFs), size = random_sample, replace = F)]
-                                      
-  )
+                                      DToutliersCOFs[, .SD, .SDcols = sample(names(DToutliersCOFs), size = random_sample, replace = F)])
   
   
-  DToutliers_all <- DToutliers1[, .SD, .SDcols = c(sample(x = KNNs, size = mixed_view_features, replace = F),
-                                                   sample(x = KNNWs, size = mixed_view_features, replace = F),
-                                                   sample(x = LOFs, size = mixed_view_features, replace = F),
-                                                   sample(x = SimplifiedLOFs, size = mixed_view_features, replace = F),
-                                                   sample(x = LoOPs, size = mixed_view_features, replace = F),
-                                                   sample(x = LDOFs, size = mixed_view_features, replace = F),
-                                                   sample(x = ODINs, size = mixed_view_features, replace = F),
-                                                   sample(x = FastABODs, size = mixed_view_features, replace = F),
-                                                   sample(x = KDEOSs, size = mixed_view_features, replace = F),
-                                                   sample(x = LDFs, size = mixed_view_features, replace = F),
-                                                   sample(x = INFLOs, size = mixed_view_features, replace = F),
-                                                   sample(x = COFs, size = mixed_view_features, replace = F))]
-  
-  
+
   
   return(list(KNNs = DToutliersKNNs, KNNWs = DToutliersKNNWs,
               LOFs = DToutliersLOFs, SimplifiedLOFs = DToutliersSimplifiedLOFs,
@@ -738,7 +723,7 @@ run_unsupervised_ensemble_per_dataset <- function(datasetname, experiments, inpu
     final_path_to_save <<- paste0(paste0(path_to_save, folder_to_save))
   }
   
-  iterations_normal <- 30
+  iterations_normal <- 3
   
   # list_winners <- list()
   list_auc_ensemble <- list()
@@ -747,7 +732,7 @@ run_unsupervised_ensemble_per_dataset <- function(datasetname, experiments, inpu
   for(normal_ratio in c(0.01, 0.05, 0.1, 0.2, 0.3, 0.5, 0.7, 0.8)){
     list_results_unsupervised[[iter]] <- run_unsupervised_multiview_1random(datasetname = datasetname, 
                                                                 mixed_view_features = input_mixed_view_features, 
-                                                                Iter_outlier_features = 25, 
+                                                                Iter_outlier_features = 10, 
                                                                 normal_size = normal_ratio, 
                                                                 percentage_OD = 1, 
                                                                 Iters_normal_class = iterations_normal,
