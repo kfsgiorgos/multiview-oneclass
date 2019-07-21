@@ -145,7 +145,7 @@ create_unsupervised_view <- function(datasetname, percentage_OD, mixed_view_feat
 
 
 get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_combined_CV") {
-  
+  start2 <- Sys.time()
   path_to_read <- config::get("path_to_read_datasets", 
                               file = config_file_path,
                               config = loaded_config_type)
@@ -173,7 +173,6 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
   list_combined_2 <- list()
   list_one_randomOD <- list()
   list_two_randomOD <- list()
-  start2 <- Sys.time()
   for(i in 1:21){
     unsupervised_DTs1 <- create_unsupervised_view(datasetname, percentage_OD=1, mixed_view_features=1)
     one_randomOD <- unsupervised_DTs1$mixed_arthur
@@ -221,7 +220,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
   
   list_train_id <- list()
   list_test_id <- list()
-  for(i in 1:15){
+  for(i in 1:300){
     list_train_id[[i]] <- DToriginal[, sample(x = id, size = 0.8 * dim(DToriginal)[1])]
     list_test_id[[i]] <- setdiff(DToriginal$id, list_train_id[[i]])
   }
@@ -231,7 +230,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
   res_final <- list()
   for( ii in 1:length(list_combined_1)){
     res_combined <- list()
-    for(i in 1:15){
+    for(i in 1:300){
       
       j <- list_combined_1[[ii]]
       
@@ -266,7 +265,6 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
       CVtest_DT[, `:=` (id = NULL, Label = NULL)]
       testDT[, `:=` (id = NULL, Label = NULL)]
       
-      start1 <- Sys.time()
       # delete Label & id columns to train the OCSVM
       res <- list()
       iters <- 0
@@ -278,6 +276,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
             print(glue("nu: {nus}."))
             print(glue("gamma: {gammas}."))
             print(glue("CV Iteration: {i}."))
+            print(glue("Combined Iteration: {ii}."))
             print(start2)
             scores_CV <- calculate_OCSVM_params(DTtrain = CVtrain_DT, DTtest = CVtest_DT, #DTtest1 = testDT,
                                                 given_nu = nus, given_kernel = kernels, given_gamma = gammas)
@@ -311,7 +310,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
   
   combined_DT <- rbindlist(res_final)
   fwrite(combined_DT, paste0(final_path_to_save, "figures/",  
-                             subfolder_name, "/", datasetname, "_Combined.csv"))
+                             subfolder_name, "/", datasetname, "_Combined_300CV.csv"))
   # 1st strategy to find the best performing hyperparametrs
   comnined1_max_hyper <- combined_DT[, .SD[which.max(V1)], by = c("Cross-Validation", "features_Iteration")]
   comnined1_max_hyper[, features_Iteration:=as.factor(features_Iteration)]
@@ -331,7 +330,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
   iter <- 0
   list_feature_CV_best <- list()
   for(i in 1:21){
-    for(j in 1:15){
+    for(j in 1:300){
       iter <- iter + 1
       print(iter)
       combinedDT_hyper_meanDT <- combinedDT_hyper[features_Iteration==i & `Cross-Validation` == j][order(V1, decreasing = T)][, median(V1)]
@@ -352,7 +351,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
   res_final11 <- list()
   for( ii in 1:length(list_one_randomOD)){
     res_combined1 <- list()
-    for(i in 1:15){
+    for(i in 1:300){
       
       j <- list_one_randomOD[[ii]]
       
@@ -388,7 +387,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
       CVtest_DT[, `:=` (id = NULL, Label = NULL)]
       testDT[, `:=` (id = NULL, Label = NULL)]
       
-      start1 <- Sys.time()
+      
       # delete Label & id columns to train the OCSVM
       res <- list()
       iters <- 0
@@ -400,6 +399,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
             print(glue("nu: {nus}."))
             print(glue("gamma: {gammas}."))
             print(glue("CV Iteration: {i}."))
+            print(glue("Random Iteration: {ii}."))
             print(start2)
             scores_CV <- calculate_OCSVM_params(DTtrain = CVtrain_DT, DTtest = CVtest_DT, #DTtest1 = testDT,
                                                 given_nu = nus, given_kernel = kernels, given_gamma = gammas)
@@ -433,7 +433,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
   
   temp1_random <- rbindlist(res_final11)
   fwrite(temp1_random, paste0(final_path_to_save, "figures/",  
-                              subfolder_name, "/", datasetname, "_1random.csv"))
+                              subfolder_name, "/", datasetname, "_1random_300CV.csv"))
   
   random1_max <- temp1_random[, .SD[which.max(V1)], by = c("Cross-Validation", "features_Iteration")]
   random1_max[, features_Iteration:=as.factor(features_Iteration)]
@@ -452,7 +452,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
   iter <- 0
   list_feature_CV_best1 <- list()
   for(i in 1:21){
-    for(j in 1:15){
+    for(j in 1:300){
       iter <- iter + 1
       random1DT_hyper_meanDT <- random1DT_hyper[features_Iteration==i & `Cross-Validation` == j][order(V1, decreasing = T)][, median(V1)]
       best_hyper_value_random1 <- random1DT_hyper[features_Iteration==i & `Cross-Validation`==j & V1 == random1DT_hyper_meanDT]
@@ -474,7 +474,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
   
   # original --------------------------------------------------------------
   res_original <- list()
-  for(i in 1:15){
+  for(i in 1:300){
     
     j <- DToriginal
     
@@ -509,7 +509,6 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
     CVtest_DT[, `:=` (id = NULL, Label = NULL)]
     testDT[, `:=` (id = NULL, Label = NULL)]
     
-    start1 <<- Sys.time()
     # delete Label & id columns to train the OCSVM
     res <- list()
     iters <- 0
@@ -548,7 +547,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
   }
   res_final_original <- rbindlist(res_original)
   fwrite(res_final_original, paste0(final_path_to_save, "figures/",  
-                                    subfolder_name, "/", datasetname, "_Original.csv"))
+                                    subfolder_name, "/", datasetname, "_Original_300CV.csv"))
   
   original_maxDT <- res_final_original[, .SD[which.max(V1)], by = `Cross-Validation`]
   
@@ -562,7 +561,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
   
   
   list_feature_CV_best2 <- list()
-  for(j in 1:15){
+  for(j in 1:300){
     number_rows <- nrow(original_quantiles[`Cross-Validation`==j][order(V1, decreasing = T)])
     original_hyper_meanDT <- original_quantiles[`Cross-Validation`==j][order(V1, decreasing = T)][sample(1:number_rows, 1), V1]
     best_hyper_value_original <- original_quantiles[`Cross-Validation`==j & V1 == original_hyper_meanDT]
@@ -623,7 +622,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
   
   ggsave(plot = p, filename = paste0(final_path_to_save, "figures/",  
                                      subfolder_name, "/", datasetname, "_",
-                                     "AUCperformance_Maximum_hyper",".pdf"),
+                                     "AUCperformance_Maximum_hyper_300CV",".pdf"),
          width = 12, height = 6, units = "in", dpi = 300)
   
   
@@ -647,7 +646,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
   
   ggsave(plot = p1, filename = paste0(final_path_to_save, "figures/",  
                                       subfolder_name, "/", datasetname, "_",
-                                      "sd_AUCperformance_Maximum_hyper",".pdf"),
+                                      "sd_AUCperformance_Maximum_hyper_300CV",".pdf"),
          width = 12, height = 6, units = "in", dpi = 300)
   
   # Strategy 2 - Create data ---------------------------------------
@@ -700,7 +699,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
   
   ggsave(plot = p2, filename = paste0(final_path_to_save, "figures/",  
                                       subfolder_name, "/", datasetname, "_",
-                                      "AUCperformance_Median_hyper",".pdf"),
+                                      "AUCperformance_Median_hyper_300CV",".pdf"),
          width = 12, height = 6, units = "in", dpi = 300)
   
   
@@ -708,7 +707,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
     aes(x = features_Iteration, y = V3, fill = Group) +
     geom_boxplot() +
     theme_bw()+
-    facet_wrap(~Representation, ncol = 1, labeller = labeller(Representation = supp.labs))+
+    facet_wrap(~Representation, ncol = 1, labeller = labeller(Representation = supp.lab))+
     scale_color_manual(values=c("#9e1c00", "#0b1a8c"))+
     geom_hline(yintercept = 0, color = "red",)+
     geom_hline(data = mean_val_sd1, aes(yintercept=V1)) +
@@ -724,43 +723,48 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
   
   ggsave(plot = p3, filename = paste0(final_path_to_save, "figures/",  
                                       subfolder_name, "/", datasetname, "_",
-                                      "sd_AUCperformance_Median_hyper",".pdf"),
+                                      "sd_AUCperformance_Median_hyper_300CV",".pdf"),
          width = 12, height = 6, units = "in", dpi = 300)
   
   
 }
 
 
-start_exp <- Sys.time()
-get_CV_experiments(datasetname = "Waveform_withoutdupl_norm_v01", 
-                   subfolder_name = "Waveform")
-stop_exp <- Sys.time()
+# start_exp <- Sys.time()
+# get_CV_experiments(datasetname = "Waveform_withoutdupl_norm_v01", 
+#                    subfolder_name = "Waveform")
+# stop_exp <- Sys.time()
+# 
+# 
+# get_CV_experiments(datasetname = "Pima_withoutdupl_norm_02_v01",
+#                    subfolder_name = "Pima")
+# print(Sys.time())
+# get_CV_experiments(datasetname = "Pima_withoutdupl_norm_05_v07",
+#                    subfolder_name = "Pima")
+# print(Sys.time())
+# 
+# 
+# get_CV_experiments(datasetname = "Shuttle_withoutdupl_norm_v01",
+#                    subfolder_name = "Shuttle")
+# print(Sys.time())
+# 
+# 
+# get_CV_experiments(datasetname = "Shuttle_withoutdupl_norm_v05", 
+#                    subfolder_name = "Shuttle")
+# 
+# get_CV_experiments(datasetname = "Stamps_withoutdupl_norm_02_v06",
+#                    subfolder_name = "Stamps")
+# print(Sys.time())
+# 
+# get_CV_experiments(datasetname = "WDBC_withoutdupl_norm_v07", 
+#                    subfolder_name = "WDBC")
+
+# DONE 100 CV
+# get_CV_experiments(datasetname = "Ionosphere_withoutdupl_norm",
+#                    subfolder_name = "Ionosphere")
 
 
-get_CV_experiments(datasetname = "Pima_withoutdupl_norm_02_v01", 
-                   subfolder_name = "Pima")
-
-get_CV_experiments(datasetname = "Pima_withoutdupl_norm_05_v07", 
-                   subfolder_name = "Pima")
-
-
-get_CV_experiments(datasetname = "Shuttle_withoutdupl_norm_v01", 
-                   subfolder_name = "Shuttle")
-
-
-get_CV_experiments(datasetname = "Shuttle_withoutdupl_norm_v05", 
-                   subfolder_name = "Shuttle")
-
-get_CV_experiments(datasetname = "Stamps_withoutdupl_norm_02_v06", 
-                   subfolder_name = "Stamps")
-
-
-get_CV_experiments(datasetname = "WDBC_withoutdupl_norm_v07", 
-                   subfolder_name = "WDBC")
-
-
-get_CV_experiments(datasetname = "Ionosphere_withoutdupl_norm",
-                   subfolder_name = "Ionosphere")
-
-
-
+# get_CV_experiments(datasetname = "Shuttle_withoutdupl_norm_v05",
+#                    subfolder_name = "Shuttle")
+# 
+# print(Sys.time())
