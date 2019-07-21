@@ -13,5 +13,6 @@ options(scipen = 999L)
 
 
 source("R/Functional/OCSVM-multiview.R")
+source("R/Functional/OCSVM_CrossV.R")
 source("R/Functional/construct-tabular-outlier.R")
 reticulate::source_python("Python/sklearn-outlier-algos.py")
