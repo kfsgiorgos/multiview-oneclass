@@ -144,7 +144,7 @@ create_unsupervised_view <- function(datasetname, percentage_OD, mixed_view_feat
 
 
 
-get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_combined_CV") {
+get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_combined_CV", CViterations) {
   start2 <- Sys.time()
   path_to_read <- config::get("path_to_read_datasets", 
                               file = config_file_path,
@@ -193,34 +193,34 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
     one_randomOD[, `:=` (id = combinedDT_1$id, Label = combinedDT_1$Label)]
     list_one_randomOD[[i]] <- one_randomOD
     
-    
-    unsupervised_DTs2 <- create_unsupervised_view(datasetname, percentage_OD=1, mixed_view_features=1)
-    two_randomOD <- unsupervised_DTs2$mixed_arthur
-    dimension <- dim(two_randomOD)[2]
-    
-    if(length(which(two_randomOD[, lapply(.SD, function(x) sum(is.infinite(x))), .SDcols = 1:dimension] != 0))){
-      tempDT <- data.table::transpose(as.data.table(two_randomOD[, lapply(.SD, function(x) sum(is.infinite(x))), .SDcols = 1:dimension]))
-      tempDT[, cols1:=names(two_randomOD[, lapply(.SD, function(x) sum(is.infinite(x))), .SDcols = 1:dimension])]
-      
-      cols_to_delete <- tempDT[V1!=0, cols1]
-      print(cols_to_delete)
-      cols_to_keep <- setdiff(names(two_randomOD), cols_to_delete)
-      
-      DT1 <- two_randomOD[, .SD, .SDcols = cols_to_keep]
-    }else{DT1 <- two_randomOD}
-    
-    combinedDT_2 <- dplyr::bind_cols(DToriginal, DT1)
-    list_combined_2[[i]] <- combinedDT_2
-    
-    two_randomOD[, `:=` (id = combinedDT_2$id, Label = combinedDT_2$Label)]
-    list_two_randomOD[[i]] <- two_randomOD
+    # This part is for 2 OD parameters for each method
+    # unsupervised_DTs2 <- create_unsupervised_view(datasetname, percentage_OD=1, mixed_view_features=1)
+    # two_randomOD <- unsupervised_DTs2$mixed_arthur
+    # dimension <- dim(two_randomOD)[2]
+    # 
+    # if(length(which(two_randomOD[, lapply(.SD, function(x) sum(is.infinite(x))), .SDcols = 1:dimension] != 0))){
+    #   tempDT <- data.table::transpose(as.data.table(two_randomOD[, lapply(.SD, function(x) sum(is.infinite(x))), .SDcols = 1:dimension]))
+    #   tempDT[, cols1:=names(two_randomOD[, lapply(.SD, function(x) sum(is.infinite(x))), .SDcols = 1:dimension])]
+    #   
+    #   cols_to_delete <- tempDT[V1!=0, cols1]
+    #   print(cols_to_delete)
+    #   cols_to_keep <- setdiff(names(two_randomOD), cols_to_delete)
+    #   
+    #   DT1 <- two_randomOD[, .SD, .SDcols = cols_to_keep]
+    # }else{DT1 <- two_randomOD}
+    # 
+    # combinedDT_2 <- dplyr::bind_cols(DToriginal, DT1)
+    # list_combined_2[[i]] <- combinedDT_2
+    # 
+    # two_randomOD[, `:=` (id = combinedDT_2$id, Label = combinedDT_2$Label)]
+    # list_two_randomOD[[i]] <- two_randomOD
   }
   
   # split 80% - 20% & Cross Validation
   
   list_train_id <- list()
   list_test_id <- list()
-  for(i in 1:300){
+  for(i in 1:CViterations){
     list_train_id[[i]] <- DToriginal[, sample(x = id, size = 0.8 * dim(DToriginal)[1])]
     list_test_id[[i]] <- setdiff(DToriginal$id, list_train_id[[i]])
   }
@@ -230,29 +230,29 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
   res_final <- list()
   for( ii in 1:length(list_combined_1)){
     res_combined <- list()
-    for(i in 1:300){
+    for(i in 1:CViterations){
       
       j <- list_combined_1[[ii]]
       
       trainDT <- j[id %in% list_train_id[[i]]]
-      print("Train")
       print(trainDT[, .N, by = Label])
+      # We sample 90% of the train data to create the CVtrain dataset
       CVtrain_id <- trainDT[, sample(x = id, size = 0.9 * dim(trainDT)[1])]
-      CVtrain_DT <- copy(trainDT[id %in% CVtrain_id])
-      outliers_train_DT <- CVtrain_DT[ id %in% CVtrain_DT[Label == "yes", id]]
+      CVtrain_DT <- copy(trainDT[id %in% CVtrain_id & Label == "no"])
+      outliers_train_DT <- copy(trainDT[ id %in% CVtrain_id & Label == "yes"])
       
       
       CVtest_id <- setdiff(trainDT$id, CVtrain_id)
       CVtest_DT1 <- copy(trainDT[id %in% CVtest_id])
       CVtest_DT <- rbindlist(list(CVtest_DT1, outliers_train_DT))
-      print("CV-Test")
+      
       print(CVtest_DT[, .N, by = Label])
       CVtest_id_final <- CVtest_DT$id
       CVtest_Label_final <- CVtest_DT$Label
       
       testDT1 <- j[id %in% list_test_id[[i]]]
       if(testDT1[Label=="yes", length(id)] == 0){
-        testDT <- rbindlist(list(trainDT[Label=="yes"][1:3], testDT1))
+        testDT <- rbindlist(list(outliers_train_DT[1:3], testDT1))
       }else{testDT <- testDT1}
       
       print("Test")
@@ -278,7 +278,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
             print(glue("CV Iteration: {i}."))
             print(glue("Combined Iteration: {ii}."))
             print(start2)
-            scores_CV <- calculate_OCSVM_params(DTtrain = CVtrain_DT, DTtest = CVtest_DT, #DTtest1 = testDT,
+            scores_CV <- calculate_OCSVM_params(DTtrain = CVtrain_DT, DTtest = CVtest_DT, 
                                                 given_nu = nus, given_kernel = kernels, given_gamma = gammas)
             
             scores_test <- calculate_OCSVM_params(DTtrain = CVtrain_DT, DTtest = testDT,
@@ -310,7 +310,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
   
   combined_DT <- rbindlist(res_final)
   fwrite(combined_DT, paste0(final_path_to_save, "figures/",  
-                             subfolder_name, "/", datasetname, "_Combined_300CV.csv"))
+                             subfolder_name, "/", datasetname, "_Combined_", CViterations,"CVnew.csv"))
   # 1st strategy to find the best performing hyperparametrs
   comnined1_max_hyper <- combined_DT[, .SD[which.max(V1)], by = c("Cross-Validation", "features_Iteration")]
   comnined1_max_hyper[, features_Iteration:=as.factor(features_Iteration)]
@@ -330,7 +330,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
   iter <- 0
   list_feature_CV_best <- list()
   for(i in 1:21){
-    for(j in 1:300){
+    for(j in 1:CViterations){
       iter <- iter + 1
       print(iter)
       combinedDT_hyper_meanDT <- combinedDT_hyper[features_Iteration==i & `Cross-Validation` == j][order(V1, decreasing = T)][, median(V1)]
@@ -351,30 +351,29 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
   res_final11 <- list()
   for( ii in 1:length(list_one_randomOD)){
     res_combined1 <- list()
-    for(i in 1:300){
+    for(i in 1:CViterations){
       
       j <- list_one_randomOD[[ii]]
       
-      
       trainDT <- j[id %in% list_train_id[[i]]]
-      print("Train")
       print(trainDT[, .N, by = Label])
+      # We sample 90% of the train data to create the CVtrain dataset
       CVtrain_id <- trainDT[, sample(x = id, size = 0.9 * dim(trainDT)[1])]
-      CVtrain_DT <- copy(trainDT[id %in% CVtrain_id])
-      outliers_train_DT <- CVtrain_DT[ id %in% CVtrain_DT[Label == "yes", id]]
+      CVtrain_DT <- copy(trainDT[id %in% CVtrain_id & Label == "no"])
+      outliers_train_DT <- copy(trainDT[ id %in% CVtrain_id & Label == "yes"])
       
       
       CVtest_id <- setdiff(trainDT$id, CVtrain_id)
       CVtest_DT1 <- copy(trainDT[id %in% CVtest_id])
       CVtest_DT <- rbindlist(list(CVtest_DT1, outliers_train_DT))
-      print("CV-Test")
+      
       print(CVtest_DT[, .N, by = Label])
       CVtest_id_final <- CVtest_DT$id
       CVtest_Label_final <- CVtest_DT$Label
       
       testDT1 <- j[id %in% list_test_id[[i]]]
       if(testDT1[Label=="yes", length(id)] == 0){
-        testDT <- rbindlist(list(trainDT[Label=="yes"][1:3], testDT1))
+        testDT <- rbindlist(list(outliers_train_DT[1:3], testDT1))
       }else{testDT <- testDT1}
       
       print("Test")
@@ -401,7 +400,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
             print(glue("CV Iteration: {i}."))
             print(glue("Random Iteration: {ii}."))
             print(start2)
-            scores_CV <- calculate_OCSVM_params(DTtrain = CVtrain_DT, DTtest = CVtest_DT, #DTtest1 = testDT,
+            scores_CV <- calculate_OCSVM_params(DTtrain = CVtrain_DT, DTtest = CVtest_DT,
                                                 given_nu = nus, given_kernel = kernels, given_gamma = gammas)
             
             scores_test <- calculate_OCSVM_params(DTtrain = CVtrain_DT, DTtest = testDT,
@@ -433,7 +432,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
   
   temp1_random <- rbindlist(res_final11)
   fwrite(temp1_random, paste0(final_path_to_save, "figures/",  
-                              subfolder_name, "/", datasetname, "_1random_300CV.csv"))
+                              subfolder_name, "/", datasetname, "_1random_", CViterations, "CVnew.csv"))
   
   random1_max <- temp1_random[, .SD[which.max(V1)], by = c("Cross-Validation", "features_Iteration")]
   random1_max[, features_Iteration:=as.factor(features_Iteration)]
@@ -452,7 +451,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
   iter <- 0
   list_feature_CV_best1 <- list()
   for(i in 1:21){
-    for(j in 1:300){
+    for(j in 1:CViterations){
       iter <- iter + 1
       random1DT_hyper_meanDT <- random1DT_hyper[features_Iteration==i & `Cross-Validation` == j][order(V1, decreasing = T)][, median(V1)]
       best_hyper_value_random1 <- random1DT_hyper[features_Iteration==i & `Cross-Validation`==j & V1 == random1DT_hyper_meanDT]
@@ -474,29 +473,29 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
   
   # original --------------------------------------------------------------
   res_original <- list()
-  for(i in 1:300){
+  for(i in 1:CViterations){
     
     j <- DToriginal
     
     trainDT <- j[id %in% list_train_id[[i]]]
-    print("Train")
     print(trainDT[, .N, by = Label])
+    # We sample 90% of the train data to create the CVtrain dataset
     CVtrain_id <- trainDT[, sample(x = id, size = 0.9 * dim(trainDT)[1])]
-    CVtrain_DT <- copy(trainDT[id %in% CVtrain_id])
-    outliers_train_DT <- CVtrain_DT[ id %in% CVtrain_DT[Label == "yes", id]]
+    CVtrain_DT <- copy(trainDT[id %in% CVtrain_id & Label == "no"])
+    outliers_train_DT <- copy(trainDT[ id %in% CVtrain_id & Label == "yes"])
     
     
     CVtest_id <- setdiff(trainDT$id, CVtrain_id)
     CVtest_DT1 <- copy(trainDT[id %in% CVtest_id])
     CVtest_DT <- rbindlist(list(CVtest_DT1, outliers_train_DT))
-    print("CV-Test")
+    
     print(CVtest_DT[, .N, by = Label])
     CVtest_id_final <- CVtest_DT$id
     CVtest_Label_final <- CVtest_DT$Label
     
     testDT1 <- j[id %in% list_test_id[[i]]]
     if(testDT1[Label=="yes", length(id)] == 0){
-      testDT <- rbindlist(list(trainDT[Label=="yes"][1:3], testDT1))
+      testDT <- rbindlist(list(outliers_train_DT[1:3], testDT1))
     }else{testDT <- testDT1}
     
     print("Test")
@@ -508,6 +507,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
     CVtrain_DT[, `:=` (id = NULL, Label = NULL)]
     CVtest_DT[, `:=` (id = NULL, Label = NULL)]
     testDT[, `:=` (id = NULL, Label = NULL)]
+    
     
     # delete Label & id columns to train the OCSVM
     res <- list()
@@ -521,7 +521,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
           print(glue("gamma: {gammas}."))
           print(glue("CV Iteration: {i}."))
           print(start2)
-          scores_CV <- calculate_OCSVM_params(DTtrain = CVtrain_DT, DTtest = CVtest_DT, #DTtest1 = testDT,
+          scores_CV <- calculate_OCSVM_params(DTtrain = CVtrain_DT, DTtest = CVtest_DT,
                                               given_nu = nus, given_kernel = kernels, given_gamma = gammas)
           
           scores_test <- calculate_OCSVM_params(DTtrain = CVtrain_DT, DTtest = testDT,
@@ -547,7 +547,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
   }
   res_final_original <- rbindlist(res_original)
   fwrite(res_final_original, paste0(final_path_to_save, "figures/",  
-                                    subfolder_name, "/", datasetname, "_Original_300CV.csv"))
+                                    subfolder_name, "/", datasetname, "_Original_", CViterations,"CVnew.csv"))
   
   original_maxDT <- res_final_original[, .SD[which.max(V1)], by = `Cross-Validation`]
   
@@ -561,7 +561,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
   
   
   list_feature_CV_best2 <- list()
-  for(j in 1:300){
+  for(j in 1:CViterations){
     number_rows <- nrow(original_quantiles[`Cross-Validation`==j][order(V1, decreasing = T)])
     original_hyper_meanDT <- original_quantiles[`Cross-Validation`==j][order(V1, decreasing = T)][sample(1:number_rows, 1), V1]
     best_hyper_value_original <- original_quantiles[`Cross-Validation`==j & V1 == original_hyper_meanDT]
@@ -575,7 +575,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
   
   # Strategy 1 - Create data ---------------------------------------
   
-  res_final_DT <- rbindlist(list(comnined1_max, random1_max))
+  res_final_DT <- rbindlist(list(comnined1_max_hyper, random1_max))
   res_final_DT[, Representation:= as.factor(Representation)]
   res_final_DT[, V3:= (V2 - original_maxDT[, mean(V2)])/original_maxDT[, sd(V2)]]
   
@@ -622,7 +622,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
   
   ggsave(plot = p, filename = paste0(final_path_to_save, "figures/",  
                                      subfolder_name, "/", datasetname, "_",
-                                     "AUCperformance_Maximum_hyper_300CV",".pdf"),
+                                     "AUCperformance_Maximum_hyper_", CViterations,"CVnew",".pdf"),
          width = 12, height = 6, units = "in", dpi = 300)
   
   
@@ -646,7 +646,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
   
   ggsave(plot = p1, filename = paste0(final_path_to_save, "figures/",  
                                       subfolder_name, "/", datasetname, "_",
-                                      "sd_AUCperformance_Maximum_hyper_300CV",".pdf"),
+                                      "sd_AUCperformance_Maximum_hyper_", CViterations,"CVnew",".pdf"),
          width = 12, height = 6, units = "in", dpi = 300)
   
   # Strategy 2 - Create data ---------------------------------------
@@ -699,7 +699,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
   
   ggsave(plot = p2, filename = paste0(final_path_to_save, "figures/",  
                                       subfolder_name, "/", datasetname, "_",
-                                      "AUCperformance_Median_hyper_300CV",".pdf"),
+                                      "AUCperformance_Median_hyper_", CViterations, "CVnew",".pdf"),
          width = 12, height = 6, units = "in", dpi = 300)
   
   
@@ -723,11 +723,12 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
   
   ggsave(plot = p3, filename = paste0(final_path_to_save, "figures/",  
                                       subfolder_name, "/", datasetname, "_",
-                                      "sd_AUCperformance_Median_hyper_300CV",".pdf"),
+                                      "sd_AUCperformance_Median_hyper_", CViterations ,"CVnew",".pdf"),
          width = 12, height = 6, units = "in", dpi = 300)
   
   
 }
+
 
 
 # start_exp <- Sys.time()
