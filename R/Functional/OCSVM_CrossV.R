@@ -229,6 +229,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
   # Combined one-random --------------------------------------------------------------
   res_final <- list()
   for( ii in 1:length(list_combined_1)){
+    gc()
     res_combined <- list()
     for(i in 1:CViterations){
       
@@ -253,6 +254,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
       testDT1 <- j[id %in% list_test_id[[i]]]
       if(testDT1[Label=="yes", length(id)] == 0){
         testDT <- rbindlist(list(outliers_train_DT[1:3], testDT1))
+        testDT <- na.omit(testDT)
       }else{testDT <- testDT1}
       
       print("Test")
@@ -350,6 +352,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
   # one-random --------------------------------------------------------------
   res_final11 <- list()
   for( ii in 1:length(list_one_randomOD)){
+    gc()
     res_combined1 <- list()
     for(i in 1:CViterations){
       
@@ -374,6 +377,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
       testDT1 <- j[id %in% list_test_id[[i]]]
       if(testDT1[Label=="yes", length(id)] == 0){
         testDT <- rbindlist(list(outliers_train_DT[1:3], testDT1))
+        testDT <- na.omit(testDT)
       }else{testDT <- testDT1}
       
       print("Test")
@@ -496,6 +500,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
     testDT1 <- j[id %in% list_test_id[[i]]]
     if(testDT1[Label=="yes", length(id)] == 0){
       testDT <- rbindlist(list(outliers_train_DT[1:3], testDT1))
+      testDT <- na.omit(testDT)
     }else{testDT <- testDT1}
     
     print("Test")
