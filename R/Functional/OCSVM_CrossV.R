@@ -228,17 +228,20 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
   
   # Combined one-random --------------------------------------------------------------
   res_final <- list()
-  for( ii in 1:length(list_combined_1)){
+  for(ii in 1:length(list_combined_1)){
     res_combined <- list()
     for(i in 1:CViterations){
       
       j <- list_combined_1[[ii]]
-      
+      print("==========")
+      print(i)
       trainDT <- j[id %in% list_train_id[[i]]]
+      print("Train")
       print(trainDT[, .N, by = Label])
       # We sample 90% of the train data to create the CVtrain dataset
       CVtrain_id <- trainDT[, sample(x = id, size = 0.9 * dim(trainDT)[1])]
       CVtrain_DT <- copy(trainDT[id %in% CVtrain_id & Label == "no"])
+      print(CVtrain_DT[, .N, by = Label])
       outliers_train_DT <- copy(trainDT[ id %in% CVtrain_id & Label == "yes"])
       
       
@@ -246,6 +249,11 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
       CVtest_DT1 <- copy(trainDT[id %in% CVtest_id])
       CVtest_DT <- rbindlist(list(CVtest_DT1, outliers_train_DT))
       
+      if(CVtest_DT[Label=="yes", length(id)] == 0){
+        CVtest_DT <- j[Label=="yes"][sample(nrow(j[Label=="yes"]), 1)]
+        }
+      
+      print("Test CV")
       print(CVtest_DT[, .N, by = Label])
       CVtest_id_final <- CVtest_DT$id
       CVtest_Label_final <- CVtest_DT$Label
@@ -253,10 +261,12 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
       testDT1 <- j[id %in% list_test_id[[i]]]
       if(testDT1[Label=="yes", length(id)] == 0){
         testDT <- rbindlist(list(outliers_train_DT[1:3], testDT1))
+        testDT <- na.omit(testDT)
       }else{testDT <- testDT1}
       
       print("Test")
       print(testDT[, .N, by = Label])
+
       testDT_id_final <- testDT$id
       testDT_Label_final <- testDT$Label
       
@@ -374,6 +384,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
       testDT1 <- j[id %in% list_test_id[[i]]]
       if(testDT1[Label=="yes", length(id)] == 0){
         testDT <- rbindlist(list(outliers_train_DT[1:3], testDT1))
+        testDT <- na.omit(testDT)
       }else{testDT <- testDT1}
       
       print("Test")
@@ -489,6 +500,14 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
     CVtest_DT1 <- copy(trainDT[id %in% CVtest_id])
     CVtest_DT <- rbindlist(list(CVtest_DT1, outliers_train_DT))
     
+    if(CVtest_DT[Label=="yes", length(id)] == 0){
+      CVtest_DT <- j[Label=="yes"][sample(nrow(j[Label=="yes"]), 1)]
+    }
+    
+    if(CVtest_DT[Label=="yes", length(id)] == 0){
+      CVtest_DT <- j[Label=="yes"][sample(nrow(j[Label=="yes"]), 1)]
+    }
+    
     print(CVtest_DT[, .N, by = Label])
     CVtest_id_final <- CVtest_DT$id
     CVtest_Label_final <- CVtest_DT$Label
@@ -496,6 +515,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
     testDT1 <- j[id %in% list_test_id[[i]]]
     if(testDT1[Label=="yes", length(id)] == 0){
       testDT <- rbindlist(list(outliers_train_DT[1:3], testDT1))
+      testDT <- na.omit(testDT)
     }else{testDT <- testDT1}
     
     print("Test")
@@ -760,9 +780,20 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
 # get_CV_experiments(datasetname = "WDBC_withoutdupl_norm_v07", 
 #                    subfolder_name = "WDBC")
 
-# DONE 100 CV
-# get_CV_experiments(datasetname = "Ionosphere_withoutdupl_norm",
-#                    subfolder_name = "Ionosphere")
+
+get_CV_experiments(datasetname = "Ionosphere_withoutdupl_norm",
+                   experiments = "OC_combined_CV",
+                   subfolder_name = "Ionosphere",
+                   CViterations =  300)
+print(Sys.time())
+
+
+get_CV_experiments(datasetname = "HeartDisease_withoutdupl_norm_02_v01",
+                   experiments = "OC_combined_CV",
+                   subfolder_name = "HeartDisease",
+                   CViterations =  50)
+print(Sys.time())
+
 
 
 # get_CV_experiments(datasetname = "Shuttle_withoutdupl_norm_v05",
