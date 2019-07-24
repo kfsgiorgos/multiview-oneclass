@@ -332,7 +332,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
   
   combined_DT <- rbindlist(res_final)
   fwrite(combined_DT, paste0(final_path_to_save, "figures/",  
-                             subfolder_name, "/", datasetname, "_Combined_", CViterations,"CVnew.csv"))
+                             subfolder_name, "/", datasetname, "_Combined_", CViterations,"CVnew_Normalized.csv"))
   # 1st strategy to find the best performing hyperparametrs
   comnined1_max_hyper <- combined_DT[, .SD[which.max(V1)], by = c("Cross-Validation", "features_Iteration")]
   comnined1_max_hyper[, features_Iteration:=as.factor(features_Iteration)]
@@ -960,7 +960,7 @@ get_CV_experiments_normalized <- function(datasetname, subfolder_name, experimen
   
   combined_DT <- rbindlist(res_final)
   fwrite(combined_DT, paste0(final_path_to_save, "figures/",  
-                             subfolder_name, "/", datasetname, "_Combined_", CViterations,"CVnew.csv"))
+                             subfolder_name, "/", datasetname, "_Combined_", CViterations,"CVnew_Normalized.csv"))
   # 1st strategy to find the best performing hyperparametrs
   comnined1_max_hyper <- combined_DT[, .SD[which.max(V1)], by = c("Cross-Validation", "features_Iteration")]
   comnined1_max_hyper[, features_Iteration:=as.factor(features_Iteration)]
@@ -1090,7 +1090,7 @@ get_CV_experiments_normalized <- function(datasetname, subfolder_name, experimen
   
   temp1_random <- rbindlist(res_final11)
   fwrite(temp1_random, paste0(final_path_to_save, "figures/",  
-                              subfolder_name, "/", datasetname, "_1random_", CViterations, "CVnew.csv"))
+                              subfolder_name, "/", datasetname, "_1random_", CViterations, "CVnew_Normalized.csv"))
   
   random1_max <- temp1_random[, .SD[which.max(V1)], by = c("Cross-Validation", "features_Iteration")]
   random1_max[, features_Iteration:=as.factor(features_Iteration)]
@@ -1220,7 +1220,7 @@ get_CV_experiments_normalized <- function(datasetname, subfolder_name, experimen
   }
   res_final_original <- rbindlist(res_original)
   fwrite(res_final_original, paste0(final_path_to_save, "figures/",  
-                                    subfolder_name, "/", datasetname, "_Original_", CViterations,"CVnew.csv"))
+                                    subfolder_name, "/", datasetname, "_Original_", CViterations,"CVnew_Normalized.csv"))
   
   original_maxDT <- res_final_original[, .SD[which.max(V1)], by = `Cross-Validation`]
   
@@ -1295,7 +1295,7 @@ get_CV_experiments_normalized <- function(datasetname, subfolder_name, experimen
   
   ggsave(plot = p, filename = paste0(final_path_to_save, "figures/",  
                                      subfolder_name, "/", datasetname, "_",
-                                     "AUCperformance_Maximum_hyper_", CViterations,"CVnew",".pdf"),
+                                     "AUCperformance_Maximum_hyper_", CViterations,"CVnew_Normalized",".pdf"),
          width = 12, height = 6, units = "in", dpi = 300)
   
   
@@ -1319,7 +1319,7 @@ get_CV_experiments_normalized <- function(datasetname, subfolder_name, experimen
   
   ggsave(plot = p1, filename = paste0(final_path_to_save, "figures/",  
                                       subfolder_name, "/", datasetname, "_",
-                                      "sd_AUCperformance_Maximum_hyper_", CViterations,"CVnew",".pdf"),
+                                      "sd_AUCperformance_Maximum_hyper_", CViterations,"CVnew_Normalized",".pdf"),
          width = 12, height = 6, units = "in", dpi = 300)
   
   # Strategy 2 - Create data ---------------------------------------
@@ -1372,7 +1372,7 @@ get_CV_experiments_normalized <- function(datasetname, subfolder_name, experimen
   
   ggsave(plot = p2, filename = paste0(final_path_to_save, "figures/",  
                                       subfolder_name, "/", datasetname, "_",
-                                      "AUCperformance_Median_hyper_", CViterations, "CVnew",".pdf"),
+                                      "AUCperformance_Median_hyper_", CViterations, "CVnew_Normalized",".pdf"),
          width = 12, height = 6, units = "in", dpi = 300)
   
   
@@ -1396,7 +1396,7 @@ get_CV_experiments_normalized <- function(datasetname, subfolder_name, experimen
   
   ggsave(plot = p3, filename = paste0(final_path_to_save, "figures/",  
                                       subfolder_name, "/", datasetname, "_",
-                                      "sd_AUCperformance_Median_hyper_", CViterations ,"CVnew",".pdf"),
+                                      "sd_AUCperformance_Median_hyper_", CViterations ,"CVnew_Normalized",".pdf"),
          width = 12, height = 6, units = "in", dpi = 300)
   
   
