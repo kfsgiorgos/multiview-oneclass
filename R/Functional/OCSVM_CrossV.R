@@ -168,6 +168,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
   
   DToriginal <- fread(paste0(path_to_read, "/", datasetname,".csv"))
   setnames(DToriginal, "outlier", "Label", skip_absent = T)
+  DToriginal[, .N, by = Label]
   
   list_combined_1 <- list()
   list_combined_2 <- list()
@@ -263,6 +264,11 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
         testDT <- rbindlist(list(outliers_train_DT[1:3], testDT1))
         testDT <- na.omit(testDT)
       }else{testDT <- testDT1}
+      
+      if(testDT[Label=="yes", length(id)] == 0){
+        testDT <- j[Label=="yes"][sample(nrow(j[Label=="yes"]), 1)]
+        testDT <- na.omit(testDT)
+      }else{testDT <- testDT}
       
       print("Test")
       print(testDT[, .N, by = Label])
@@ -386,6 +392,12 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
         testDT <- rbindlist(list(outliers_train_DT[1:3], testDT1))
         testDT <- na.omit(testDT)
       }else{testDT <- testDT1}
+      
+      if(testDT[Label=="yes", length(id)] == 0){
+        testDT <- j[Label=="yes"][sample(nrow(j[Label=="yes"]), 1)]
+        testDT <- na.omit(testDT)
+      }else{testDT <- testDT}
+      
       
       print("Test")
       print(testDT[, .N, by = Label])
@@ -517,6 +529,12 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
       testDT <- rbindlist(list(outliers_train_DT[1:3], testDT1))
       testDT <- na.omit(testDT)
     }else{testDT <- testDT1}
+    
+    if(testDT[Label=="yes", length(id)] == 0){
+      testDT <- j[Label=="yes"][sample(nrow(j[Label=="yes"]), 1)]
+      testDT <- na.omit(testDT)
+    }else{testDT <- testDT}
+    
     
     print("Test")
     print(testDT[, .N, by = Label])
@@ -781,18 +799,26 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
 #                    subfolder_name = "WDBC")
 
 
-get_CV_experiments(datasetname = "Ionosphere_withoutdupl_norm",
-                   experiments = "OC_combined_CV",
-                   subfolder_name = "Ionosphere",
-                   CViterations =  300)
-print(Sys.time())
-
-
+# get_CV_experiments(datasetname = "Ionosphere_withoutdupl_norm",
+#                    experiments = "OC_combined_CV",
+#                    subfolder_name = "Ionosphere",
+#                    CViterations =  300)
+# print(Sys.time())
+# 
+# 
 get_CV_experiments(datasetname = "HeartDisease_withoutdupl_norm_02_v01",
-                   experiments = "OC_combined_CV",
-                   subfolder_name = "HeartDisease",
-                   CViterations =  50)
+                    experiments = "OC_combined_CV",
+                    subfolder_name = "HeartDisease",
+                    CViterations =  10)
 print(Sys.time())
+
+
+get_CV_experiments(datasetname = "Stamps_withoutdupl_norm_02_v01",
+                   experiments = "OC_combined_CV",
+                   subfolder_name = "Stamps",
+                   CViterations =  10)
+print(Sys.time())
+
 
 
 
