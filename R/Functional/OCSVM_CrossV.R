@@ -785,18 +785,18 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
 #                    subfolder_name = "WDBC")
 
 
-get_CV_experiments(datasetname = "Ionosphere_withoutdupl_norm",
-                   experiments = "OC_combined_CV",
-                   subfolder_name = "Ionosphere",
-                   CViterations =  300)
-print(Sys.time())
-
-
-get_CV_experiments(datasetname = "HeartDisease_withoutdupl_norm_02_v01",
-                   experiments = "OC_combined_CV",
-                   subfolder_name = "HeartDisease",
-                   CViterations =  50)
-print(Sys.time())
+# get_CV_experiments(datasetname = "Ionosphere_withoutdupl_norm",
+#                    experiments = "OC_combined_CV",
+#                    subfolder_name = "Ionosphere",
+#                    CViterations =  300)
+# print(Sys.time())
+# 
+# 
+# get_CV_experiments(datasetname = "HeartDisease_withoutdupl_norm_02_v01",
+#                    experiments = "OC_combined_CV",
+#                    subfolder_name = "HeartDisease",
+#                    CViterations =  50)
+# print(Sys.time())
 
 
 
