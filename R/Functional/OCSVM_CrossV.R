@@ -229,7 +229,10 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
   
   # Combined one-random --------------------------------------------------------------
   res_final <- list()
-  for(ii in 1:length(list_combined_1)){
+
+  for( ii in 1:length(list_combined_1)){
+    gc()
+
     res_combined <- list()
     for(i in 1:CViterations){
       
@@ -366,6 +369,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
   # one-random --------------------------------------------------------------
   res_final11 <- list()
   for( ii in 1:length(list_one_randomOD)){
+    gc()
     res_combined1 <- list()
     for(i in 1:CViterations){
       
