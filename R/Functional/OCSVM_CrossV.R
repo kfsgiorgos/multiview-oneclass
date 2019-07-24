@@ -132,7 +132,7 @@ create_unsupervised_view <- function(datasetname, percentage_OD, mixed_view_feat
   
 
   
-  DToutliers_all_normalized <- DToutliers_all[, lapply(.SD, function(x) (x - mena(x))/sd(x))]
+  DToutliers_all_normalized <- DToutliers_all[, lapply(.SD, function(x) (x - mean(x))/sd(x))]
   
   return(list(KNNs = DToutliersKNNs, KNNWs = DToutliersKNNWs,
               LOFs = DToutliersLOFs, SimplifiedLOFs = DToutliersSimplifiedLOFs,
