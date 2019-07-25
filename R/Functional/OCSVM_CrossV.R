@@ -1441,19 +1441,19 @@ get_CV_experiments_normalized <- function(datasetname, subfolder_name, experimen
 # print(Sys.time())
 # 
 # 
-get_CV_experiments(datasetname = "HeartDisease_withoutdupl_norm_02_v01",
-                    experiments = "OC_combined_CV",
-                    subfolder_name = "HeartDisease",
-                    CViterations =  10)
-print(Sys.time())
-
-
-get_CV_experiments(datasetname = "Stamps_withoutdupl_norm_02_v01",
-                   experiments = "OC_combined_CV",
-                   subfolder_name = "Stamps",
-                   CViterations =  10)
-print(Sys.time())
-
+# get_CV_experiments(datasetname = "HeartDisease_withoutdupl_norm_02_v01",
+#                     experiments = "OC_combined_CV",
+#                     subfolder_name = "HeartDisease",
+#                     CViterations =  10)
+# print(Sys.time())
+# 
+# 
+# get_CV_experiments(datasetname = "Stamps_withoutdupl_norm_02_v01",
+#                    experiments = "OC_combined_CV",
+#                    subfolder_name = "Stamps",
+#                    CViterations =  10)
+# print(Sys.time())
+# 
 
 
 
@@ -1461,3 +1461,11 @@ print(Sys.time())
 #                    subfolder_name = "Shuttle")
 # 
 # print(Sys.time())
+
+
+
+get_CV_experiments_normalized(datasetname = "Ionosphere_withoutdupl_norm",
+                              experiments = "OC_combined_CV",
+                              subfolder_name = "Ionosphere",
+                              CViterations =  100)
+print(Sys.time())
