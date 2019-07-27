@@ -181,6 +181,14 @@ heart_res <- get_plots_pvalues(input_res_DT = HeartDisease_DT)
 heart_res[[1]]
 
 
+PenDigits_DT <- get_meta_plots(subfolder_name = "PenDigits", file_suffix = "")
+pen_res <- get_plots_pvalues(input_res_DT = PenDigits_DT)
+pen_res[[1]]
+
+Internet_DT <- get_meta_plots(subfolder_name = "InternetAds", file_suffix = "")
+internet_res <- get_plots_pvalues(input_res_DT = Internet_DT)
+internet_res[[1]]
+
 #Arrhythmia_DT <- get_meta_plots(subfolder_name = "Arrhythmia", file_suffix = "_100CVnew")
 
 # 100CV - Normalized --------------------------------------------------------------
@@ -255,8 +263,27 @@ cardio_res_300[[1]]
 
 # Aggregated results ------------------------------------------------------
 
-rbindlist(list(glass_res_300[[2]][Evaluation == "quantiles"], 
-               shuttle_res[[2]][Evaluation == "quantiles"],
-               stamps_res[[2]][Evaluation == "quantiles"],
-               wave_res[[2]][Evaluation == "quantiles"],
-               ))
+DT <- rbindlist(list(glass_res_300[[2]][Evaluation == "quantiles"], 
+                     shuttle_res[[2]][Evaluation == "quantiles" & Dataset == "Shuttle-1"],
+                     stamps_res[[2]][Evaluation == "quantiles" & Dataset == "Stamps-1"],
+                     wave_res[[2]][Evaluation == "quantiles" & Dataset == "SWaveform-1"],
+                     ionosphere_res[[2]][Evaluation == "quantiles"],
+                     heart_res[[2]][Evaluation == "quantiles" & Dataset == "HeartDisease-1"],
+                     annthryroid_res[[2]][Evaluation == "quantiles" & Dataset == "Annthryroid-1"],
+                     pima_res[[2]][Evaluation == "quantiles" & Dataset == "Pima-1"],
+                     wilt_res_norm[[2]][Evaluation == "quantiles" & Dataset == "Wilt-1"],
+                     page_res_norm[[2]][Evaluation == "quantiles" & Dataset == "PageBlocks-1"],
+                     pen_res[[2]][Evaluation == "quantiles" & Dataset == "PenDigits-1"],
+                     internet_res[[2]][Evaluation == "quantiles" & Dataset == "InternetAds-1"]))
+
+
+DT1 <- DT[Representation!="Original"]
+p_1 <- ggplot(data = DT1) +
+  aes(x = Dataset, y = sdAUC, fill = Representation) +
+  geom_boxplot() +
+  theme_minimal()+
+  geom_hline(yintercept = 0)+
+  coord_flip()
+print(p_1)
+
+
