@@ -272,7 +272,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
       }else{testDT <- testDT1}
       
       if(testDT[Label=="yes", length(id)] == 0){
-        testDT <- j[Label=="yes"][sample(nrow(j[Label=="yes"]), 1)]
+        testDT <- rbindlist(list(j[Label=="yes"][sample(nrow(j[Label=="yes"]), 1)], testDT1))
         testDT <- na.omit(testDT)
       }else{testDT <- testDT}
       
@@ -401,7 +401,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
       }else{testDT <- testDT1}
       
       if(testDT[Label=="yes", length(id)] == 0){
-        testDT <- j[Label=="yes"][sample(nrow(j[Label=="yes"]), 1)]
+        testDT <- rbindlist(list(j[Label=="yes"][sample(nrow(j[Label=="yes"]), 1)], testDT1))
         testDT <- na.omit(testDT)
       }else{testDT <- testDT}
       
@@ -538,7 +538,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
     }else{testDT <- testDT1}
     
     if(testDT[Label=="yes", length(id)] == 0){
-      testDT <- j[Label=="yes"][sample(nrow(j[Label=="yes"]), 1)]
+      testDT <- rbindlist(list(j[Label=="yes"][sample(nrow(j[Label=="yes"]), 1)], testDT1))
       testDT <- na.omit(testDT)
     }else{testDT <- testDT}
     
@@ -1464,8 +1464,8 @@ get_CV_experiments_normalized <- function(datasetname, subfolder_name, experimen
 
 
 
-get_CV_experiments_normalized(datasetname = "Ionosphere_withoutdupl_norm",
-                              experiments = "OC_combined_CV",
-                              subfolder_name = "Ionosphere",
-                              CViterations =  100)
-print(Sys.time())
+# get_CV_experiments_normalized(datasetname = "Ionosphere_withoutdupl_norm",
+#                               experiments = "OC_combined_CV",
+#                               subfolder_name = "Ionosphere",
+#                               CViterations =  100)
+# print(Sys.time())
