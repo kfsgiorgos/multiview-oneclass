@@ -8,9 +8,7 @@ usethis::use_r("cross-training")
 usethis::use_r("OCSVM-unsupervised-representation-functions")
 usethis::use_r("evaluate-unsupervised-representation")
 usethis::use_r("commandline-script")
-<<<<<<< HEAD
 usethis::use_r("investigate-visually")
-=======
 usethis::use_r("pipeline-newdataset")
 usethis::use_r("configuration")
 

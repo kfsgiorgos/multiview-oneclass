@@ -2,11 +2,12 @@
 pkg <- c("ggplot2", "lubridate", "data.table", "purrr", "reticulate", "foreign",
         "pROC", "caret", "dplyr", "esquisse", "stringr", "readtext", "esquisse",
         "dbscan", "philentropy", "glue", "readtext", "config", "doParallel",
-        "foreach")
+        "foreach", "devtools", "scmamp")
 new.pkg <- pkg[!(pkg %in% installed.packages())]
 if (length(new.pkg)) {
   install.packages(new.pkg, dependencies = TRUE)
   lapply(new.pkg, require, character.only = TRUE)
+  # devtools::install_github("b0rxa/scmamp")
 } else{
   lapply(pkg, require, character.only = TRUE)
 }

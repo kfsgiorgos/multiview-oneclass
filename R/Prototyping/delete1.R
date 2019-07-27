@@ -119,8 +119,7 @@ p1 <- ggplot(data = auc_res) +
 p1
 
 
-
-run_unsupervised_multiview_per_dataset(datasetname = "Annthyroid_withoutdupl_norm_02_v03")
+fread("~/R Language Default Dir/Github-projects/multiview-oneclass/data/derived-data/OC_Combined_CV/figures/HeartDisease/HeartDisease_withoutdupl_norm_02_v01_1random.csv")
 
 
 
