@@ -900,7 +900,7 @@ get_CV_experiments_normalized <- function(datasetname, subfolder_name, experimen
       }else{testDT <- testDT1}
       
       if(testDT[Label=="yes", length(id)] == 0){
-        testDT <- j[Label=="yes"][sample(nrow(j[Label=="yes"]), 1)]
+        testDT <- rbindlist(list(j[Label=="yes"][sample(nrow(j[Label=="yes"]), 1)], testDT1))
         testDT <- na.omit(testDT)
       }else{testDT <- testDT}
       
@@ -1029,7 +1029,7 @@ get_CV_experiments_normalized <- function(datasetname, subfolder_name, experimen
       }else{testDT <- testDT1}
       
       if(testDT[Label=="yes", length(id)] == 0){
-        testDT <- j[Label=="yes"][sample(nrow(j[Label=="yes"]), 1)]
+        testDT <- rbindlist(list(j[Label=="yes"][sample(nrow(j[Label=="yes"]), 1)], testDT1))
         testDT <- na.omit(testDT)
       }else{testDT <- testDT}
       
@@ -1166,7 +1166,7 @@ get_CV_experiments_normalized <- function(datasetname, subfolder_name, experimen
     }else{testDT <- testDT1}
     
     if(testDT[Label=="yes", length(id)] == 0){
-      testDT <- j[Label=="yes"][sample(nrow(j[Label=="yes"]), 1)]
+      testDT <- rbindlist(list(j[Label=="yes"][sample(nrow(j[Label=="yes"]), 1)], testDT1))
       testDT <- na.omit(testDT)
     }else{testDT <- testDT}
     
