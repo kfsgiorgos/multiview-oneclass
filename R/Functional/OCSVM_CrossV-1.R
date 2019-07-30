@@ -434,7 +434,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
   stop_combined <- Sys.time()
   combined_DT1 <- rbindlist(res_final)
   fwrite(combined_DT1, paste0(final_path_to_save, "figures/",  
-                             subfolder_name, "/", datasetname, "_Combined_", CViterations,"30CV.csv"))
+                             subfolder_name, "/", datasetname, "_Combined_", CViterations,"CV.csv"))
   
   
   ddd <- combined_DT1
@@ -719,7 +719,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
   stop_one_random <- Sys.time()
   one_random_DT1 <- rbindlist(res_final11)
   fwrite(one_random_DT1, paste0(final_path_to_save, "figures/",  
-                                subfolder_name, "/", datasetname, "_1random_", CViterations,"30CV.csv"))
+                                subfolder_name, "/", datasetname, "_1random_", CViterations,"CV.csv"))
   
   
   ddd <- combined_DT1
@@ -944,7 +944,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
   
   stop_original <- Sys.time()
   fwrite(res_final_original, paste0(final_path_to_save, "figures/",  
-                                    subfolder_name, "/", datasetname, "_Original_", CViterations,"30CV.csv"))
+                                    subfolder_name, "/", datasetname, "_Original_", CViterations,"CV.csv"))
   
   
   
