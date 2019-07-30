@@ -1796,20 +1796,20 @@ get_CV_experiments_normalized <- function(datasetname, subfolder_name, experimen
 
 
 
-start_exp <- Sys.time()
-start_exp
-get_CV_experiments(datasetname = "Waveform_withoutdupl_norm_v01",
-                   subfolder_name = "Waveform", CViterations = 30)
-stop_exp <- Sys.time()
+# start_exp <- Sys.time()
+# start_exp
+# get_CV_experiments(datasetname = "Waveform_withoutdupl_norm_v01",
+#                    subfolder_name = "Waveform", CViterations = 30)
+# stop_exp <- Sys.time()
 
 
 # 
 # 
-start_exp <- Sys.time()
-start_exp
-get_CV_experiments(datasetname = "Pima_withoutdupl_norm_02_v01",
-                   subfolder_name = "Pima", CViterations = 30)
-print(Sys.time())
+# start_exp <- Sys.time()
+# start_exp
+# get_CV_experiments(datasetname = "Pima_withoutdupl_norm_02_v01",
+#                    subfolder_name = "Pima", CViterations = 30)
+# print(Sys.time())
 # get_CV_experiments(datasetname = "Pima_withoutdupl_norm_05_v07",
 #                    subfolder_name = "Pima")
 # print(Sys.time())
