@@ -332,7 +332,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
   
   combined_DT <- rbindlist(res_final)
   fwrite(combined_DT, paste0(final_path_to_save, "figures/",  
-                             subfolder_name, "/", datasetname, "_Combined_", CViterations,"CVnew_Normalized.csv"))
+                             subfolder_name, "/", datasetname, "_Combined_", CViterations,"CVnew.csv"))
   # 1st strategy to find the best performing hyperparametrs
   comnined1_max_hyper <- combined_DT[, .SD[which.max(V1)], by = c("Cross-Validation", "features_Iteration")]
   comnined1_max_hyper[, features_Iteration:=as.factor(features_Iteration)]
