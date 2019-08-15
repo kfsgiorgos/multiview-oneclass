@@ -471,7 +471,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
     coord_flip()+
     facet_wrap(vars(CViteration))+
     ggtitle(label = "Combined")
-  p
+  
   # combined_DT <- combined_DT1[, mean(V1), by = .(gamma, nu, kernel, features_Iteration, CViteration)]
   # setkey(combined_DT, V1)
   # quantiles <- combined_DT[, .SD[1:.N, quantile(V1, probs = 0.90)], by = .(gamma, nu, kernel, features_Iteration, CViteration)]
@@ -757,7 +757,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
     facet_wrap(vars(CViteration))+
     ggtitle(label = "1-Random")
   
-  p_1
+  
   
   # 3. Start - Original --------------------------------------------------------------
   res_original <- list()
@@ -981,7 +981,7 @@ get_CV_experiments <- function(datasetname, subfolder_name, experiments = "OC_co
     geom_point(size=2, aes(color=Prediction, shape = CViteration))+
     coord_flip()+
     ggtitle(label = "Original")
-  p_2
+  
   
   # original_maxDT <- res_final_original[, .SD[which.max(V1)], by = `Cross-Validation`]
   # 
@@ -1796,20 +1796,29 @@ get_CV_experiments_normalized <- function(datasetname, subfolder_name, experimen
 
 
 
-start_exp <- Sys.time()
-start_exp
-get_CV_experiments(datasetname = "Waveform_withoutdupl_norm_v01",
-                   subfolder_name = "Waveform", CViterations = 30)
-stop_exp <- Sys.time()
+# start_exp <- Sys.time()
+# start_exp
+# get_CV_experiments(datasetname = "Waveform_withoutdupl_norm_v01",
+#                    subfolder_name = "Waveform", CViterations = 30)
+# stop_exp <- Sys.time()
 
 
 # 
 # 
-start_exp <- Sys.time()
-start_exp
-get_CV_experiments(datasetname = "Pima_withoutdupl_norm_02_v01",
-                   subfolder_name = "Pima", CViterations = 30)
-print(Sys.time())
+# start_exp <- Sys.time()
+# start_exp
+# get_CV_experiments(datasetname = "Pima_withoutdupl_norm_02_v01",
+#                    subfolder_name = "Pima", CViterations = 30)
+# print(Sys.time())
+# 
+# start_exp <- Sys.time()
+# ionosphere <- get_CV_experiments(datasetname = "Ionosphere_withoutdupl_norm",
+#                    subfolder_name = "Ionosphere",
+#                    CViterations =  30)
+# stop_exp <- Sys.time()
+# stop_exp
+
+
 # get_CV_experiments(datasetname = "Pima_withoutdupl_norm_05_v07",
 #                    subfolder_name = "Pima")
 # print(Sys.time())
