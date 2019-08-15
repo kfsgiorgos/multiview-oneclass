@@ -1805,19 +1805,6 @@ get_CV_experiments_normalized <- function(datasetname, subfolder_name, experimen
 
 # 
 # 
-# start_exp <- Sys.time()
-# start_exp
-# get_CV_experiments(datasetname = "Pima_withoutdupl_norm_02_v01",
-#                    subfolder_name = "Pima", CViterations = 30)
-# print(Sys.time())
-# 
-# start_exp <- Sys.time()
-# ionosphere <- get_CV_experiments(datasetname = "Ionosphere_withoutdupl_norm",
-#                    subfolder_name = "Ionosphere",
-#                    CViterations =  30)
-# stop_exp <- Sys.time()
-# stop_exp
-
 
 # get_CV_experiments(datasetname = "Pima_withoutdupl_norm_05_v07",
 #                    subfolder_name = "Pima")
