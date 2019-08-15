@@ -26,7 +26,7 @@ GetTabularOutlierScore <- function(datasetname) {
 
     
     # fwrite(DTtabular, paste0("data/derived-data/", datasetname, ".csv"), nThread = 2)
-    fwrite(DTtabular, paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname, ".csv"), nThread = 2)
+    fwrite(DTtabular, paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname, ".csv"), nThread = 20)
 
   }
 }
@@ -37,7 +37,18 @@ GetTabularOutlierScore <- function(datasetname) {
 # GetTabularOutlierScore(datasetname = "Pima_withoutdupl_norm_02_v09.results")
 # GetTabularOutlierScore(datasetname = "Pima_withoutdupl_norm_05_v07.results")
 # GetTabularOutlierScore(datasetname = "Shuttle_withoutdupl_norm_v01.results")
-# GetTabularOutlierScore(datasetname = "Shuttle_withoutdupl_norm_v05.results")
+# GetTabularOutlierScore(datasetname = "Shuttle_withoutdupl_norm_v04.results")
+GetTabularOutlierScore(datasetname = "Shuttle_withoutdupl_norm_v06.results")
+GetTabularOutlierScore(datasetname = "Shuttle_withoutdupl_norm_v07.results")
+GetTabularOutlierScore(datasetname = "Shuttle_withoutdupl_norm_v08.results")
+GetTabularOutlierScore(datasetname = "Shuttle_withoutdupl_norm_v09.results")
+GetTabularOutlierScore(datasetname = "Shuttle_withoutdupl_norm_v10.results")
+GetTabularOutlierScore(datasetname = "Cardiotocography_withoutdupl_norm_05_v01.results")
+GetTabularOutlierScore(datasetname = "Cardiotocography_withoutdupl_norm_05_v02.results")
+GetTabularOutlierScore(datasetname = "Cardiotocography_withoutdupl_norm_05_v03.results")
+GetTabularOutlierScore(datasetname = "Cardiotocography_withoutdupl_norm_05_v04.results")
+GetTabularOutlierScore(datasetname = "Cardiotocography_withoutdupl_norm_05_v05.results")
+
 # GetTabularOutlierScore(datasetname = "Stamps_withoutdupl_norm_02_v06.results")
 # GetTabularOutlierScore(datasetname = "Waveform_withoutdupl_norm_v01.results")
 # GetTabularOutlierScore(datasetname = "Waveform_withoutdupl_norm_v02.results")
@@ -57,7 +68,9 @@ GetTabularOutlierScore <- function(datasetname) {
 # system.time({GetTabularOutlierScore(datasetname = "Shuttle_withoutdupl_norm_v02.results")})
 # system.time({GetTabularOutlierScore(datasetname = "Shuttle_withoutdupl_norm_v03.results")})
 # system.time({GetTabularOutlierScore(datasetname = "Parkinson_withoutdupl_norm_05_v03.results")})
-
+# system.time({GetTabularOutlierScore(datasetname = "KDDCup99_withoutdupl_catremoved.results")})
+# system.time({GetTabularOutlierScore(datasetname = "ALOI_withoutdupl_norm.results")})
+# system.time({GetTabularOutlierScore(datasetname = "HeartDisease_withoutdupl_norm_02_v08.results")})
 # create csv from arff ----------------------------------------------------
 
 GetCsvFromArff <- function(datasetname) {
@@ -66,7 +79,7 @@ GetCsvFromArff <- function(datasetname) {
   DT<- as.data.table(foreign::read.arff(paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname, ".arff")))
   setnames(DT, old = "outlier", "Label")
   #fwrite(DT, paste0("data/derived-data/", datasetname, ".csv"), nThread = 2)
-  fwrite(DT, paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname, ".csv"), nThread = 2)
+  fwrite(DT, paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname, ".csv"), nThread = 20)
   
 }
 
@@ -85,12 +98,12 @@ GetCsvFromArff <- function(datasetname) {
 # GetCsvFromArff(datasetname = "Parkinson_withoutdupl_norm_05_v02")
 # GetCsvFromArff(datasetname = "Parkinson_withoutdupl_norm_05_v03")
 # GetCsvFromArff(datasetname = "Pima_withoutdupl_norm_02_v03")
-# GetCsvFromArff(datasetname = "Shuttle_withoutdupl_norm_v03")
+# GetCsvFromArff(datasetname = "Shuttle_withoutdupl_norm_v04")
 # GetCsvFromArff(datasetname = "Stamps_withoutdupl_norm_02_v06")
 # GetCsvFromArff(datasetname = "Waveform_withoutdupl_norm_v01")
 # GetCsvFromArff(datasetname = "Waveform_withoutdupl_norm_v02")
 # GetCsvFromArff(datasetname = "WDBC_withoutdupl_norm_v01")
-
+# system.time({GetCsvFromArff(datasetname = "KDDCup99_withoutdupl_catremoved")})
 print(Sys.time())
 # system.time({GetCsvFromArff(datasetname = "WDBC_withoutdupl_norm_v01")})
 # system.time({GetCsvFromArff(datasetname = "Arrhythmia_withoutdupl_norm_02_v01")})
@@ -105,7 +118,17 @@ print(Sys.time())
 # system.time({GetCsvFromArff(datasetname = "Pima_withoutdupl_norm_02_v03")})
 # system.time({GetCsvFromArff(datasetname = "Shuttle_withoutdupl_norm_v01")})
 # system.time({GetCsvFromArff(datasetname = "Shuttle_withoutdupl_norm_v02")})
-
+# system.time({GetCsvFromArff(datasetname = "ALOI_withoutdupl_norm")})
+GetCsvFromArff(datasetname = "Shuttle_withoutdupl_norm_v06")
+GetCsvFromArff(datasetname = "Shuttle_withoutdupl_norm_v07")
+GetCsvFromArff(datasetname = "Shuttle_withoutdupl_norm_v08")
+GetCsvFromArff(datasetname = "Shuttle_withoutdupl_norm_v09")
+GetCsvFromArff(datasetname = "Shuttle_withoutdupl_norm_v10")
+GetCsvFromArff(datasetname = "Cardiotocography_withoutdupl_norm_05_v01")
+GetCsvFromArff(datasetname = "Cardiotocography_withoutdupl_norm_05_v02")
+GetCsvFromArff(datasetname = "Cardiotocography_withoutdupl_norm_05_v03")
+GetCsvFromArff(datasetname = "Cardiotocography_withoutdupl_norm_05_v04")
+GetCsvFromArff(datasetname = "Cardiotocography_withoutdupl_norm_05_v05")
 
 
 
