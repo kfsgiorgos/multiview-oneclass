@@ -1952,7 +1952,7 @@ get_CV_experiments_paper_iForest <- function(datasetname, subfolder_name, experi
   stop_combined <- Sys.time()
   combined_DT1 <- rbindlist(res_final)
   fwrite(combined_DT1, paste0(final_path_to_save, "figures/",  
-                              subfolder_name, "/", datasetname, "_Combined_", CViterations,"_paper_CV_iForest.csv"))
+                              subfolder_name, "/", datasetname, "_Combined_", CViterations,"_paper_CV_iForest.csv"), nThread = 10)
   
   
   ddd <- combined_DT1
@@ -2248,7 +2248,7 @@ get_CV_experiments_paper_iForest <- function(datasetname, subfolder_name, experi
   stop_one_random <- Sys.time()
   one_random_DT1 <- rbindlist(res_final11)
   fwrite(one_random_DT1, paste0(final_path_to_save, "figures/",  
-                                subfolder_name, "/", datasetname, "_1random_", CViterations,"_paper_CV_iForest.csv"))
+                                subfolder_name, "/", datasetname, "_1random_", CViterations,"_paper_CV_iForest.csv"), nThread = 10)
   
   
   ddd <- combined_DT1
@@ -2484,7 +2484,7 @@ get_CV_experiments_paper_iForest <- function(datasetname, subfolder_name, experi
   
   stop_original <- Sys.time()
   fwrite(res_final_original, paste0(final_path_to_save, "figures/",  
-                                    subfolder_name, "/", datasetname, "_Original_", CViterations,"_paper_CV_iForest.csv"))
+                                    subfolder_name, "/", datasetname, "_Original_", CViterations,"_paper_CV_iForest.csv"), nThread = 10)
   
   
   
