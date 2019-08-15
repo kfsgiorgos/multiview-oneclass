@@ -1900,8 +1900,8 @@ get_CV_experiments_paper_iForest <- function(datasetname, subfolder_name, experi
         print(paste0("Kfold: ", ij))
         print(ii)
         for(estimators in c(50, 100, 500)){
-          for(maxSamples in c(0.2, 0.5, 0.8)){
-            for(maxFeatures in c(0.3, 0.5, 0.7, 1.0)){
+          for(maxSamples in c(0.2 * dim(CVtrain_DT)[1], 0.5 * dim(CVtrain_DT)[1], 0.8 * dim(CVtrain_DT)[1])){
+            for(maxFeatures in c(0.3 * dim(CVtrain_DT)[2], 0.5 * dim(CVtrain_DT)[2], 0.7 * dim(CVtrain_DT)[2], 1.0 * dim(CVtrain_DT)[2])){
               iters <- iters+1
               
               scores_CV <- calculate_iForest_params(DTtrain = CVtrain_DT, DTtest = CVtest_DT, 
@@ -2196,8 +2196,8 @@ get_CV_experiments_paper_iForest <- function(datasetname, subfolder_name, experi
         print(paste0("Kfold: ", ij))
         print(ii)
         for(estimators in c(50, 100, 500)){
-          for(maxSamples in c(0.2, 0.5, 0.8)){
-            for(maxFeatures in c(0.3, 0.5, 0.7, 1.0)){
+          for(maxSamples in c(0.2 * dim(CVtrain_DT)[1], 0.5 * dim(CVtrain_DT)[1], 0.8 * dim(CVtrain_DT)[1])){
+            for(maxFeatures in c(0.3 * dim(CVtrain_DT)[2], 0.5 * dim(CVtrain_DT)[2], 0.7 * dim(CVtrain_DT)[2], 1.0 * dim(CVtrain_DT)[2])){
               iters <- iters+1
               
               scores_CV <- calculate_iForest_params(DTtrain = CVtrain_DT, DTtest = CVtest_DT, 
@@ -2439,8 +2439,8 @@ get_CV_experiments_paper_iForest <- function(datasetname, subfolder_name, experi
       
       print(CVtest_DT)
       for(estimators in c(50, 100, 500)){
-        for(maxSamples in c(0.2, 0.5, 0.8)){
-          for(maxFeatures in c(0.3, 0.5, 0.7, 1.0)){
+        for(maxSamples in c(0.2 * dim(CVtrain_DT)[1], 0.5 * dim(CVtrain_DT)[1], 0.8 * dim(CVtrain_DT)[1])){
+          for(maxFeatures in c(0.3 * dim(CVtrain_DT)[2], 0.5 * dim(CVtrain_DT)[2], 0.7 * dim(CVtrain_DT)[2], 1.0 * dim(CVtrain_DT)[2])){
             iters <- iters+1
             
             scores_CV <- calculate_iForest_params(DTtrain = CVtrain_DT, DTtest = CVtest_DT, 
