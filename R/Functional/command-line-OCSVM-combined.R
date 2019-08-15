@@ -55,8 +55,8 @@ arg3 <- args[3]
 
 # Latest Experiments - proper CV
 
-get_CV_experiments(datasetname = arg1, 
+get_CV_experiments_paper(datasetname = arg1, 
                    subfolder_name = arg2, 
                    experiments = "OC_combined_CV", 
-                   CViterations = 30)
+                   CViterations = arg3)
 
