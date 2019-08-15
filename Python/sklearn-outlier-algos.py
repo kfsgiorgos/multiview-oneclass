@@ -1,6 +1,6 @@
 import pandas as pd
 from sklearn import svm
-from pyod.models.iforest import IForest
+from sklearn.ensemble import IsolationForest
 
 
 
@@ -19,7 +19,7 @@ def calculate_OCSVM(DTtrain, DTtest):
 def calculate_iForest_params(DTtrain, DTtest, given_nEstimators, given_maxSamples, given_maxFeatures):
   X_1 = pd.DataFrame(DTtrain)
   Xtrain = X_1.values
-  clf = IForest(n_estimators = int(given_nEstimators), max_samples = int(given_maxSamples), max_features = int(given_maxFeatures), n_jobs = int(10))
+  clf = IsolationForest(n_estimators = int(given_nEstimators), max_samples = int(given_maxSamples), max_features = int(given_maxFeatures), n_jobs = int(10))
   clf.fit(Xtrain)
   X_2 = pd.DataFrame(DTtest)
   Xtest = X_2.values
