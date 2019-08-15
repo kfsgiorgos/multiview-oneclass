@@ -14,7 +14,7 @@ get_plots_pvalues <- function(input_res_DT) {
   for(dataset_i in res_DT[[2]][, unique(Dataset)]){
     i <- i + 1
     mean_DT <- res_DT[[2]][Dataset == dataset_i][, .SD[sample(1:.N, 500, replace = F), max(V2)], by = .(`Cross-Validation`, Representation)]
-    original_DT <<- res_DT[[3]][Dataset == dataset_i]
+    original_DT <- res_DT[[3]][Dataset == dataset_i]
     original_DT[, .N, by = .(`Cross-Validation`)]
     original_DT1 <- original_DT[, .SD[sample(1:.N, 50, replace = F), max(V2)], by = .(`Cross-Validation`)]
     
