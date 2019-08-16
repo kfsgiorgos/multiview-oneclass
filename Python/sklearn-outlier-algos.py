@@ -24,7 +24,7 @@ def calculate_iForest_params(DTtrain, DTtest, given_nEstimators, given_maxSample
   X_2 = pd.DataFrame(DTtest)
   Xtest = X_2.values
   Xtest_scores = clf.decision_function(Xtest)
-  return X_scores
+  return Xtest_scores
 
 
 
