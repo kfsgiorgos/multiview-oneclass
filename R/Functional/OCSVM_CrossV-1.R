@@ -2769,8 +2769,8 @@ get_CV_experiments_paper_iForest <- function(datasetname, subfolder_name, experi
 
 
 
-# get_CV_experiments_paper_iForest(datasetname = "Ionosphere_withoutdupl_norm",
-#                                  experiments = "OC_combined_CV",
-#                                  subfolder_name = "Ionosphere",
-#                                  CViterations =  2)
+temp <- get_CV_experiments_paper_iForest(datasetname = "Ionosphere_withoutdupl_norm",
+                                 experiments = "OC_combined_CV",
+                                 subfolder_name = "Ionosphere",
+                                 CViterations =  10)
 # print(Sys.time())
