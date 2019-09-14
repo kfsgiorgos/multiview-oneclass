@@ -96,23 +96,22 @@ ggplot(data = DT) +
 # Experiments Model Selection ---------------------------------------------
 
 
-
-
-
-
-get_latest_plot <- function(iters, subfolder, dataset_name) {
+get_latest_plot <- function(iters, subfolder, dataset_name, algorithm) {
   
   random1 <- fread(paste0("~/R Language Default Dir/Github-projects/multiview-oneclass/data/derived-data/OC_Combined_CV/figures/", 
-                          subfolder, "/", dataset_name, "_1random_", iters, "_paper_CV.csv"))
+                          subfolder, "/", dataset_name, "_1random_", iters, "_paper_CV", algorithm,".csv"))
   combined <- fread(paste0("~/R Language Default Dir/Github-projects/multiview-oneclass/data/derived-data/OC_Combined_CV/figures/", 
-                           subfolder, "/", dataset_name, "_Combined_", iters, "_paper_CV.csv"))
+                           subfolder, "/", dataset_name, "_Combined_", iters, "_paper_CV", algorithm,".csv"))
   original <- fread(paste0("~/R Language Default Dir/Github-projects/multiview-oneclass/data/derived-data/OC_Combined_CV/figures/", 
-                           subfolder, "/", dataset_name, "_Original_", iters, "_paper_CV.csv"))
+                           subfolder, "/", dataset_name, "_Original_", iters, "_paper_CV", algorithm,".csv"))
   
   dataset <- dataset_name
+  if(algorithm == "_iForest"){
+    original[, Model:= paste0(estimators, maxSamples, maxFeatures)]
+  }else{
+    original[, Model:= paste0(gamma, nu, kernel)]
+  }
   
-  
-  original[, Model:= paste0(gamma, nu, kernel)]
   original_meanCV <- original[, mean(V1), by = .(CViteration, Model)]
   original_merged <- original[original_meanCV, on = c("CViteration", "Model")]
   
@@ -132,7 +131,12 @@ get_latest_plot <- function(iters, subfolder, dataset_name) {
   
   
   # combined 
-  combined[, Model:= paste0(gamma, nu, kernel)]
+  if(algorithm == "_iForest"){
+    combined[, Model:= paste0(estimators, maxSamples, maxFeatures)]
+  }else{
+    combined[, Model:= paste0(gamma, nu, kernel)]
+  }
+  
   combined <- unique(combined)
   combined_mean_CVperformance <- combined[, mean(V1), by = .(CViteration, features_Iteration, Model)]
   merged_combined <- combined[combined_mean_CVperformance, on = c("CViteration", "features_Iteration", "Model")]
@@ -167,7 +171,12 @@ get_latest_plot <- function(iters, subfolder, dataset_name) {
   
   # random1  
   
-  random1[, Model:= paste0(gamma, nu, kernel)]
+  if(algorithm == "_iForest"){
+    random1[, Model:= paste0(estimators, maxSamples, maxFeatures)]
+  }else{
+    random1[, Model:= paste0(gamma, nu, kernel)]
+  }
+  
   random1_mean_CVperformance <- random1[, mean(V1), by = .(CViteration, features_Iteration, Model)]
   merged_random1 <- random1[random1_mean_CVperformance, on = c("CViteration", "features_Iteration", "Model")]
   
@@ -254,13 +263,33 @@ Wilt[, median(V3), by=.(Group, Representation)]
 WiltDT <- Wilt[V3>0.5]
 
 
-
 ggplot(data = Wilt) +
   aes(x = Group, y = V3, fill = Group) +
   geom_boxplot() +
   theme_minimal()+
   scale_y_continuous(name="AUC Standard Deviations", breaks = seq(Wilt[, round(min(V3) - 0.5)], 
                                                                   Wilt[, round(max(V3) + 0.5)], 0.5))
+
+#iForest
+Wilt2_30_iForest <- get_latest_plot(iters = 30, subfolder = "Wilt", dataset_name = "Wilt_withoutdupl_norm_02_v02", algorithm = "_iForest")
+Wilt5_30_iForest <- get_latest_plot(iters = 30, subfolder = "Wilt", dataset_name = "Wilt_withoutdupl_norm_02_v05", algorithm = "_iForest")
+
+
+Wilt_iForest <- rbindlist(list(Wilt2_30_iForest[[3]], Wilt5_30_iForest[[3]]))
+Wilt_iForest <- Wilt_iForest[!(Representation %in% c("Combined_Space8", "Random1_Space13", "Combined_Space11"))]
+
+Wilt_iForest[, median(V3), by=.(Group, Representation)]
+WiltDT <- Wilt[V3>0.5]
+
+
+ggplot(data = Wilt_iForest) +
+  aes(x = Group, y = V3, fill = Group) +
+  geom_boxplot() +
+  theme_minimal()+
+  scale_y_continuous(name="AUC Standard Deviations", breaks = seq(Wilt_iForest[, round(min(V3) - 0.5)], 
+                                                                  Wilt_iForest[, round(max(V3) + 0.5)], 0.5))
+
+
 
 
 # Arrhythmia --------------------------------------------------------------
@@ -283,6 +312,26 @@ ggplot(data = Arrhythmia) +
   theme_minimal()+
   scale_y_continuous(name="AUC Standard Deviations", breaks = seq(Arrhythmia[, round(min(V3) - 0.5)], 
                                                                   Arrhythmia[, round(max(V3) + 0.5)], 0.5))
+
+#iForest
+Arrhythmia2_20_iForest <- get_latest_plot(iters = 20, subfolder = "Arrhythmia", dataset_name = "Arrhythmia_withoutdupl_norm_02_v02", algorithm = "_iForest")
+Arrhythmia3_20_iForest <- get_latest_plot(iters = 20, subfolder = "Arrhythmia", dataset_name = "Arrhythmia_withoutdupl_norm_02_v03", algorithm = "_iForest")
+
+
+Arrhythmia_iForest <- rbindlist(list(Arrhythmia3_20_iForest[[3]], Arrhythmia3_20_iForest[[3]]))
+Arrhythmia_iForest[, median(V3), by=.(Group, Representation)][order(V1)]
+Arrhythmia_iForest <- Arrhythmia_iForest[!(Representation %in% c("Random1_Space7", "Random1_Space19", "Combined_Space1", "Random1_Space2"))]
+
+ggplot(data = Arrhythmia_iForest) +
+  aes(x = Group, y = V3, fill = Group) +
+  geom_boxplot() +
+  theme_minimal()+
+  scale_y_continuous(name="AUC Standard Deviations", breaks = seq(Arrhythmia_iForest[, round(min(V3) - 0.5)], 
+                                                                  Arrhythmia_iForest[, round(max(V3) + 0.5)], 0.5))
+
+
+
+
 
 
 # Annthyroid --------------------------------------------------------------
@@ -331,6 +380,19 @@ Cardio5_10 <- get_latest_plot(iters = 10, subfolder = "Cardio", dataset_name = "
 Cardio1_10<- get_latest_plot(iters = 10, subfolder = "Cardio", dataset_name = "Cardiotocography_withoutdupl_norm_05_v01")
 Cardio <- rbindlist(list(Cardio4_10[[3]], Cardio5_10[[3]]))
 
+# iForest
+Cardio8_30 <- get_latest_plot(iters = 30, subfolder = "Cardio", dataset_name = "Cardiotocography_withoutdupl_norm_02_v08", algorithm = "_iForest")
+Cardio5_30 <- get_latest_plot(iters = 30, subfolder = "Cardio", dataset_name = "Cardiotocography_withoutdupl_norm_02_v05", algorithm = "_iForest")
+Cardio2_30<- get_latest_plot(iters = 30, subfolder = "Cardio", dataset_name = "Cardiotocography_withoutdupl_norm_02_v02", algorithm = "_iForest")
+Cardio_iForest <- rbindlist(list(Cardio8_30[[3]], Cardio2_30[[3]]))#, Cardio2_30[[3]]))
+
+ggplot(data = Cardio_iForest) +
+  aes(x = Group, y = V3, fill = Group) +
+  geom_boxplot() +
+  theme_minimal()+
+  scale_y_continuous(name="AUC Standard Deviations", breaks = seq(Cardio_iForest[, round(min(V3) - 0.5)], 
+                                                                  Cardio_iForest[, round(max(V3) + 0.5)], 0.5))
+
 # Glass -------------------------------------------------------------------
 Glass_10 <- get_latest_plot(iters = 10, subfolder = "Glass", dataset_name = "Glass_withoutdupl_norm")
 Glass_25 <- get_latest_plot(iters = 25, subfolder = "Glass", dataset_name = "Glass_withoutdupl_norm")
@@ -350,6 +412,18 @@ ggplot(data = GlassDT) +
   scale_y_continuous(name="AUC Standard Deviations", breaks = seq(GlassDT[, round(min(V3) - 0.5)], 
                                                                   GlassDT[, round(max(V3) + 0.5)], 0.5))
 
+
+# iForest
+Glass_30_iForest <- get_latest_plot(iters = 30, subfolder = "Glass", dataset_name = "Glass_withoutdupl_norm", algorithm = "_iForest")
+GlassDT_iForest <- Glass_30_iForest[[3]]
+GlassDT_iForest[, median(V3), by=.(Group, Representation)][order(V1)]
+
+ggplot(data = GlassDT_iForest) +
+  aes(x = Group, y = V3, fill = Group) +
+  geom_boxplot() +
+  theme_minimal()+
+  scale_y_continuous(name="AUC Standard Deviations", breaks = seq(GlassDT_iForest[, round(min(V3) - 0.5)], 
+                                                                  GlassDT_iForest[, round(max(V3) + 0.5)], 0.5))
 # Heart -------------------------------------------------------------------
 Heart1_10 <- get_latest_plot(iters = 10, subfolder = "HeartDisease", dataset_name = "HeartDisease_withoutdupl_norm_02_v01")
 Heart5_10 <- get_latest_plot(iters = 10, subfolder = "HeartDisease", dataset_name = "HeartDisease_withoutdupl_norm_02_v05")
@@ -367,6 +441,24 @@ ggplot(data = Heart) +
   theme_minimal()+
   scale_y_continuous(name="AUC Standard Deviations", breaks = seq(Heart[, round(min(V3) - 0.5)], 
                                                                   Heart[, round(max(V3) + 0.5)], 0.5))
+
+#iForest
+Heart1_30_iForest <- get_latest_plot(iters = 30, subfolder = "HeartDisease", dataset_name = "HeartDisease_withoutdupl_norm_02_v01", algorithm = "_iForest")
+Heart2_30_iForest <- get_latest_plot(iters = 30, subfolder = "HeartDisease", dataset_name = "HeartDisease_withoutdupl_norm_02_v02", algorithm = "_iForest")
+Heart5_30_iForest <- get_latest_plot(iters = 30, subfolder = "HeartDisease", dataset_name = "HeartDisease_withoutdupl_norm_02_v05", algorithm = "_iForest")
+Heart8_30_iForest <- get_latest_plot(iters = 30, subfolder = "HeartDisease", dataset_name = "HeartDisease_withoutdupl_norm_02_v08", algorithm = "_iForest")
+
+
+Heart_iForest <- rbindlist(list(Heart8_30_iForest[[3]], Heart2_30_iForest[[3]], Heart5_30_iForest[[3]]))#, Heart8_30_iForest[[3]]))
+Heart_iForest[, median(V3), by=.(Group, Representation)][order(V1)]
+
+
+ggplot(data = Heart_iForest) +
+  aes(x = Group, y = V3, fill = Group) +
+  geom_boxplot() +
+  theme_minimal()+
+  scale_y_continuous(name="AUC Standard Deviations", breaks = seq(Heart_iForest[, round(min(V3) - 0.5)], 
+                                                                  Heart_iForest[, round(max(V3) + 0.5)], 0.5))
 
 # Shuttle -------------------------------------------------------------------
 Shuttle1_10 <- get_latest_plot(iters = 10, subfolder = "Shuttle", dataset_name = "Shuttle_withoutdupl_norm_v01")
@@ -390,6 +482,21 @@ ggplot(data = Shuttle) +
   theme_minimal()+
   scale_y_continuous(name="AUC Standard Deviations", breaks = seq(Shuttle[, round(min(V3) - 0.5)], 
                                                                   Shuttle[, round(max(V3) + 0.5)], 0.5))
+#iForest
+
+Shuttle4_30_iForest <- get_latest_plot(iters = 30, subfolder = "Shuttle", dataset_name = "Shuttle_withoutdupl_norm_v04", algorithm = "_iForest")
+Shuttle5_30_iForest <- get_latest_plot(iters = 30, subfolder = "Shuttle", dataset_name = "Shuttle_withoutdupl_norm_v05", algorithm = "_iForest")
+Shuttle8_30_iForest <- get_latest_plot(iters = 30, subfolder = "Shuttle", dataset_name = "Shuttle_withoutdupl_norm_v08", algorithm = "_iForest")
+
+
+Shuttle_iForest <- rbindlist(list(Shuttle4_30_iForest[[3]], 
+                                  Shuttle5_30_iForest[[3]], Shuttle8_30_iForest[[3]]))
+ggplot(data = Shuttle_iForest) +
+  aes(x = Group, y = V3, fill = Group) +
+  geom_boxplot() +
+  theme_minimal()+
+  scale_y_continuous(name="AUC Standard Deviations", breaks = seq(Shuttle_iForest[, round(min(V3) - 0.5)], 
+                                                                  Shuttle_iForest[, round(max(V3) + 0.5)], 0.5))
 # Stamps ------------------------------------------------------------------
 Stamps1_10 <- get_latest_plot(iters = 10, subfolder = "Stamps", dataset_name = "Stamps_withoutdupl_norm_02_v01")
 Stamps2_10 <- get_latest_plot(iters = 10, subfolder = "Stamps", dataset_name = "Stamps_withoutdupl_norm_02_v02")
@@ -405,6 +512,22 @@ ggplot(data = Stamps) +
   theme_minimal()+
   scale_y_continuous(name="AUC Standard Deviations", breaks = seq(Stamps[, round(min(V3) - 0.5)], 
                                                                   Stamps[, round(max(V3) + 0.5)], 0.5))
+
+#iForest
+Stamps1_30_iForest <- get_latest_plot(iters = 30, subfolder = "Stamps", dataset_name = "Stamps_withoutdupl_norm_02_v01", algorithm = "_iForest")
+Stamps2_30_iForest <- get_latest_plot(iters = 30, subfolder = "Stamps", dataset_name = "Stamps_withoutdupl_norm_02_v02", algorithm = "_iForest")
+Stamps3_30_iForest <- get_latest_plot(iters = 30, subfolder = "Stamps", dataset_name = "Stamps_withoutdupl_norm_02_v03", algorithm = "_iForest")
+
+Stamps_iForest <- rbindlist(list(Stamps1_30_iForest[[3]], Stamps2_30_iForest[[3]], 
+                                 Stamps3_30_iForest[[3]]))
+Stamps_iForest[, median(V3), by=.(Group, Representation)][order(V1)]
+
+ggplot(data = Stamps_iForest) +
+  aes(x = Group, y = V3, fill = Group) +
+  geom_boxplot() +
+  theme_minimal()+
+  scale_y_continuous(name="AUC Standard Deviations", breaks = seq(Stamps_iForest[, round(min(V3) - 0.5)], 
+                                                                  Stamps_iForest[, round(max(V3) + 0.5)], 0.5))
 
 
 
@@ -422,31 +545,51 @@ ggplot(data = Wave) +
   theme_minimal()+
   scale_y_continuous(name="AUC Standard Deviations", breaks = seq(Wave[, round(min(V3) - 0.5)], 
                                                                   Wave[, round(max(V3) + 0.5)], 0.5))
-# Ionosphere --------------------------------------------------------------
-Ionosphere_10 <- get_latest_plot(iters = 30, subfolder = "Ionosphere", dataset_name = "Ionosphere_withoutdupl_norm")
-Ionosphere_10DT <- Ionosphere_10[[3]]
+
+#iForest
+Wave1_30_iForest <- get_latest_plot(iters = 30, subfolder = "Waveform", dataset_name = "Waveform_withoutdupl_norm_v03", algorithm = "_iForest")
+Wave2_30_iForest <- get_latest_plot(iters = 30, subfolder = "Waveform", dataset_name = "Waveform_withoutdupl_norm_v05", algorithm = "_iForest")
+Wave3_30_iForest <- get_latest_plot(iters = 30, subfolder = "Waveform", dataset_name = "Waveform_withoutdupl_norm_v09", algorithm = "_iForest")
 
 
-ggplot(data = Ionosphere_10DT_1) +
+Wave_iForest <- rbindlist(list(Wave1_30_iForest[[3]], Wave2_30_iForest[[3]], 
+                               Wave3_30_iForest[[3]]))
+
+ggplot(data = Wave_iForest) +
   aes(x = Group, y = V3, fill = Group) +
   geom_boxplot() +
   theme_minimal()+
-  scale_y_continuous(name="AUC Standard Deviations", breaks = seq(Ionosphere_10DT[, round(min(V3) - 0.5)], 
-                                                                  Ionosphere_10DT[, round(max(V3) + 0.5)], 0.5))
+  scale_y_continuous(name="AUC Standard Deviations", breaks = seq(Wave_iForest[, round(min(V3) - 0.5)], 
+                                                                  Wave_iForest[, round(max(V3) + 0.5)], 0.5))
+
+
+# Ionosphere --------------------------------------------------------------
+Ionosphere_10 <- get_latest_plot(iters = 30, subfolder = "Ionosphere", dataset_name = "Ionosphere_withoutdupl_norm",  algorithm = "")
+Ionosphere_10DT <- Ionosphere_10[[3]]
+
+
+Ionosphere_iForest <- get_latest_plot(iters = 30, subfolder = "Ionosphere", dataset_name = "Ionosphere_withoutdupl_norm", algorithm = "_iForest")
+Ionosphere_10DT_iForest <- Ionosphere_iForest[[3]]
+
+
+
+ggplot(data = Ionosphere_10DT_iForest) + 
+  aes(x = Group, y = V3, fill = Group) +
+  geom_boxplot() +
+  theme_minimal()+
+  scale_y_continuous(name="AUC Standard Deviations", breaks = seq(Ionosphere_10DT_iForest[, round(min(V3) - 0.5)], 
+                                                                  Ionosphere_10DT_iForest[, round(max(V3) + 0.5)], 0.5))
 
 # PageBlocks --------------------------------------------------------------
 Page2_10 <- get_latest_plot(iters = 10, subfolder = "PageBlocks", dataset_name = "PageBlocks_withoutdupl_norm_02_v02")
 Page5_10 <- get_latest_plot(iters = 10, subfolder = "PageBlocks", dataset_name = "PageBlocks_withoutdupl_norm_02_v05")
 Page10_10 <- get_latest_plot(iters = 10, subfolder = "PageBlocks", dataset_name = "PageBlocks_withoutdupl_norm_02_v10")
 
-Page2_30 <- get_latest_plot(iters = 30, subfolder = "PageBlocks", dataset_name = "PageBlocks_withoutdupl_norm_02_v02")
-Page5_30 <- get_latest_plot(iters = 30, subfolder = "PageBlocks", dataset_name = "PageBlocks_withoutdupl_norm_02_v05")
-Page10_30 <- get_latest_plot(iters = 30, subfolder = "PageBlocks", dataset_name = "PageBlocks_withoutdupl_norm_02_v10")
+Page2_30 <- get_latest_plot(iters = 30, subfolder = "PageBlocks", dataset_name = "PageBlocks_withoutdupl_norm_02_v02", algorithm = "")
+Page5_30 <- get_latest_plot(iters = 30, subfolder = "PageBlocks", dataset_name = "PageBlocks_withoutdupl_norm_02_v05", algorithm = "")
+Page10_30 <- get_latest_plot(iters = 30, subfolder = "PageBlocks", dataset_name = "PageBlocks_withoutdupl_norm_02_v10", algorithm = "")
 
 Page <- rbindlist(list(Page2_30[[3]], Page5_30[[3]], Page10_30[[3]]))
-
-Page[V3>1, .N, by = Representation]
-
 
 ggplot(data = Page) +
   aes(x = Group, y = V3, fill = Group) +
@@ -454,13 +597,29 @@ ggplot(data = Page) +
   theme_minimal()+
   scale_y_continuous(name="AUC Standard Deviations", breaks = seq(Page[, round(min(V3) - 0.5)], 
                                                                   Page[, round(max(V3) + 0.5)], 0.5))
+#iForest
+Page2_30_iForest <- get_latest_plot(iters = 30, subfolder = "PageBlocks", dataset_name = "PageBlocks_withoutdupl_norm_02_v02", algorithm = "_iForest")
+Page5_30_iForest <- get_latest_plot(iters = 30, subfolder = "PageBlocks", dataset_name = "PageBlocks_withoutdupl_norm_02_v05", algorithm = "_iForest")
+Page10_30_iForest <- get_latest_plot(iters = 30, subfolder = "PageBlocks", dataset_name = "PageBlocks_withoutdupl_norm_02_v10", algorithm = "_iForest")
+
+Page_iForest <- rbindlist(list(Page2_30_iForest[[3]], Page5_30_iForest[[3]], 
+                               Page10_30_iForest[[3]]))
+
+
+ggplot(data = Page_iForest) +
+  aes(x = Group, y = V3, fill = Group) +
+  geom_boxplot() +
+  theme_minimal()+
+  scale_y_continuous(name="AUC Standard Deviations", breaks = seq(Page_iForest[, round(min(V3) - 0.5)], 
+                                                                  Page_iForest[, round(max(V3) + 0.5)], 0.5))
+
 
 
 # PenDigits ---------------------------------------------------------------
 
-Pen1_05 <- get_latest_plot(iters = 5, subfolder = "PenDigits", dataset_name = "PenDigits_withoutdupl_norm_v01")
-Pen3_05 <- get_latest_plot(iters = 5, subfolder = "PenDigits", dataset_name = "PenDigits_withoutdupl_norm_v03")
-Pen8_05 <- get_latest_plot(iters = 5, subfolder = "PenDigits", dataset_name = "PenDigits_withoutdupl_norm_v08")
+Pen1_05 <- get_latest_plot(iters = 5, subfolder = "PenDigits", dataset_name = "PenDigits_withoutdupl_norm_v01", algorithm = "")
+Pen3_05 <- get_latest_plot(iters = 5, subfolder = "PenDigits", dataset_name = "PenDigits_withoutdupl_norm_v03", algorithm = "")
+Pen8_05 <- get_latest_plot(iters = 5, subfolder = "PenDigits", dataset_name = "PenDigits_withoutdupl_norm_v08", algorithm = "")
 
 Pen <- rbindlist(list(Pen1_05[[3]], Pen3_05[[3]], Pen8_05[[3]]))
 
@@ -472,6 +631,20 @@ ggplot(data = Pen) +
   theme_minimal()+
   scale_y_continuous(name="AUC Standard Deviations", breaks = seq(Pen[, round(min(V3) - 0.5)], 
                                                                   Pen[, round(max(V3) + 0.5)], 0.5))
+
+#iForest
+Pen3_20_iForest <- get_latest_plot(iters = 20, subfolder = "PenDigits", dataset_name = "PenDigits_withoutdupl_norm_v03", algorithm = "_iForest")
+Pen_iForest <- rbindlist(list(Pen3_20_iForest[[3]]))
+
+
+
+ggplot(data = Pen_iForest) +
+  aes(x = Group, y = V3, fill = Group) +
+  geom_boxplot() +
+  theme_minimal()+
+  scale_y_continuous(name="AUC Standard Deviations", breaks = seq(Pen_iForest[, round(min(V3) - 0.5)], 
+                                                                  Pen_iForest[, round(max(V3) + 0.5)], 0.5))
+
 
 # InternetAds ---------------------------------------------------------------
 
@@ -506,6 +679,7 @@ Page[, Dataset:= "PageBlocks-datasets"]
 Heart[, Dataset:= "HeartDisease-datasets"]
 Internet[, Dataset:= "InternetAds-datasets"]
 
+
 all_datasetsDT <- rbindlist(list(Wilt, Shuttle, Stamps, Wave, 
                                  Ionosphere_10DT, Cardio, GlassDT, 
                                  Arrhythmia, Annthyroid, Page, Internet))
@@ -521,6 +695,40 @@ ggplot(data = all_datasetsDT[Group!= "Original Space"]) +
   coord_flip()+
   ggtitle(label = "each boxplot which is named as 'X-datasets', contains 3 different versions of outlier class. Otherwise, only one version was available for analysis",
           subtitle = "Experiments have been performed under 30times 10fold Cross validation ")
+
+
+#iForest
+Wilt_iForest[, Dataset:= "Wilt-datasets"]
+Shuttle_iForest[, Dataset:= "Shuttle-datasets"]
+Stamps_iForest[, Dataset:= "Stamps-datasets"]
+Wave_iForest[, Dataset:= "Waveform-datasets"]
+Ionosphere_10DT_iForest[, Dataset:= "Ionosphere"]
+Cardio_iForest[, Dataset:= "Cardio-datasets"]
+GlassDT_iForest[, Dataset:= "Glass"]
+Arrhythmia_iForest[, Dataset:= "Arrhythmia-datasets"]
+Page_iForest[, Dataset:= "PageBlocks-datasets"]
+Heart_iForest[, Dataset:= "HeartDisease-datasets"]
+Pen_iForest[, Dataset:= "PenDigits-datasets"]
+
+
+all_datasetsDT_iForest <- rbindlist(list(Wilt_iForest, Shuttle_iForest, 
+                                         Wave_iForest, Ionosphere_10DT_iForest, 
+                                         Cardio_iForest, GlassDT_iForest, 
+                                         Arrhythmia_iForest, Page_iForest,
+                                         Heart_iForest, Pen_iForest))
+
+ggplot(data = all_datasetsDT_iForest[Group!= "Original Space"]) +
+  aes(x = Dataset, y = V3, fill = Group) +
+  geom_boxplot() +
+  theme_minimal()+
+  geom_hline(yintercept = 0)+
+  scale_y_continuous(name="AUC Standard Deviations", 
+                     breaks = seq(all_datasetsDT_iForest[, round(min(V3) - 0.5)], 
+                                  all_datasetsDT_iForest[, round(max(V3) + 0.5)], 0.5))+
+  coord_flip()+
+  ggtitle(label = "each boxplot which is named as 'X-datasets', contains 3 different versions of outlier class. Otherwise, only one version was available for analysis",
+          subtitle = "Experiments have been performed under 30times 10fold Cross validation ")
+
 
 
 
