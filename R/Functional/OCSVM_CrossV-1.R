@@ -2405,7 +2405,7 @@ get_CV_experiments_paper_ensemble <- function(datasetname, experiments = "OC_com
     final_path_to_save <- paste0(paste0(path_to_save, folder_to_save))
   }
   
-  DToriginal <- fread(paste0(path_to_read, "/", datasetname,".csv"))
+  DToriginal <<- fread(paste0(path_to_read, "/", datasetname,".csv"))
   setnames(DToriginal, "outlier", "Label", skip_absent = T)
   DToriginal[, .N, by = Label]
   
@@ -2440,6 +2440,27 @@ get_CV_experiments_paper_ensemble <- function(datasetname, experiments = "OC_com
     list_train_id[[i]] <- DToriginal[, sample(x = id, size = 0.8 * dim(DToriginal)[1])]
     list_test_id[[i]] <- setdiff(DToriginal$id, list_train_id[[i]])
   }
+  
+  for(i in 1:CViterations){
+    if(DToriginal[id %in% list_train_id[[i]]][Label == "yes", length(id)] == 0){
+      print(length(list_train_id))
+      list_train_id[[i]] <- NULL
+      list_test_id[[i]] <- NULL
+    }
+  }
+  # for(kk in 1:length(list_train_id)){
+  #   print(kk)
+  #   print(length(list_train_id))
+  #   print("-------")
+  #   if(DToriginal[id %in% list_test_id[[kk]]][Label == "yes", length(id)] == 0){
+  #     print(kk)
+  #     print(length(list_train_id))
+  #     list_train_id[[kk]] <- NULL
+  #     list_test_id[[kk]] <- NULL
+  #   }
+  #}
+  
+  
   
   i <- 1
   chunk1 <- sample(list_train_id[[i]], length(list_train_id[[i]])/10, replace = F)
@@ -2552,7 +2573,6 @@ get_CV_experiments_paper_ensemble <- function(datasetname, experiments = "OC_com
     return(randomOD_testCV)
   }
   
-  
   randomOD_1_train <- get_train_representations(representationDT = list_one_randomOD[[1]])
   randomOD_2_train <- get_train_representations(representationDT = list_one_randomOD[[2]])
   randomOD_3_train <- get_train_representations(representationDT = list_one_randomOD[[3]])
@@ -2608,8 +2628,8 @@ get_CV_experiments_paper_ensemble <- function(datasetname, experiments = "OC_com
       CVtrain_DT <- copy(trainDT[Label == "no"])
       CVtest_DT1 <- randomOD_test[[ij]]
       
-      if(CVtest_DT1[Label=="yes", length(id)] < 2){
-        CVtest_DT <- rbindlist(list(j[Label=="yes"][sample(nrow(j[Label=="yes"]), 2)], CVtest_DT1))
+      if(CVtest_DT1[Label=="yes", length(id)] <= 1){
+        CVtest_DT <- rbindlist(list(outliers_train_DT[1:3], CVtest_DT1))
         CVtest_DT <- na.omit(CVtest_DT)
         CVtest_DT <- unique(CVtest_DT)
       }else{CVtest_DT <- CVtest_DT1}
@@ -2645,7 +2665,7 @@ get_CV_experiments_paper_ensemble <- function(datasetname, experiments = "OC_com
         }
       }
     }
-    final_DT_CV <- rbindlist(res_CV)
+    # final_DT_CV <- rbindlist(res_CV)
     return(res_CV)
     }
   
@@ -2660,14 +2680,14 @@ get_CV_experiments_paper_ensemble <- function(datasetname, experiments = "OC_com
   representation9 <- rbindlist(get_scores_CV_per_randomOD(randomOD_train = randomOD_9_train, randomOD_test = randomOD_9_test, feature_col = "Representation_9"))  
   representation10 <- rbindlist(get_scores_CV_per_randomOD(randomOD_train = randomOD_10_train, randomOD_test = randomOD_10_test, feature_col = "Representation_10"))
   representation11 <- rbindlist(get_scores_CV_per_randomOD(randomOD_train = randomOD_11_train, randomOD_test = randomOD_11_test, feature_col = "Representation_11"))
-  representation12 <- rbindlist(get_scores_CV_per_randomOD(randomOD_train = randomOD_12_train, randomOD_test = randomOD_12_test, feature_col = "Representation_12"))  
-  representation13 <- rbindlist(get_scores_CV_per_randomOD(randomOD_train = randomOD_13_train, randomOD_test = randomOD_13_test, feature_col = "Representation_13"))  
-  representation14 <- rbindlist(get_scores_CV_per_randomOD(randomOD_train = randomOD_14_train, randomOD_test = randomOD_14_test, feature_col = "Representation_14"))  
+  representation12 <- rbindlist(get_scores_CV_per_randomOD(randomOD_train = randomOD_12_train, randomOD_test = randomOD_12_test, feature_col = "Representation_12"))
+  representation13 <- rbindlist(get_scores_CV_per_randomOD(randomOD_train = randomOD_13_train, randomOD_test = randomOD_13_test, feature_col = "Representation_13"))
+  representation14 <- rbindlist(get_scores_CV_per_randomOD(randomOD_train = randomOD_14_train, randomOD_test = randomOD_14_test, feature_col = "Representation_14"))
   representation15 <- rbindlist(get_scores_CV_per_randomOD(randomOD_train = randomOD_15_train, randomOD_test = randomOD_15_test, feature_col = "Representation_15"))
   representation16 <- rbindlist(get_scores_CV_per_randomOD(randomOD_train = randomOD_16_train, randomOD_test = randomOD_16_test, feature_col = "Representation_16"))
-  representation17 <- rbindlist(get_scores_CV_per_randomOD(randomOD_train = randomOD_17_train, randomOD_test = randomOD_17_test, feature_col = "Representation_17"))  
-  representation18 <- rbindlist(get_scores_CV_per_randomOD(randomOD_train = randomOD_18_train, randomOD_test = randomOD_18_test, feature_col = "Representation_18"))  
-  representation19 <- rbindlist(get_scores_CV_per_randomOD(randomOD_train = randomOD_19_train, randomOD_test = randomOD_19_test, feature_col = "Representation_19"))  
+  representation17 <- rbindlist(get_scores_CV_per_randomOD(randomOD_train = randomOD_17_train, randomOD_test = randomOD_17_test, feature_col = "Representation_17"))
+  representation18 <- rbindlist(get_scores_CV_per_randomOD(randomOD_train = randomOD_18_train, randomOD_test = randomOD_18_test, feature_col = "Representation_18"))
+  representation19 <- rbindlist(get_scores_CV_per_randomOD(randomOD_train = randomOD_19_train, randomOD_test = randomOD_19_test, feature_col = "Representation_19"))
   representation20 <- rbindlist(get_scores_CV_per_randomOD(randomOD_train = randomOD_20_train, randomOD_test = randomOD_20_test, feature_col = "Representation_20"))
   representation21 <- rbindlist(get_scores_CV_per_randomOD(randomOD_train = randomOD_21_train, randomOD_test = randomOD_21_test, feature_col = "Representation_21"))
   
@@ -2684,7 +2704,8 @@ get_CV_experiments_paper_ensemble <- function(datasetname, experiments = "OC_com
                                       representation15, representation16,
                                       representation17, representation18,
                                       representation19, representation20,
-                                      representation21))
+                                      representation21
+                                      ))
   gc()
   representationsDT[, Model:= paste0(kernel, "_", gamma, "_", nu)]
   aucCV_representations <- representationsDT[, auc(Label, scores), by = .(Representation_col, Kfold, Model)]
@@ -2697,7 +2718,7 @@ get_CV_experiments_paper_ensemble <- function(datasetname, experiments = "OC_com
     
     best_hyper_representation <- best_hyper_CV[Representation_col == paste0("Representation_", jj)][, stringr::str_split(Model, pattern = "_")[[1]]]
     
-    representation_train_DT <- list_one_randomOD[[jj]][id %in% list_train_id[[1]]]
+    representation_train_DT <- list_one_randomOD[[jj]][id %in% list_train_id[[1]]][Label == "no"]
     representation_train_DT[, .N, by = Label]
     
     representation_test_DT <- list_one_randomOD[[jj]][id %in% list_test_id[[1]]]
@@ -2725,11 +2746,110 @@ get_CV_experiments_paper_ensemble <- function(datasetname, experiments = "OC_com
     }
   
   all_representationsDT <- rbindlist(list_testDT)
+  # dcasted_representations <- dcast.data.table(all_representationsDT, id+Label~representation, value.var = "scores")
   average_scores_testDT <- all_representationsDT[, mean(scores), by = id]
   average_scores_testDT[, Label:= list_testDT[[1]][, Label]]
   ensemble_auc <- auc(average_scores_testDT$Label, average_scores_testDT$V1)
-  return(ensemble_auc)
+  
+  max_scores_testDT <- all_representationsDT[, max(scores), by = id]
+  max_scores_testDT[, Label:= list_testDT[[1]][, Label]]
+  ensemble_max_auc <- auc(max_scores_testDT$Label, max_scores_testDT$V1)
+  gc()
+
+# Original data  ----------------------------------------------------------
+  
+    iters <- 0
+    res_CV <- list()
+    for(ij in 1:10){
+      
+      trainDT <- DToriginal[id %in% list_train_chunks[[ij]]]
+      outliers_train_DT <- copy(trainDT[Label == "yes"])
+      CVtrain_DT <- copy(trainDT[Label == "no"])
+      CVtest_DT1 <- DToriginal[id %in% list_test_chunks[[ij]]]
+      
+      if(CVtest_DT1[Label=="yes", length(id)] <= 1){
+        CVtest_DT <- rbindlist(list(outliers_train_DT[1:3], CVtest_DT1))
+        CVtest_DT <- na.omit(CVtest_DT)
+        CVtest_DT <- unique(CVtest_DT)
+      }else{CVtest_DT <- CVtest_DT1}
+      print(CVtest_DT[, .N, by = Label])
+      
+      CVtest_id_final <- CVtest_DT$id
+      CVtest_Label_final <- CVtest_DT$Label
+      
+      CVtrain_DT[, `:=` (id = NULL, Label = NULL)]
+      CVtest_DT[, `:=` (id = NULL, Label = NULL)]
+      
+      print("One-random section")
+      print(paste0("Kfold: ", ij))
+      print(paste0("Representation: ", "Original data"))
+      
+      for(kernels in c("linear", "rbf", "sigmoid")){
+        for(nus in c(0.001, 0.005, 0.01, 0.05, 0.1)){
+          for(gammas in c(1/dim(CVtrain_DT)[2], 0.01, 0.05, 0.1, 0.2)){
+            iters <- iters+1
+            
+            scores_CV <- calculate_OCSVM_params(DTtrain = CVtrain_DT, DTtest = CVtest_DT, 
+                                                given_nu = nus, given_kernel = kernels, given_gamma = gammas)
+            DT_CV <- data.table(scores = scores_CV, 
+                                id = CVtest_id_final,
+                                Label = CVtest_Label_final)
+            DT_CV[, Kfold:=ij]
+            DT_CV[, gamma := gammas]
+            DT_CV[, nu := nus]
+            DT_CV[, kernel := kernels]
+            DT_CV[, Representation_col := "Original"]
+            res_CV[[iters]] <- DT_CV
+          }
+        }
+      }
+    }
+    final_DT_original <- rbindlist(res_CV)
+    
+    final_DT_original[, Model:= paste0(kernel, "_", gamma, "_", nu)]
+    aucCV_original <- final_DT_original[, auc(Label, scores), by = .(Kfold, Model)]
+    best_hyper_original_CV <- aucCV_original[, mean(V1), by = Model][order(V1, decreasing = T)][1]
+  
+  
+    # Train with the best hyperparameter all the 80% data  
+
+      best_hyper_original <- best_hyper_original_CV[, stringr::str_split(Model, pattern = "_")[[1]]]
+      
+      representation_train_DT <- DToriginal[id %in% list_train_id[[1]]][Label == "no"]
+      representation_train_DT[, .N, by = Label]
+      
+      representation_test_DT <- DToriginal[id %in% list_test_id[[1]]]
+      representation_test_DT[, .N, by = Label]
+      if(representation_test_DT[Label=="yes", length(id)] == 0){
+        representation_test_DT <- rbindlist(list(representation_train_DT[Label == "yes"][1:3], representation_test_DT))
+        representation_test_DT <- na.omit(representation_test_DT)
+      }else{representation_test_DT <- representation_test_DT}
+      
+      ids_labels <- representation_test_DT[, .(id, Label)]
+      representation_train_DT[, `:=` (id = NULL, Label = NULL)]
+      representation_test_DT[, `:=` (id = NULL, Label = NULL)]
+      
+      scores_original <- calculate_OCSVM_params(DTtrain = representation_train_DT, DTtest = representation_test_DT, 
+                                       given_kernel = best_hyper_original[1], 
+                                       given_gamma = as.numeric(best_hyper_original[2]),
+                                       given_nu = as.numeric(best_hyper_original[3]))
+      
+      
+      testDT_original <- data.table(scores = scores_original, 
+                           Label = ids_labels$Label, 
+                           id = ids_labels$id, representation = "Original")
+   
+      auc_original <- auc(testDT_original$Label, testDT_original$scores)
+    
+    
+  
+  return(list(ensemble_auc, ensemble_max_auc, all_representationsDT, testDT_original))
   }
+
+
+
+
+
 
 
 # start_exp <- Sys.time()

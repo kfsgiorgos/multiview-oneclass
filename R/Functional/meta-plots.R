@@ -366,10 +366,10 @@ merged_random1_Ann1 <- random1Ann1[random1_mean_CVperformance_Ann1, on = c("CVit
 merged_random1_Ann1[order(V2, decreasing = T)][, unique(V2)][1:10]
 
 # Cardio ------------------------------------------------------------------
-get_latest_plot(iters = 10, subfolder = "Cardio", dataset_name = "Cardiotocography_withoutdupl_norm_02_v02")
+rrr1 <- get_latest_plot(iters = 10, subfolder = "Cardio", dataset_name = "Cardiotocography_withoutdupl_norm_02_v02", algorithm = "")
 get_latest_plot(iters = 10, subfolder = "Cardio", dataset_name = "Cardiotocography_withoutdupl_norm_02_v05")
 get_latest_plot(iters = 10, subfolder = "Cardio", dataset_name = "Cardiotocography_withoutdupl_norm_02_v08")
-get_latest_plot(iters = 30, subfolder = "Cardio", dataset_name = "Cardiotocography_withoutdupl_norm_02_v02")
+rrr <- get_latest_plot(iters = 30, subfolder = "Cardio", dataset_name = "Cardiotocography_withoutdupl_norm_02_v02", algorithm = "")
 get_latest_plot(iters = 30, subfolder = "Cardio", dataset_name = "Cardiotocography_withoutdupl_norm_02_v05")
 get_latest_plot(iters = 30, subfolder = "Cardio", dataset_name = "Cardiotocography_withoutdupl_norm_02_v08")
 get_latest_plot(iters = 10, subfolder = "Cardio", dataset_name = "Cardiotocography_withoutdupl_norm_05_v01")
