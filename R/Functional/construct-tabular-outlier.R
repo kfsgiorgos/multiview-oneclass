@@ -25,8 +25,8 @@ GetTabularOutlierScore <- function(datasetname) {
     DTtabular <- dplyr::bind_cols(list.columns)
 
     
-    # fwrite(DTtabular, paste0("data/derived-data/", datasetname, ".csv"), nThread = 2)
-    fwrite(DTtabular, paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname, ".csv"), nThread = 20)
+     fwrite(DTtabular, paste0("data/derived-data/", datasetname, ".csv"), nThread = 2)
+    #fwrite(DTtabular, paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname, ".csv"), nThread = 20)
 
   }
 }
@@ -47,8 +47,8 @@ GetTabularOutlierScore <- function(datasetname) {
 # GetTabularOutlierScore(datasetname = "Cardiotocography_withoutdupl_norm_05_v02.results")
 # GetTabularOutlierScore(datasetname = "Cardiotocography_withoutdupl_norm_05_v03.results")
 # GetTabularOutlierScore(datasetname = "Cardiotocography_withoutdupl_norm_05_v04.results")
-# GetTabularOutlierScore(datasetname = "Cardiotocography_withoutdupl_norm_05_v05.results")
-
+# GetTabularOutlierScore(datasetname = "Cardiotocography_withoutdupl_norm_02_v01.results")
+# GetTabularOutlierScore(datasetname = "Cardiotocography_withoutdupl_norm_02_v02.results")
 # GetTabularOutlierScore(datasetname = "Stamps_withoutdupl_norm_02_v06.results")
 # GetTabularOutlierScore(datasetname = "Waveform_withoutdupl_norm_v01.results")
 # GetTabularOutlierScore(datasetname = "Waveform_withoutdupl_norm_v02.results")
@@ -78,7 +78,7 @@ GetCsvFromArff <- function(datasetname) {
   # DT <- as.data.table(foreign::read.arff(paste0("data/downloaded-data/", datasetname, ".arff")))
   DT<- as.data.table(foreign::read.arff(paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname, ".arff")))
   setnames(DT, old = "outlier", "Label")
-  #fwrite(DT, paste0("data/derived-data/", datasetname, ".csv"), nThread = 2)
+  # fwrite(DT, paste0("data/derived-data/", datasetname, ".csv"), nThread = 2)
   fwrite(DT, paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname, ".csv"), nThread = 20)
   
 }
@@ -129,7 +129,8 @@ GetCsvFromArff <- function(datasetname) {
 # GetCsvFromArff(datasetname = "Cardiotocography_withoutdupl_norm_05_v03")
 # GetCsvFromArff(datasetname = "Cardiotocography_withoutdupl_norm_05_v04")
 # GetCsvFromArff(datasetname = "Cardiotocography_withoutdupl_norm_05_v05")
-
+# GetCsvFromArff(datasetname = "Cardiotocography_withoutdupl_norm_02_v01")
+# GetCsvFromArff(datasetname = "Cardiotocography_withoutdupl_norm_02_v02")
 
 
 # example: Get_multiple_CsvFromArff(datasetpath = "~/Downloads/ALOI/")

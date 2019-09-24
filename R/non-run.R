@@ -62,4 +62,3 @@ usethis::use_r("configuration")
 # 
 # 
 # # load packages & source scripts ------------------------------------------
->>>>>>> 2b4bae6e99a3ea07bfdee81a03ff6269330db9a3
