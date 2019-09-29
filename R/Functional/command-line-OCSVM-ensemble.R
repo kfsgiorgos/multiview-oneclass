@@ -30,16 +30,26 @@ if(experiments == "OC_combined_CV"){
 # arg1 <- "Cardiotocography_withoutdupl_norm_02_v02"
 # arg2 <- "Cardio"
 # 
-# arg3 <- 20
+# arg3 <- 10
+
+# list_res <- list()
+# for( k in 1:as.numeric(arg3)){
+#   print(Sys.time())
+#   list_res[[k]] <- get_CV_experiments_paper_ensemble(datasetname = arg1, 
+#                                                      experiments = "OC_combined_CV", 
+#                                                      CViterations = 10)
+#   print(list_res[[k]])
+# }
 
 list_res <- list()
 for( k in 1:as.numeric(arg3)){
   print(Sys.time())
-  list_res[[k]] <- get_CV_experiments_paper_ensemble(datasetname = arg1, 
-                                                     experiments = "OC_combined_CV", 
-                                                     CViterations = 10)
+  list_res[[k]] <- get_CV_experiments_paper_ensemble_iForest(datasetname = arg1, 
+                                                             experiments = "OC_combined_CV", 
+                                                             CViterations = 5)
   print(list_res[[k]])
 }
+
 
 ensembleDT_average <- data.table(V1 = unlist(purrr::map(list_res, 1)), Representation = "Ensemble-Multiple Represenations")
 ensembleDT_average[, mean(V1)]
@@ -440,10 +450,15 @@ Sens_Spec95_DT1[Representation == "Original", Ensemble:= "None"]
 
 
 all_metricsDT <- rbindlist(list(HmeasureDT1, GiniDT1, AUCDT1, Spec_Sens95_DT1, Sens_Spec95_DT1))
+
+
+
+# fwrite(all_metricsDT, paste0(final_path_to_save, "figures/",  
+#                                   arg2, "/", arg1, "_OCSVM_21_Multiple_Repres_allMetrics", arg3,"_iters.csv"))
+
+
 fwrite(all_metricsDT, paste0(final_path_to_save, "figures/",  
-                                  arg2, "/", arg1, "_OCSVM_21_Multiple_Repres_allMetrics", arg3,"_iters.csv"))
-
-
+                             arg2, "/", arg1, "_iForest_21_Multiple_Repres_allMetrics", arg3,"_iters.csv"))
 
 
 
