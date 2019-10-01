@@ -121,7 +121,7 @@ get_metric_data <- function(index_DT_list, index_metric_list, column_name) {
                    SpamBase_1, SpamBase_2,SpamBase_3, 
                    PageBlocks_1, PageBlocks_2, PageBlocks_3, 
                    Wave_1, Wave_2, Wave_3, 
-                   Wilt_1, Wave_2, Wilt_3, 
+                   Wilt_1, Wilt_2, Wilt_3, 
                    Internet_2,
                    PenDigits_1)
   DT <- list_DTs[[index_DT_list]][variable == metric_to_plot[index_metric_list]]
@@ -185,26 +185,39 @@ PenDigits_Gini_1 <- get_metric_data(index_DT_list = 20, index_metric_list = Metr
 DT20 <- as.data.table(PenDigits_Gini_1$PenDigits)
 
 # Metric 3
-Gini_DT <- bind_cols(#T1, 
-                     DT5, 
+Gini_DT <- bind_cols(DT2, 
+                     #DT5, 
                      DT6, 
                      DT8, 
                      DT11, 
                      DT14, 
                      DT17, 
-                     DT19#, DT20
+                     DT19, DT20
                      )
 Gini_DT1 <- data.table::transpose(Gini_DT)
+
 setnames(Gini_DT1, old = names(Gini_DT1), new = c("Weighted_50%","Weighted_60%","Weighted_70%","Average Representations","Average Ensemble","None"))
 Gini_DT1[, `Weighted_50%`:=NULL]
 Gini_DT1[, `Weighted_60%`:=NULL]
 Gini_DT1[, `Weighted_70%`:=NULL]
+#setnames(Gini_DT1, old = names(Gini_DT1), new = c("AMUR", "AOMUR", "Original"))
 
+library(Rgraphviz)
+pv.matrix <- friedmanAlignedRanksPost(data=Gini_DT1, control=NULL)
+pv.adj <- adjustBergmannHommel(pv.matrix)
+pv.adj
+r.means1 <- colMeans(rankMatrix(Gini_DT1))
 
-
-friedmanAlignedRanksPost(data=Gini_DT1, control=NULL)
 r.means <- as.data.table(colMeans(rankMatrix(Gini_DT1)))
-r.means[, Ensembles:= c( "Average Representations", "Average Ensemble", "None")]
+r.means[, Ensembles:= c("Average Representations", "Average Ensemble", "None")]
 r.means[order(V1, decreasing = F)]
+
+drawAlgorithmGraph(pvalue.matrix=pv.adj, mean.value=r.means1, alpha=0.05,
+                   font.size=10, node.width=3, node.height=1)
+
+
+
+
+
 
 
