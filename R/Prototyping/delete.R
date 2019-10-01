@@ -565,5 +565,12 @@ plot(x = featuresKNN[Iteration_Features==1, Scores], y= featuresKNN[Iteration_Fe
 featureKNN2 <- temp1[Representation=="KNN" & Iteration_Features==1 & Percentage_Random_Features==0.2&Normal_Iteration==2]
 
 
+# Read Origina DAMI datasets ----------------------------------------------
+dd <- as.data.table(read.arff("realworld/glass.arff"))
+dd[, unique(class)]
+
+
+
+
 
 
