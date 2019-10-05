@@ -25,68 +25,21 @@ if(experiments == "OC_combined_CV"){
   final_path_to_save <- paste0(paste0(path_to_save, folder_to_save))
 }
 
-<<<<<<< HEAD
- list_res <- list()
- for( k in 1:as.numeric(arg3)){
-   print(Sys.time())
-   list_res[[k]] <- get_CV_experiments_paper_ensemble(datasetname = arg1, 
-                                                      experiments = "OC_combined_CV", 
-                                                      CViterations = 10)
-   print(list_res[[k]])
- }
+list_res_1 <- list()
+for( k in 1:as.numeric(arg3)){
+  print(Sys.time())
+  list_res_1[[k]] <- get_CV_experiments_paper_ensemble(datasetname = arg1, 
+                                                     experiments = "OC_combined_CV", 
+                                                     CViterations = 5)
+  print(list_res_1[[k]])
+}
 
-#list_res <- list()
-#for( k in 1:as.numeric(arg3)){
-#  print(Sys.time())
-#  list_res[[k]] <- get_CV_experiments_paper_ensemble_iForest(datasetname = arg1, 
-#                                                             experiments = "OC_combined_CV", 
-#                                                             CViterations = 5)
-#  print(list_res[[k]])
-#}
-
-
-ensembleDT_average <- data.table(V1 = unlist(purrr::map(list_res, 1)), Representation = "Ensemble-Multiple Represenations")
-ensembleDT_average[, mean(V1)]
-ensembleDT_maximum <- data.table(V1 = unlist(purrr::map(list_res, 2)), Representation = "Ensemble-Multiple Represenations")
-ensembleDT_maximum[, mean(V1)]
-
-
-# fwrite(ensembleDT_average, paste0(final_path_to_save, "figures/",  
-#                             arg2, "/", arg1, "_OCSVM_Ensemble_21_Multiple_Repres_average", arg3,"_iters.csv"))
-# 
-# 
-# fwrite(ensembleDT_maximum, paste0(final_path_to_save, "figures/",  
-#                                   arg2, "/", arg1, "_OCSVM_Ensemble_21_Multiple_Repres_maximum", arg3,"_iters.csv"))
-
-# 0.5 weights -------------------------------------------------------------
-list_metrics <- list()
-for(ij in 1:arg3){
-  print(ij)
-  dcasted_representations <- dcast.data.table(list_res[[ij]][[3]], id+Label~representation, value.var = "scores")
-  dcasted_original <- dcast.data.table(list_res[[ij]][[4]], id+Label~representation, value.var = "scores") 
-  dcasted_representations[, Original:= dcasted_original$Original]
-
-  norm_dcasted_representations <- dcasted_representations[, lapply(.SD, function(x) (x - mean(x))/sd(x)), .SD = 3:24]
-  norm_dcasted_representations[, `:=` (id = dcasted_representations$id, Label = dcasted_representations$Label)]
-  
-  
-  DT_list <- list()
-  for(i in 1:30){
-    sample_representations <- norm_dcasted_representations[, .SD, .SDcols = sample(x = 1:21, size = 5, replace = F)]
-    setnames(sample_representations, old = names(sample_representations), 
-             new = c("representation_1", "representation_2", "representation_3","representation_4", "representation_5"))
-    sample_representations[, Original:=norm_dcasted_representations$Original]
-    sample_representations[, weighted_new := (0.5 * Original) +(0.1 * representation_1) + (0.1 * representation_2) + (0.1 * representation_3)+ (0.1 * representation_4)+ (0.1 * representation_5)]
-    sample_representations[, `:=` (id = dcasted_representations$id, Label = dcasted_representations$Label)]
-    DT_list[[i]] <- sample_representations[, .SD, .SDcols = 6:9]
-    rm(sample_representations)
-  }
 gc()
 
-MUR21_scores <- rbindlist(map(list_res_1[1:2], 3))
+MUR21_scores <- rbindlist(map(list_res_1[1:4], 3))
 fwrite(MUR21_scores, paste0(final_path_to_save, "figures/",
                        arg2, "/", arg1, "_OCSVM_Multiple_Repres_Scores", arg3,"_iters.csv"))
-Original_scores <- rbindlist(map(list_res_1[1:2], 4))
+Original_scores <- rbindlist(map(list_res_1[1:4], 4))
 fwrite(Original_scores, paste0(final_path_to_save, "figures/",
                        arg2, "/", arg1, "_OCSVM_Original_Scores", arg3,"_iters.csv"))
 
