@@ -29,6 +29,11 @@ read_metricsDT <- function(subfolder, datasetname, repeatedCV) {
 }
 
 
+ALOI_1 <- read_metricsDT(subfolder = "ALOI", 
+                               datasetname = "ALOI_withoutdupl_norm",
+                               repeatedCV = 5)
+
+
 Annthyroid_1 <- read_metricsDT(subfolder = "Annthyroid", 
                              datasetname = "Annthyroid_withoutdupl_norm_02_v01",
                              repeatedCV = 30)
@@ -113,6 +118,9 @@ PenDigits_1 <- read_metricsDT(subfolder = "PenDigits",
                             datasetname = "PenDigits_withoutdupl_norm_v01",
                             repeatedCV = 10)
 
+
+
+
 get_metric_data <- function(index_DT_list, index_metric_list, column_name) {
   metric_to_plot <- c("H", "Gini", "AUC", "Spec.Sens95", "Sens.Spec95")
   list_DTs <- list(Annthyroid_1, Annthyroid_2, Annthyroid_3,
@@ -123,7 +131,7 @@ get_metric_data <- function(index_DT_list, index_metric_list, column_name) {
                    Wave_1, Wave_2, Wave_3, 
                    Wilt_1, Wilt_2, Wilt_3, 
                    Internet_2,
-                   PenDigits_1)
+                   PenDigits_1, ALOI_1)
   DT <- list_DTs[[index_DT_list]][variable == metric_to_plot[index_metric_list]]
   
   metric_DT_mean <- DT[, median(value), by = Ensemble]
@@ -184,6 +192,10 @@ DT19 <- as.data.table(Internet_Gini_1$Internet)
 PenDigits_Gini_1 <- get_metric_data(index_DT_list = 20, index_metric_list = Metric_index, column_name = "PenDigits")[[1]]
 DT20 <- as.data.table(PenDigits_Gini_1$PenDigits)
 
+ALOI_Gini_1 <- get_metric_data(index_DT_list = 21, index_metric_list = Metric_index, column_name = "ALOI")[[1]]
+DT21 <- as.data.table(ALOI_Gini_1$ALOI)
+
+
 # Metric 3
 Gini_DT <- bind_cols(DT2, 
                      #DT5, 
@@ -192,7 +204,7 @@ Gini_DT <- bind_cols(DT2,
                      DT11, 
                      DT14, 
                      DT17, 
-                     DT19, DT20
+                     DT19, DT20, DT21
                      )
 Gini_DT1 <- data.table::transpose(Gini_DT)
 
@@ -214,7 +226,6 @@ r.means[order(V1, decreasing = F)]
 
 drawAlgorithmGraph(pvalue.matrix=pv.adj, mean.value=r.means1, alpha=0.05,
                    font.size=10, node.width=3, node.height=1)
-
 
 
 
