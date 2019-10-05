@@ -32,23 +32,23 @@ if(experiments == "OC_combined_CV"){
 # 
 # arg3 <- 10
 
-# list_res <- list()
-# for( k in 1:as.numeric(arg3)){
-#   print(Sys.time())
-#   list_res[[k]] <- get_CV_experiments_paper_ensemble(datasetname = arg1, 
-#                                                      experiments = "OC_combined_CV", 
-#                                                      CViterations = 10)
-#   print(list_res[[k]])
-# }
+ list_res <- list()
+ for( k in 1:as.numeric(arg3)){
+   print(Sys.time())
+   list_res[[k]] <- get_CV_experiments_paper_ensemble(datasetname = arg1, 
+                                                      experiments = "OC_combined_CV", 
+                                                      CViterations = 10)
+   print(list_res[[k]])
+ }
 
-list_res <- list()
-for( k in 1:as.numeric(arg3)){
-  print(Sys.time())
-  list_res[[k]] <- get_CV_experiments_paper_ensemble_iForest(datasetname = arg1, 
-                                                             experiments = "OC_combined_CV", 
-                                                             CViterations = 5)
-  print(list_res[[k]])
-}
+#list_res <- list()
+#for( k in 1:as.numeric(arg3)){
+#  print(Sys.time())
+#  list_res[[k]] <- get_CV_experiments_paper_ensemble_iForest(datasetname = arg1, 
+#                                                             experiments = "OC_combined_CV", 
+#                                                             CViterations = 5)
+#  print(list_res[[k]])
+#}
 
 
 ensembleDT_average <- data.table(V1 = unlist(purrr::map(list_res, 1)), Representation = "Ensemble-Multiple Represenations")
