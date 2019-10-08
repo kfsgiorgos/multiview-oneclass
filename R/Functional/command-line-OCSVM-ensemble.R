@@ -32,7 +32,7 @@ for( k in 1:as.numeric(arg3)){
   print(Sys.time())
   list_res_1[[k]] <- get_CV_experiments_paper_ensemble(datasetname = arg1, 
                                                      experiments = "OC_combined_CV", 
-                                                     CViterations = arg4)
+                                                     CViterations = as.numeric(arg4))
   print(list_res_1[[k]])
 }
 
@@ -50,21 +50,21 @@ for( k in 1:as.numeric(arg3)){
   print(Sys.time())
   list_MUR_5[[k]] <- get_CV_experiments_paper_5_MUR_ensemble(datasetname = arg1,
                                                     experiments = "OC_combined_CV",
-                                                    CViterations = arg4)
+                                                    CViterations = as.numeric(arg4))
   }
 list_MUR_10 <- list()
 for( k in 1:as.numeric(arg3)){
   print(Sys.time())
   list_MUR_10[[k]] <- get_CV_experiments_paper_10_MUR_ensemble(datasetname = arg1,
                                                              experiments = "OC_combined_CV",
-                                                             CViterations = arg4)
+                                                             CViterations = as.numeric(arg4))
 }
 list_MUR_15 <- list()
 for( k in 1:as.numeric(arg3)){
   print(Sys.time())
   list_MUR_15[[k]] <- get_CV_experiments_paper_15_MUR_ensemble(datasetname = arg1,
                                                                experiments = "OC_combined_CV",
-                                                               CViterations = arg4)
+                                                               CViterations = as.numeric(arg4))
 }
 
 

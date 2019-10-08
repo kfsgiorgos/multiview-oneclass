@@ -49,7 +49,14 @@ Shuttle_ensemble <- read_extended_metricsDT(subfolder = "Shuttle",
                                          datasetname = "Shuttle_withoutdupl_norm_v01",
                                          algorithm = "OCSVM",
                                          repeatedCV = 30)
-
+Wave_ensemble <- read_extended_metricsDT(subfolder = "Waveform", 
+                                            datasetname = "Waveform_withoutdupl_norm_v03",
+                                            algorithm = "OCSVM",
+                                            repeatedCV = 30)
+Internet_ensemble <- read_extended_metricsDT(subfolder = "InternetAds", 
+                                             datasetname = "InternetAds_withoutdupl_norm_02_v01",
+                                             algorithm = "OCSVM",
+                                             repeatedCV = 10)
 
 ALOI_1 <- read_metricsDT(subfolder = "ALOI", 
                                datasetname = "ALOI_withoutdupl_norm",
@@ -235,29 +242,29 @@ Gini_DT1[, `Weighted_60%`:=NULL]
 Gini_DT1[, `Weighted_70%`:=NULL]
 #setnames(Gini_DT1, old = names(Gini_DT1), new = c("AMUR", "AOMUR", "Original"))
 
-Glass_ensemble <- Shuttle_ensemble
-DT <- data.table(Original = Glass_ensemble[MUR == "21" & Representation == "Original", R_Prec],
-                 MUR_21 = Glass_ensemble[MUR == "21" & Representation == "Multiple_Representations" & Ensemble == "Average Representations", R_Prec],
-                 Original_MUR_21 = Glass_ensemble[MUR == "21" & Representation == "Multiple_Representations" & Ensemble == "Average Ensemble", R_Prec])
+Glass_ensemble <- Pima_ensemble
+DT <- data.table(Original = Glass_ensemble[MUR == "21" & Representation == "Original", Average_Prec],
+                 MUR_21 = Glass_ensemble[MUR == "21" & Representation == "Multiple_Representations" & Ensemble == "Average Representations", Average_Prec],
+                 Original_MUR_21 = Glass_ensemble[MUR == "21" & Representation == "Multiple_Representations" & Ensemble == "Average Ensemble", Average_Prec])
 
 DT_5 <- data.table(Original = Glass_ensemble[MUR == "21" & Representation == "Original", AUC ],
                  MUR_5 = Glass_ensemble[MUR == "5" & Representation == "Multiple_Representations" & Ensemble == "Average Representations", AUC ],
                  Original_MUR_5 = Glass_ensemble[MUR == "5" & Representation == "Multiple_Representations" & Ensemble == "Average Ensemble", AUC ])
 
-DT_10 <- data.table(Original = Glass_ensemble[MUR == "21" & Representation == "Original", R_Prec ],
-                  MUR_10 = Glass_ensemble[MUR == "10" & Representation == "Multiple_Representations" & Ensemble == "Average Representations", R_Prec ],
-                  Original_MUR_10 = Glass_ensemble[MUR == "10" & Representation == "Multiple_Representations" & Ensemble == "Average Ensemble", R_Prec ])
+DT_10 <- data.table(Original = Glass_ensemble[MUR == "21" & Representation == "Original", AUC ],
+                  MUR_10 = Glass_ensemble[MUR == "10" & Representation == "Multiple_Representations" & Ensemble == "Average Representations", AUC ],
+                  Original_MUR_10 = Glass_ensemble[MUR == "10" & Representation == "Multiple_Representations" & Ensemble == "Average Ensemble", AUC ])
 
-DT_15 <- data.table(Original = Glass_ensemble[MUR == "21" & Representation == "Original", R_Prec ],
-                    MUR_15 = Glass_ensemble[MUR == "15" & Representation == "Multiple_Representations" & Ensemble == "Average Representations", R_Prec ],
-                    Original_MUR_15 = Glass_ensemble[MUR == "15" & Representation == "Multiple_Representations" & Ensemble == "Average Ensemble", R_Prec ])
+DT_15 <- data.table(Original = Glass_ensemble[MUR == "21" & Representation == "Original", AUC ],
+                    MUR_15 = Glass_ensemble[MUR == "15" & Representation == "Multiple_Representations" & Ensemble == "Average Representations", AUC ],
+                    Original_MUR_15 = Glass_ensemble[MUR == "15" & Representation == "Multiple_Representations" & Ensemble == "Average Ensemble", AUC ])
 
 
 tempDT1 <- as.data.table(bind_cols(list(DT$Original, DT$MUR_21, DT_5$MUR_5, DT_10$MUR_10, DT_15$MUR_15,
           DT$Original_MUR_21, DT_5$Original_MUR_5, DT_10$Original_MUR_10, DT_15$Original_MUR_15)))
 
 
-plotCD(DT_15, alpha = 0.05)
+plotCD(DT_5, alpha = 0.05)
 plotCD(DT, alpha = 0.05)
 plotCD(tempDT1, alpha = 0.05)
 test <- nemenyiTest(DT_15, alpha = 0.05)
