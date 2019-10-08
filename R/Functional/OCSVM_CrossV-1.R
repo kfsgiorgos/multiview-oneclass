@@ -2453,8 +2453,8 @@ get_CV_experiments_paper_ensemble <- function(datasetname, experiments = "OC_com
       }
   }
   if(length(element_remove_train) > 0){
-    list_train_id <- rlist::list.remove(list_train_id, unlist(element_remove_test))
-    list_test_id <- rlist::list.remove(list_test_id, unlist(element_remove_test))
+    list_train_id <- rlist::list.remove(list_train_id, unlist(element_remove_train))
+    list_test_id <- rlist::list.remove(list_test_id, unlist(element_remove_train))
   }
   
 
@@ -2472,20 +2472,8 @@ get_CV_experiments_paper_ensemble <- function(datasetname, experiments = "OC_com
     list_test_id <- rlist::list.remove(list_test_id, unlist(element_remove_test))
   }
   
-  # for(kk in 1:length(list_train_id)){
-  #   print(kk)
-  #   print(length(list_train_id))
-  #   print("-------")
-  #   if(DToriginal[id %in% list_test_id[[kk]]][Label == "yes", length(id)] == 0){
-  #     print(kk)
-  #     print(length(list_train_id))
-  #     list_train_id[[kk]] <- NULL
-  #     list_test_id[[kk]] <- NULL
-  #   }
-  #}
-  
-  
-  
+
+
   i <- 1
   chunk1 <- sample(list_train_id[[i]], length(list_train_id[[i]])/10, replace = F)
   available_id1 <- setdiff(list_train_id[[i]], chunk1)
@@ -2943,8 +2931,8 @@ get_CV_experiments_paper_5_MUR_ensemble <- function(datasetname, experiments = "
     }
   }
   if(length(element_remove_train) > 0){
-    list_train_id <- rlist::list.remove(list_train_id, unlist(element_remove_test))
-    list_test_id <- rlist::list.remove(list_test_id, unlist(element_remove_test))
+    list_train_id <- rlist::list.remove(list_train_id, unlist(element_remove_train))
+    list_test_id <- rlist::list.remove(list_test_id, unlist(element_remove_train))
   }
   
   
@@ -3275,8 +3263,8 @@ get_CV_experiments_paper_10_MUR_ensemble <- function(datasetname, experiments = 
     }
   }
   if(length(element_remove_train) > 0){
-    list_train_id <- rlist::list.remove(list_train_id, unlist(element_remove_test))
-    list_test_id <- rlist::list.remove(list_test_id, unlist(element_remove_test))
+    list_train_id <- rlist::list.remove(list_train_id, unlist(element_remove_train))
+    list_test_id <- rlist::list.remove(list_test_id, unlist(element_remove_train))
   }
   
   
@@ -3626,8 +3614,8 @@ get_CV_experiments_paper_15_MUR_ensemble <- function(datasetname, experiments = 
     }
   }
   if(length(element_remove_train) > 0){
-    list_train_id <- rlist::list.remove(list_train_id, unlist(element_remove_test))
-    list_test_id <- rlist::list.remove(list_test_id, unlist(element_remove_test))
+    list_train_id <- rlist::list.remove(list_train_id, unlist(element_remove_train))
+    list_test_id <- rlist::list.remove(list_test_id, unlist(element_remove_train))
   }
   
   
@@ -3996,8 +3984,8 @@ get_CV_experiments_paper_ensemble_iForest<- function(datasetname, experiments = 
     }
   }
   if(length(element_remove_train) > 0){
-    list_train_id <- rlist::list.remove(list_train_id, unlist(element_remove_test))
-    list_test_id <- rlist::list.remove(list_test_id, unlist(element_remove_test))
+    list_train_id <- rlist::list.remove(list_train_id, unlist(element_remove_train))
+    list_test_id <- rlist::list.remove(list_test_id, unlist(element_remove_train))
   }
   
   
@@ -4483,8 +4471,8 @@ get_CV_experiments_paper_5_MUR_iForest_ensemble <- function(datasetname, experim
     }
   }
   if(length(element_remove_train) > 0){
-    list_train_id <- rlist::list.remove(list_train_id, unlist(element_remove_test))
-    list_test_id <- rlist::list.remove(list_test_id, unlist(element_remove_test))
+    list_train_id <- rlist::list.remove(list_train_id, unlist(element_remove_train))
+    list_test_id <- rlist::list.remove(list_test_id, unlist(element_remove_train))
   }
   
   
@@ -4821,8 +4809,8 @@ get_CV_experiments_paper_10_MUR_iForest_ensemble <- function(datasetname, experi
     }
   }
   if(length(element_remove_train) > 0){
-    list_train_id <- rlist::list.remove(list_train_id, unlist(element_remove_test))
-    list_test_id <- rlist::list.remove(list_test_id, unlist(element_remove_test))
+    list_train_id <- rlist::list.remove(list_train_id, unlist(element_remove_train))
+    list_test_id <- rlist::list.remove(list_test_id, unlist(element_remove_train))
   }
   
   
@@ -5053,7 +5041,7 @@ get_CV_experiments_paper_10_MUR_iForest_ensemble <- function(datasetname, experi
                                       representation9,representation10)
   )
   gc()
-  representationsDT[, Model:= paste0(kernel, "_", gamma, "_", nu)]
+  representationsDT[, Model:= paste0(estimators, "_", maxSamples, "_", maxFeatures)]
   aucCV_representations <- representationsDT[, auc(Label, scores), by = .(Representation_col, Kfold, Model)]
   mean_aucCV_representations <- aucCV_representations[, mean(V1), by = .(Representation_col, Model)]
   best_hyper_CV <- mean_aucCV_representations[, .SD[which.max(V1)], by = .(Representation_col)]
@@ -5178,8 +5166,8 @@ get_CV_experiments_paper_15_MUR_iForest_ensemble <- function(datasetname, experi
     }
   }
   if(length(element_remove_train) > 0){
-    list_train_id <- rlist::list.remove(list_train_id, unlist(element_remove_test))
-    list_test_id <- rlist::list.remove(list_test_id, unlist(element_remove_test))
+    list_train_id <- rlist::list.remove(list_train_id, unlist(element_remove_train))
+    list_test_id <- rlist::list.remove(list_test_id, unlist(element_remove_train))
   }
   
   

@@ -96,15 +96,19 @@ get_evaluation_21MUR <- function(list_results) {
     precision_temp <- list()
     for(i in 1:length(ids_representation)){
       yes <- representation_classification[1:ids_representation[i]][, .N, by = Label][Label == "yes", N]
-      no <- representation_classification[1:ids_representation[i]][, .N, by = Label][Label == "no", N]
-      precision_temp[[i]] <- yes/(yes+no)
+      no <- representation_classification[1:ids_representation[i]][, .N, by = Label][Label == "no"]
+      
+      if(dim(no)[1] == 0){
+        no <- 0
+      }else{ no <- representation_classification[1:ids_representation[i]][, .N, by = Label][Label == "no", N]}
+      
+      precision_temp[[i]] <- yes/(yes+no)  
     }
     AP_representation <- sum(unlist(precision_temp))/length(ids_representation) 
     
     yes_representation <- representation_classification[1:ids_representation[length(ids_representation)]][, .N, by = Label][Label == "yes", N]
     no_representation <- representation_classification[1:ids_representation[length(ids_representation)]][, .N, by = Label][Label == "no", N]
     R_precision_representation <- yes_representation/(yes_representation + no_representation)
-    
     
     
     # Average precision Original
@@ -116,9 +120,14 @@ get_evaluation_21MUR <- function(list_results) {
     
     precision_temp_1 <- list()
     for(i in 1:length(ids_original)){
-      yes <- representation_classification[1:ids_original[i]][, .N, by = Label][Label == "yes", N]
-      no <- representation_classification[1:ids_original[i]][, .N, by = Label][Label == "no", N]
-      precision_temp_1[[i]] <- yes/(yes+no)
+      yes <- original_classification[1:ids_original[i]][, .N, by = Label][Label == "yes", N]
+      no <- original_classification[1:ids_original[i]][, .N, by = Label][Label == "no"]
+      
+      if(dim(no)[1] == 0){
+        no <- 0
+      }else{ no <- original_classification[1:ids_original[i]][, .N, by = Label][Label == "no", N]}
+      
+      precision_temp_1[[i]] <- yes/(yes+no)  
     }
     AP_original <- sum(unlist(precision_temp_1))/length(ids_original)
     
@@ -143,9 +152,9 @@ get_evaluation_21MUR <- function(list_results) {
     wighted_metrics[, Average_Prec:= AP_representation]
     wighted_metrics[, Representation:= "Multiple_Representations"]
     
-    metricsDT<- rbindlist(list(original_metrics, wighted_metrics))
-    metricsDT[, Iteration:= ij]
-    list_metrics[[ij]] <- metricsDT
+    metricsDT1 <- rbindlist(list(original_metrics, wighted_metrics))
+    metricsDT1[, Iteration:= ij]
+    list_metrics[[ij]] <- metricsDT1
   }
   
   DT_metrics_Representations_ensemble <- rbindlist(list_metrics)
@@ -155,7 +164,7 @@ get_evaluation_21MUR <- function(list_results) {
   # 50% Original + 50% Ensemble of Representations --------------------
   
   
-  list_metrics <- list()
+  list_metrics_2 <- list()
   for(ij in 1:arg3){
     print(ij)
     dcasted_representations <- dcast.data.table(list_res[[ij]][[3]], id+Label~representation, value.var = "scores")
@@ -165,10 +174,10 @@ get_evaluation_21MUR <- function(list_results) {
     
     norm_dcasted_representations <- dcasted_representations[, lapply(.SD, function(x) (x - mean(x))/sd(x)), .SD = 3:23]
     average_representationsDT <- as.data.table(rowMeans(norm_dcasted_representations))
-    average_representationsDT[, Original:= dcasted_original$Original]
+    average_representationsDT[, Original:= dcasted_representations$Original]
     average_ensembleDT <- as.data.table(rowMeans(average_representationsDT))
     average_ensembleDT[, `:=` (id = dcasted_representations$id, Label = dcasted_representations$Label)]
-    average_ensembleDT[, Original:= dcasted_original$Original]
+    # average_ensembleDT[, Original:= dcasted_original$Original]
     
     # Calculate evaluation metrics
     
@@ -179,31 +188,37 @@ get_evaluation_21MUR <- function(list_results) {
     ensemble_classification[order(V1, decreasing = F) & Label == "yes", id]
     ids_ensemble <- ensemble_classification[order(V1, decreasing = F) & Label == "yes", id]
     
-    precision_temp <- list()
+    precision_temp_2 <- list()
     for(i in 1:length(ids_ensemble)){
       yes <- ensemble_classification[1:ids_ensemble[i]][, .N, by = Label][Label == "yes", N]
-      no <- ensemble_classification[1:ids_ensemble[i]][, .N, by = Label][Label == "no", N]
-      precision_temp[[i]] <- yes/(yes+no)
+      no <- ensemble_classification[1:ids_ensemble[i]][, .N, by = Label][Label == "no"]
+      
+      if(dim(no)[1] == 0){
+        no <- 0
+      }else{ no <- ensemble_classification[1:ids_ensemble[i]][, .N, by = Label][Label == "no", N]}
+      
+      precision_temp_2[[i]] <- yes/(yes+no)  
     }
-    AP_representation <- sum(unlist(precision_temp))/length(ids_ensemble) 
     
-    yes_ensemble <- representation_classification[1:ids_ensemble[length(ids_ensemble)]][, .N, by = Label][Label == "yes", N]
-    no_ensemble <- representation_classification[1:ids_ensemble[length(ids_ensemble)]][, .N, by = Label][Label == "no", N]
+    AP_ensemble <- sum(unlist(precision_temp_2))/length(ids_ensemble) 
+    
+    yes_ensemble <- ensemble_classification[1:ids_ensemble[length(ids_ensemble)]][, .N, by = Label][Label == "yes", N]
+    no_ensemble <- ensemble_classification[1:ids_ensemble[length(ids_ensemble)]][, .N, by = Label][Label == "no", N]
     R_precision_ensemble <- yes_ensemble/(yes_ensemble + no_ensemble)
     
-    weighted_eval <- average_ensembleDT[, HMeasure(true.class = Label, scores = V1)]
-    weighted_evalDT <- as.data.table(weighted_eval$metrics)
-    wighted_metrics <- weighted_evalDT[1, .(H, Gini, AUC)]
-    wighted_metrics[, R_Prec:= R_precision_representation]
-    wighted_metrics[, Average_Prec:= AP_representation]
-    wighted_metrics[, Representation:= "Multiple_Representations"]
+    weighted_eval1 <- average_ensembleDT[, HMeasure(true.class = Label, scores = V1)]
+    weighted_evalDT1 <- as.data.table(weighted_eval1$metrics)
+    wighted_metrics2 <- weighted_evalDT1[1, .(H, Gini, AUC)]
+    wighted_metrics2[, R_Prec:= R_precision_ensemble]
+    wighted_metrics2[, Average_Prec:= AP_ensemble]
+    wighted_metrics2[, Representation:= "Multiple_Representations"]
     
-    metricsDT <- rbindlist(list(wighted_metrics))
-    metricsDT[, Iteration:= ij]
-    list_metrics[[ij]] <- metricsDT
+    metricsDT2 <- rbindlist(list(wighted_metrics2))
+    metricsDT2[, Iteration:= ij]
+    list_metrics_2[[ij]] <- metricsDT2
   }
   
-  DT_metrics_ensemble <- rbindlist(list_metrics)
+  DT_metrics_ensemble <- rbindlist(list_metrics_2)
   DT_metrics_ensemble[, Ensemble:= "Average Ensemble"]
   
   
@@ -241,15 +256,19 @@ get_evaluation_MUR <- function(list_results, list_original, col_name) {
     precision_temp <- list()
     for(i in 1:length(ids_representation)){
       yes <- representation_classification[1:ids_representation[i]][, .N, by = Label][Label == "yes", N]
-      no <- representation_classification[1:ids_representation[i]][, .N, by = Label][Label == "no", N]
-      precision_temp[[i]] <- yes/(yes+no)
+      no <- representation_classification[1:ids_representation[i]][, .N, by = Label][Label == "no"]
+      
+      if(dim(no)[1] == 0){
+        no <- 0
+      }else{ no <- representation_classification[1:ids_representation[i]][, .N, by = Label][Label == "no", N]}
+      
+      precision_temp[[i]] <- yes/(yes+no)  
     }
     AP_representation <- sum(unlist(precision_temp))/length(ids_representation) 
     
     yes_representation <- representation_classification[1:ids_representation[length(ids_representation)]][, .N, by = Label][Label == "yes", N]
     no_representation <- representation_classification[1:ids_representation[length(ids_representation)]][, .N, by = Label][Label == "no", N]
     R_precision_representation <- yes_representation/(yes_representation + no_representation)
-    
     
     
     # Average precision Original
@@ -261,9 +280,14 @@ get_evaluation_MUR <- function(list_results, list_original, col_name) {
     
     precision_temp_1 <- list()
     for(i in 1:length(ids_original)){
-      yes <- representation_classification[1:ids_original[i]][, .N, by = Label][Label == "yes", N]
-      no <- representation_classification[1:ids_original[i]][, .N, by = Label][Label == "no", N]
-      precision_temp_1[[i]] <- yes/(yes+no)
+      yes <- original_classification[1:ids_original[i]][, .N, by = Label][Label == "yes", N]
+      no <- original_classification[1:ids_original[i]][, .N, by = Label][Label == "no"]
+      
+      if(dim(no)[1] == 0){
+        no <- 0
+      }else{ no <- original_classification[1:ids_original[i]][, .N, by = Label][Label == "no", N]}
+      
+      precision_temp_1[[i]] <- yes/(yes+no)  
     }
     AP_original <- sum(unlist(precision_temp_1))/length(ids_original)
     
@@ -273,14 +297,6 @@ get_evaluation_MUR <- function(list_results, list_original, col_name) {
     
     
     # Calculate evaluation metrics
-    
-    # original_eval <- average_representationsDT[, HMeasure(true.class = Label, scores = Original)]
-    # original_evalDT <- as.data.table(original_eval$metrics)
-    # original_metrics <- original_evalDT[1, .(H, Gini, AUC)]
-    # original_metrics[, R_Prec:= R_precision_original]
-    # original_metrics[, Average_Prec:= AP_original]
-    # original_metrics[, Representation:= "Original"]
-    
     weighted_eval <- average_representationsDT[, HMeasure(true.class = Label, scores = V1)]
     weighted_evalDT <- as.data.table(weighted_eval$metrics)
     wighted_metrics <- weighted_evalDT[1, .(H, Gini, AUC)]
@@ -302,7 +318,7 @@ get_evaluation_MUR <- function(list_results, list_original, col_name) {
   rm(dcasted_representations)
   rm(average_ensembleDT)
   
-  list_metrics <- list()
+  list_metrics_2 <- list()
   for(ij in 1:arg3){
     print(ij)
     dcasted_representations <- dcast.data.table(list_res1[[ij]], id+Label~representation, value.var = "scores")
@@ -312,7 +328,7 @@ get_evaluation_MUR <- function(list_results, list_original, col_name) {
     
     norm_dcasted_representations <- dcasted_representations[, lapply(.SD, function(x) (x - mean(x))/sd(x)), .SD = 3:dim(dcasted_representations)[2]]
     average_representationsDT <- as.data.table(rowMeans(norm_dcasted_representations))
-    average_representationsDT[, Original:= dcasted_original$Original]
+    average_representationsDT[, Original:= dcasted_representations$Original]
     average_ensembleDT <- as.data.table(rowMeans(average_representationsDT))
     average_ensembleDT[, `:=` (id = dcasted_representations$id, Label = dcasted_representations$Label)]
     average_ensembleDT[, Original:= dcasted_original$Original]
@@ -326,31 +342,37 @@ get_evaluation_MUR <- function(list_results, list_original, col_name) {
     ensemble_classification[order(V1, decreasing = F) & Label == "yes", id]
     ids_ensemble <- ensemble_classification[order(V1, decreasing = F) & Label == "yes", id]
     
-    precision_temp <- list()
+    precision_temp_2 <- list()
     for(i in 1:length(ids_ensemble)){
       yes <- ensemble_classification[1:ids_ensemble[i]][, .N, by = Label][Label == "yes", N]
-      no <- ensemble_classification[1:ids_ensemble[i]][, .N, by = Label][Label == "no", N]
-      precision_temp[[i]] <- yes/(yes+no)
+      no <- ensemble_classification[1:ids_ensemble[i]][, .N, by = Label][Label == "no"]
+      
+      if(dim(no)[1] == 0){
+        no <- 0
+      }else{ no <- ensemble_classification[1:ids_ensemble[i]][, .N, by = Label][Label == "no", N]}
+      
+      precision_temp_2[[i]] <- yes/(yes+no)  
     }
-    AP_representation <- sum(unlist(precision_temp))/length(ids_ensemble) 
     
-    yes_ensemble <- representation_classification[1:ids_ensemble[length(ids_ensemble)]][, .N, by = Label][Label == "yes", N]
-    no_ensemble <- representation_classification[1:ids_ensemble[length(ids_ensemble)]][, .N, by = Label][Label == "no", N]
+    AP_ensemble <- sum(unlist(precision_temp_2))/length(ids_ensemble) 
+    
+    yes_ensemble <- ensemble_classification[1:ids_ensemble[length(ids_ensemble)]][, .N, by = Label][Label == "yes", N]
+    no_ensemble <- ensemble_classification[1:ids_ensemble[length(ids_ensemble)]][, .N, by = Label][Label == "no", N]
     R_precision_ensemble <- yes_ensemble/(yes_ensemble + no_ensemble)
     
-    weighted_eval <- average_ensembleDT[, HMeasure(true.class = Label, scores = V1)]
-    weighted_evalDT <- as.data.table(weighted_eval$metrics)
-    wighted_metrics1 <- weighted_evalDT[1, .(H, Gini, AUC)]
-    wighted_metrics1[, R_Prec:= R_precision_representation]
-    wighted_metrics1[, Average_Prec:= AP_representation]
-    wighted_metrics1[, Representation:= "Multiple_Representations"]
+    weighted_eval1 <- average_ensembleDT[, HMeasure(true.class = Label, scores = V1)]
+    weighted_evalDT1 <- as.data.table(weighted_eval1$metrics)
+    wighted_metrics2 <- weighted_evalDT1[1, .(H, Gini, AUC)]
+    wighted_metrics2[, R_Prec:= R_precision_ensemble]
+    wighted_metrics2[, Average_Prec:= AP_ensemble]
+    wighted_metrics2[, Representation:= "Multiple_Representations"]
     
-    metricsDT1 <- rbindlist(list(wighted_metrics1))
-    metricsDT1[, Iteration:= ij]
-    list_metrics[[ij]] <- metricsDT1
+    metricsDT2 <- rbindlist(list(wighted_metrics2))
+    metricsDT2[, Iteration:= ij]
+    list_metrics_2[[ij]] <- metricsDT2
   }
   
-  DT_metrics_ensemble <- rbindlist(list_metrics)
+  DT_metrics_ensemble <- rbindlist(list_metrics_2)
   DT_metrics_ensemble[, Ensemble:= "Average Ensemble"]
   
   
