@@ -2654,6 +2654,7 @@ get_CV_experiments_paper_ensemble <- function(datasetname, experiments = "OC_com
       CVtest_DT[, `:=` (id = NULL, Label = NULL)]
       
       print("One-random section")
+      print("21 MURs")
       print(paste0("Kfold: ", ij))
       print(paste0("Representation: ", feature_col))
       
@@ -2792,7 +2793,6 @@ get_CV_experiments_paper_ensemble <- function(datasetname, experiments = "OC_com
       CVtrain_DT[, `:=` (id = NULL, Label = NULL)]
       CVtest_DT[, `:=` (id = NULL, Label = NULL)]
       
-      print("One-random section")
       print(paste0("Kfold: ", ij))
       print(paste0("Representation: ", "Original data"))
       
@@ -3098,7 +3098,7 @@ get_CV_experiments_paper_5_MUR_ensemble <- function(datasetname, experiments = "
       CVtrain_DT[, `:=` (id = NULL, Label = NULL)]
       CVtest_DT[, `:=` (id = NULL, Label = NULL)]
       
-      print("One-random section")
+      print("5 MURs")
       print(paste0("Kfold: ", ij))
       print(paste0("Representation: ", feature_col))
       
@@ -3441,7 +3441,7 @@ get_CV_experiments_paper_10_MUR_ensemble <- function(datasetname, experiments = 
       CVtrain_DT[, `:=` (id = NULL, Label = NULL)]
       CVtest_DT[, `:=` (id = NULL, Label = NULL)]
       
-      print("One-random section")
+      print("10 MURs")
       print(paste0("Kfold: ", ij))
       print(paste0("Representation: ", feature_col))
       
@@ -3803,7 +3803,7 @@ get_CV_experiments_paper_15_MUR_ensemble <- function(datasetname, experiments = 
       CVtrain_DT[, `:=` (id = NULL, Label = NULL)]
       CVtest_DT[, `:=` (id = NULL, Label = NULL)]
       
-      print("One-random section")
+      print("15 MURs")
       print(paste0("Kfold: ", ij))
       print(paste0("Representation: ", feature_col))
       
@@ -4182,6 +4182,7 @@ get_CV_experiments_paper_ensemble_iForest<- function(datasetname, experiments = 
       CVtrain_DT[, `:=` (id = NULL, Label = NULL)]
       CVtest_DT[, `:=` (id = NULL, Label = NULL)]
       
+      print("21 MURs")
       print("One-random section")
       print(paste0("Kfold: ", ij))
       print(paste0("Representation: ", feature_col))
@@ -4327,7 +4328,6 @@ get_CV_experiments_paper_ensemble_iForest<- function(datasetname, experiments = 
     CVtrain_DT[, `:=` (id = NULL, Label = NULL)]
     CVtest_DT[, `:=` (id = NULL, Label = NULL)]
     
-    print("One-random section")
     print(paste0("Kfold: ", ij))
     print(paste0("Representation: ", "Original data"))
     
@@ -4638,7 +4638,7 @@ get_CV_experiments_paper_5_MUR_iForest_ensemble <- function(datasetname, experim
       CVtrain_DT[, `:=` (id = NULL, Label = NULL)]
       CVtest_DT[, `:=` (id = NULL, Label = NULL)]
       
-      print("One-random section")
+      print("5 MURs")
       print(paste0("Kfold: ", ij))
       print(paste0("Representation: ", feature_col))
       
@@ -4987,7 +4987,7 @@ get_CV_experiments_paper_10_MUR_iForest_ensemble <- function(datasetname, experi
       CVtrain_DT[, `:=` (id = NULL, Label = NULL)]
       CVtest_DT[, `:=` (id = NULL, Label = NULL)]
       
-      print("One-random section")
+      print("10 MURs")
       print(paste0("Kfold: ", ij))
       print(paste0("Representation: ", feature_col))
       
@@ -5355,7 +5355,7 @@ get_CV_experiments_paper_15_MUR_iForest_ensemble <- function(datasetname, experi
       CVtrain_DT[, `:=` (id = NULL, Label = NULL)]
       CVtest_DT[, `:=` (id = NULL, Label = NULL)]
       
-      print("One-random section")
+      print("15 MURs")
       print(paste0("Kfold: ", ij))
       print(paste0("Representation: ", feature_col))
       
