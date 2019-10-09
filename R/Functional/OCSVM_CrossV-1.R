@@ -5417,7 +5417,7 @@ get_CV_experiments_paper_15_MUR_iForest_ensemble <- function(datasetname, experi
                                       representation15)
   )
   gc()
-  representationsDT[, Model:= paste0(kernel, "_", gamma, "_", nu)]
+  representationsDT[, Model:= paste0(estimators, "_", maxSamples, "_", maxFeatures)]
   aucCV_representations <- representationsDT[, auc(Label, scores), by = .(Representation_col, Kfold, Model)]
   mean_aucCV_representations <- aucCV_representations[, mean(V1), by = .(Representation_col, Model)]
   best_hyper_CV <- mean_aucCV_representations[, .SD[which.max(V1)], by = .(Representation_col)]
