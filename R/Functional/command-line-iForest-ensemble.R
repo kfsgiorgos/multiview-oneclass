@@ -4,7 +4,7 @@ args <- commandArgs(TRUE)
 arg1 <- args[1]
 arg2 <- args[2]
 arg3 <- args[3]
-arg3 <- args[4]
+arg4 <- args[4]
 experiments <- "OC_combined_CV"
 path_to_read <- config::get("path_to_read_datasets", 
                             file = config_file_path,
