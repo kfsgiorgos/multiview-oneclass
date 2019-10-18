@@ -12,7 +12,7 @@ if(selected_configuration == "macBook"){
                      config = "default"))
   use_condaenv(config::get("conda_env", 
                            file = config_file_path,
-                           config = "default"))
+                           config = "default"), conda = "/Users/georgios.kaiafas/opt/anaconda2/condabin/conda")
   loaded_config_type <- "default"
 }
 

@@ -1,6 +1,6 @@
 default:
   directory: "~/R Language Default Dir/Github-projects/multiview-oneclass/"
-  conda_env: "r-reticulate"
+  conda_env: "r-reticulate1"
   source_scripts: "R/load-packages.R"
   path_to_save_derived_datasets: "data/derived-data"
   OC_combined_experiments: "/OC_Combined/"
