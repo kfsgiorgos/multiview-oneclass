@@ -119,7 +119,111 @@ p1 <- ggplot(data = auc_res) +
 p1
 
 
-fread("~/R Language Default Dir/Github-projects/multiview-oneclass/data/derived-data/OC_Combined_CV/figures/HeartDisease/HeartDisease_withoutdupl_norm_02_v01_1random.csv")
+# Change colnames of Parkinson --------------------------------------------
+Parkinson_07 <- fread("data/derived-data/OC_Combined_CV/figures/Parkinson/Parkinson_withoutdupl_norm_05_v07.results.csv")
+setnames(Parkinson_07, names(Parkinson_07)[2:10], paste0("KNN-00", 1:9))
+setnames(Parkinson_07, names(Parkinson_07)[11:50], paste0("KNN-0", 10:49))
+
+setnames(Parkinson_07, names(Parkinson_07)[51:59], paste0("KNNW-00", 1:9))
+setnames(Parkinson_07, names(Parkinson_07)[60:99], paste0("KNNW-0", 10:49))
+
+setnames(Parkinson_07, names(Parkinson_07)[(99+1):(99+9)], paste0("LOF-00", 1:9))
+setnames(Parkinson_07, names(Parkinson_07)[(99+9+1):(99+9+40)], paste0("LOF-0", 10:49))
+
+
+setnames(Parkinson_07, names(Parkinson_07)[(148+1):(148+9)], paste0("SimplifiedLOF-00", 1:9))
+setnames(Parkinson_07, names(Parkinson_07)[(148+9+1):(148+9+40)], paste0("SimplifiedLOF-0", 10:49))
+
+setnames(Parkinson_07, names(Parkinson_07)[(197+1):(197+9)], paste0("LoOP-00", 1:9))
+setnames(Parkinson_07, names(Parkinson_07)[(197+9+1):(197+9+40)], paste0("LoOP-0", 10:49))
+
+setnames(Parkinson_07, names(Parkinson_07)[(246+1):(246+8)], paste0("LDOF-00", 2:9))
+setnames(Parkinson_07, names(Parkinson_07)[(246+8+1):(246+8+40)], paste0("LDOF-0", 10:49))
+
+
+setnames(Parkinson_07, names(Parkinson_07)[(294+1):(294+9)], paste0("ODIN-00", 1:9))
+setnames(Parkinson_07, names(Parkinson_07)[(294+9+1):(294+9+40)], paste0("ODIN-0", 10:49))
+
+
+setnames(Parkinson_07, names(Parkinson_07)[(343+1):(343+7)], paste0("FastABOD-00", 3:9))
+setnames(Parkinson_07, names(Parkinson_07)[(343+7+1):(343+7+40)], paste0("FastABOD-0", 10:49))
+
+
+setnames(Parkinson_07, names(Parkinson_07)[(390+1):(390+8)], paste0("KDEOS-00", 2:9))
+setnames(Parkinson_07, names(Parkinson_07)[(390+8+1):(390+8+40)], paste0("KDEOS-0", 10:49))
+
+setnames(Parkinson_07, names(Parkinson_07)[(438+1):(438+9)], paste0("LDF-00", 1:9))
+setnames(Parkinson_07, names(Parkinson_07)[(438+9+1):(438+9+40)], paste0("LDF-0", 10:49))
+
+setnames(Parkinson_07, names(Parkinson_07)[(487+1):(487+9)], paste0("INFLO-00", 1:9))
+setnames(Parkinson_07, names(Parkinson_07)[(487+9+1):(487+9+40)], paste0("INFLO-0", 10:49))
+
+
+setnames(Parkinson_07, names(Parkinson_07)[(536+1):(536+9)], paste0("COF-00", 1:9))
+setnames(Parkinson_07, names(Parkinson_07)[(536+9+1):(536+9+40)], paste0("COF-0", 10:49))
+fwrite(Parkinson_07, "data/derived-data/OC_Combined_CV/figures/Parkinson/Parkinson_withoutdupl_norm_05_v07.results.csv")
+
+
+
+# Parkinson v01 -----------------------------------------------------------
+
+Parkinson_01 <- fread("data/derived-data/OC_Combined_CV/figures/Parkinson/Parkinson_withoutdupl_norm_05_v01.results.csv")
+dim(Parkinson_01)
+setnames(Parkinson_01, names(Parkinson_01)[2:10], paste0("KNN-00", 1:9))
+setnames(Parkinson_01, names(Parkinson_01)[11:50], paste0("KNN-0", 10:49))
+
+setnames(Parkinson_01, names(Parkinson_01)[51:59], paste0("KNNW-00", 1:9))
+setnames(Parkinson_01, names(Parkinson_01)[60:99], paste0("KNNW-0", 10:49))
+
+setnames(Parkinson_01, names(Parkinson_01)[(99+1):(99+9)], paste0("LOF-00", 1:9))
+setnames(Parkinson_01, names(Parkinson_01)[(99+9+1):(99+9+40)], paste0("LOF-0", 10:49))
+
+
+setnames(Parkinson_01, names(Parkinson_01)[(148+1):(148+9)], paste0("SimplifiedLOF-00", 1:9))
+setnames(Parkinson_01, names(Parkinson_01)[(148+9+1):(148+9+40)], paste0("SimplifiedLOF-0", 10:49))
+
+setnames(Parkinson_01, names(Parkinson_01)[(197+1):(197+9)], paste0("LoOP-00", 1:9))
+setnames(Parkinson_01, names(Parkinson_01)[(197+9+1):(197+9+40)], paste0("LoOP-0", 10:49))
+
+setnames(Parkinson_01, names(Parkinson_01)[(246+1):(246+8)], paste0("LDOF-00", 2:9))
+setnames(Parkinson_01, names(Parkinson_01)[(246+8+1):(246+8+40)], paste0("LDOF-0", 10:49))
+
+
+setnames(Parkinson_01, names(Parkinson_01)[(294+1):(294+9)], paste0("ODIN-00", 1:9))
+setnames(Parkinson_01, names(Parkinson_01)[(294+9+1):(294+9+40)], paste0("ODIN-0", 10:49))
+
+
+setnames(Parkinson_01, names(Parkinson_01)[(343+1):(343+7)], paste0("FastABOD-00", 3:9))
+setnames(Parkinson_01, names(Parkinson_01)[(343+7+1):(343+7+40)], paste0("FastABOD-0", 10:49))
+
+
+setnames(Parkinson_01, names(Parkinson_01)[(390+1):(390+8)], paste0("KDEOS-00", 2:9))
+setnames(Parkinson_01, names(Parkinson_01)[(390+8+1):(390+8+40)], paste0("KDEOS-0", 10:49))
+
+setnames(Parkinson_01, names(Parkinson_01)[(438+1):(438+9)], paste0("LDF-00", 1:9))
+setnames(Parkinson_01, names(Parkinson_01)[(438+9+1):(438+9+40)], paste0("LDF-0", 10:49))
+
+setnames(Parkinson_01, names(Parkinson_01)[(487+1):(487+9)], paste0("INFLO-00", 1:9))
+setnames(Parkinson_01, names(Parkinson_01)[(487+9+1):(487+9+40)], paste0("INFLO-0", 10:49))
+
+
+setnames(Parkinson_01, names(Parkinson_01)[(536+1):(536+9)], paste0("COF-00", 1:9))
+setnames(Parkinson_01, names(Parkinson_01)[(536+9+1):(536+9+40)], paste0("COF-0", 10:49))
+fwrite(Parkinson_01, "data/derived-data/OC_Combined_CV/figures/Parkinson/Parkinson_withoutdupl_norm_05_v01.results.csv")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

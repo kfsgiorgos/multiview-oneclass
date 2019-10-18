@@ -37,27 +37,6 @@ read_extended_metricsDT <- function(subfolder, datasetname, algorithm, repeatedC
 }
 
 
-Glass_ensemble <- read_extended_metricsDT(subfolder = "Glass", 
-                                          datasetname = "Glass_withoutdupl_norm",
-                                          algorithm = "OCSVM",
-                                          repeatedCV = 30)
-Pima_ensemble <- read_extended_metricsDT(subfolder = "Pima", 
-                                          datasetname = "Pima_withoutdupl_norm_02_v01",
-                                          algorithm = "OCSVM",
-                                          repeatedCV = 30)
-Shuttle_ensemble <- read_extended_metricsDT(subfolder = "Shuttle", 
-                                         datasetname = "Shuttle_withoutdupl_norm_v01",
-                                         algorithm = "OCSVM",
-                                         repeatedCV = 30)
-Wave_ensemble <- read_extended_metricsDT(subfolder = "Waveform", 
-                                            datasetname = "Waveform_withoutdupl_norm_v03",
-                                            algorithm = "OCSVM",
-                                            repeatedCV = 30)
-Internet_ensemble <- read_extended_metricsDT(subfolder = "InternetAds", 
-                                             datasetname = "InternetAds_withoutdupl_norm_02_v01",
-                                             algorithm = "OCSVM",
-                                             repeatedCV = 10)
-
 ALOI_1 <- read_metricsDT(subfolder = "ALOI", 
                                datasetname = "ALOI_withoutdupl_norm",
                                repeatedCV = 5)
@@ -240,37 +219,8 @@ setnames(Gini_DT1, old = names(Gini_DT1), new = c("Weighted_50%","Weighted_60%",
 Gini_DT1[, `Weighted_50%`:=NULL]
 Gini_DT1[, `Weighted_60%`:=NULL]
 Gini_DT1[, `Weighted_70%`:=NULL]
-#setnames(Gini_DT1, old = names(Gini_DT1), new = c("AMUR", "AOMUR", "Original"))
-
-Glass_ensemble <- Pima_ensemble
-DT <- data.table(Original = Glass_ensemble[MUR == "21" & Representation == "Original", Average_Prec],
-                 MUR_21 = Glass_ensemble[MUR == "21" & Representation == "Multiple_Representations" & Ensemble == "Average Representations", Average_Prec],
-                 Original_MUR_21 = Glass_ensemble[MUR == "21" & Representation == "Multiple_Representations" & Ensemble == "Average Ensemble", Average_Prec])
-
-DT_5 <- data.table(Original = Glass_ensemble[MUR == "21" & Representation == "Original", AUC ],
-                 MUR_5 = Glass_ensemble[MUR == "5" & Representation == "Multiple_Representations" & Ensemble == "Average Representations", AUC ],
-                 Original_MUR_5 = Glass_ensemble[MUR == "5" & Representation == "Multiple_Representations" & Ensemble == "Average Ensemble", AUC ])
-
-DT_10 <- data.table(Original = Glass_ensemble[MUR == "21" & Representation == "Original", AUC ],
-                  MUR_10 = Glass_ensemble[MUR == "10" & Representation == "Multiple_Representations" & Ensemble == "Average Representations", AUC ],
-                  Original_MUR_10 = Glass_ensemble[MUR == "10" & Representation == "Multiple_Representations" & Ensemble == "Average Ensemble", AUC ])
-
-DT_15 <- data.table(Original = Glass_ensemble[MUR == "21" & Representation == "Original", AUC ],
-                    MUR_15 = Glass_ensemble[MUR == "15" & Representation == "Multiple_Representations" & Ensemble == "Average Representations", AUC ],
-                    Original_MUR_15 = Glass_ensemble[MUR == "15" & Representation == "Multiple_Representations" & Ensemble == "Average Ensemble", AUC ])
 
 
-tempDT1 <- as.data.table(bind_cols(list(DT$Original, DT$MUR_21, DT_5$MUR_5, DT_10$MUR_10, DT_15$MUR_15,
-          DT$Original_MUR_21, DT_5$Original_MUR_5, DT_10$Original_MUR_10, DT_15$Original_MUR_15)))
-
-
-plotCD(DT_5, alpha = 0.05)
-plotCD(DT, alpha = 0.05)
-plotCD(tempDT1, alpha = 0.05)
-test <- nemenyiTest(DT_15, alpha = 0.05)
-test
-test$diff.matrix
-abs(test$diff.matrix) > test$statistic
 library(Rgraphviz)
 pv.matrix <- friedmanAlignedRanksPost(data=Gini_DT1, control=NULL)
 pv.adj <- adjustBergmannHommel(pv.matrix)
@@ -291,9 +241,400 @@ drawAlgorithmGraph(pvalue.matrix=pv.adj, mean.value=r.means1, alpha=0.05,
 
 
 
+Glass_ensemble <- read_extended_metricsDT(subfolder = "Glass", 
+                                          datasetname = "Glass_withoutdupl_norm",
+                                          algorithm = "OCSVM",
+                                          repeatedCV = 30)
+
+SpamBase_ensemble <- read_extended_metricsDT(subfolder = "SpamBase", 
+                                          datasetname = "SpamBase_withoutdupl_norm_02_v02",
+                                          algorithm = "OCSVM",
+                                          repeatedCV = 30)
+
+Cardio_ensemble <- read_extended_metricsDT(subfolder = "Cardio", 
+                                           datasetname = "Cardiotocography_withoutdupl_norm_02_v08",
+                                           algorithm = "OCSVM",
+                                           repeatedCV = 30)
+
+# Cardio_ensemble_05 <- read_extended_metricsDT(subfolder = "Cardio", 
+#                                               datasetname = "Cardiotocography_withoutdupl_norm_02_v05",
+#                                               algorithm = "OCSVM",
+#                                               repeatedCV = 30)
+KDD_ensemble <- read_extended_metricsDT(subfolder = "KDD", 
+                                         datasetname = "KDDCup99_withoutdupl_catremoved",
+                                         algorithm = "iForest",
+                                         repeatedCV = 5)
+
+
+Pima_ensemble <- read_extended_metricsDT(subfolder = "Pima", 
+                                         datasetname = "Pima_withoutdupl_norm_02_v02",
+                                         algorithm = "OCSVM",
+                                         repeatedCV = 30)
+Shuttle_ensemble <- read_extended_metricsDT(subfolder = "Shuttle", 
+                                            datasetname = "Shuttle_withoutdupl_norm_v01",
+                                            algorithm = "OCSVM",
+                                            repeatedCV = 30)
+Wave_ensemble <- read_extended_metricsDT(subfolder = "Waveform", 
+                                         datasetname = "Waveform_withoutdupl_norm_v03",
+                                         algorithm = "OCSVM",
+                                         repeatedCV = 30)
+Internet_ensemble1 <- read_extended_metricsDT(subfolder = "InternetAds", 
+                                             datasetname = "InternetAds_withoutdupl_norm_02_v01",
+                                             algorithm = "OCSVM",
+                                             repeatedCV = 10)
+Internet_ensemble2 <- read_extended_metricsDT(subfolder = "InternetAds", 
+                                              datasetname = "InternetAds_withoutdupl_norm_02_v01",
+                                              algorithm = "OCSVM",
+                                              repeatedCV = 11)
+Internet_ensemble <- rbindlist(list(Internet_ensemble2, Internet_ensemble1))
+
+Stamps_ensemble <- read_extended_metricsDT(subfolder = "Stamps", 
+                                           datasetname = "Stamps_withoutdupl_norm_05_v04",
+                                           algorithm = "OCSVM",
+                                           repeatedCV = 30)
+Heart_ensemble <- read_extended_metricsDT(subfolder = "HeartDisease", 
+                                           datasetname = "HeartDisease_withoutdupl_norm_02_v02",
+                                           algorithm = "OCSVM",
+                                           repeatedCV = 30)
+Wilt_ensemble <- read_extended_metricsDT(subfolder = "Wilt", 
+                                          datasetname = "Wilt_withoutdupl_norm_02_v02",
+                                          algorithm = "OCSVM",
+                                          repeatedCV = 30)
+Page_ensemble <- read_extended_metricsDT(subfolder = "PageBlocks", 
+                                         datasetname = "PageBlocks_withoutdupl_norm_02_v02",
+                                         algorithm = "OCSVM",
+                                         repeatedCV = 30)
+WBC_ensemble <- read_extended_metricsDT(subfolder = "WBC", 
+                                         datasetname = "WBC_withoutdupl_norm_v05",
+                                         algorithm = "OCSVM",
+                                         repeatedCV = 30)
+
+WDBC_ensemble <- read_extended_metricsDT(subfolder = "WDBC", 
+                                         datasetname = "WDBC_withoutdupl_norm_v09",
+                                         algorithm = "OCSVM",
+                                         repeatedCV = 30)
+Annthyroid_ensemble <- read_extended_metricsDT(subfolder = "Annthyroid", 
+                                         datasetname = "Annthyroid_withoutdupl_norm_02_v05",
+                                         algorithm = "OCSVM",
+                                         repeatedCV = 30)
+
+Parkinson_ensemble <- read_extended_metricsDT(subfolder = "Parkinson", 
+                                              datasetname = "Parkinson_withoutdupl_norm_05_v01",
+                                              algorithm = "OCSVM",
+                                              repeatedCV = 30)
+
+Arrhythmia_ensemble <- read_extended_metricsDT(subfolder = "Arrhythmia", 
+                                              datasetname = "Arrhythmia_withoutdupl_norm_02_v02",
+                                              algorithm = "OCSVM",
+                                              repeatedCV = 30)
+
+
+get_evaluation_DT <- function(givenDT_ensemble, given_metric) {
+
+  givenDT_ensemble <- givenDT_ensemble[!(is.na(R_Prec))]
+  
+  DT_21 <- data.table(Original = givenDT_ensemble[MUR == "21" & Representation == "Original", ..given_metric][, lapply(.SD,mean), .SDcols = 1],
+                   MUR_21 = givenDT_ensemble[MUR == "21" & Representation == "Multiple_Representations" & Ensemble == "Average Representations", ..given_metric][, lapply(.SD,mean), .SDcols = 1],
+                   Original_MUR_21 = givenDT_ensemble[MUR == "21" & Representation == "Multiple_Representations" & Ensemble == "Average Ensemble", ..given_metric][, lapply(.SD,mean), .SDcols = 1])
+  setnames(DT_21, names(DT_21), c("Original", "MUR_21", "AOMUR_21"))
+  # Average_DT_21 <- data.table(Original = mean(DT_21$Original,na.rm=TRUE), 
+  #                             MUR = mean(DT_21$MUR_21,na.rm=TRUE), 
+  #                             AOMUR = mean(DT_21$Original_MUR_21,na.rm=TRUE), 
+  #                             Representations = "21")
+  
+  DT_5 <- data.table(MUR_5 = givenDT_ensemble[MUR == "5" & Representation == "Multiple_Representations" & Ensemble == "Average Representations", ..given_metric][, lapply(.SD,mean), .SDcols = 1],
+                     Original_MUR_5 = givenDT_ensemble[MUR == "5" & Representation == "Multiple_Representations" & Ensemble == "Average Ensemble", ..given_metric][, lapply(.SD,mean), .SDcols = 1])
+  setnames(DT_5, names(DT_5), c("MUR_5", "AOMUR_5"))
+  
+  # Average_DT_5 <- data.table(Original = mean(DT_5$Original,na.rm=TRUE), 
+  #                             MUR = mean(DT_5$MUR_5,na.rm=TRUE), 
+  #                             AOMUR = mean(DT_5$Original_MUR_5,na.rm=TRUE), 
+  #                             Representations = "5")
+  
+  DT_10 <- data.table(MUR_10 = givenDT_ensemble[MUR == "10" & Representation == "Multiple_Representations" & Ensemble == "Average Representations", ..given_metric][, lapply(.SD,mean), .SDcols = 1],
+                      Original_MUR_10 = givenDT_ensemble[MUR == "10" & Representation == "Multiple_Representations" & Ensemble == "Average Ensemble", ..given_metric][, lapply(.SD,mean), .SDcols = 1])
+  setnames(DT_10, names(DT_10), c("MUR_10", "AOMUR_10"))
+  # Average_DT_10 <- data.table(Original = mean(DT_10$Original,na.rm=TRUE), 
+  #                             MUR = mean(DT_10$MUR_10,na.rm=TRUE), 
+  #                             AOMUR = mean(DT_10$Original_MUR_10,na.rm=TRUE), 
+  #                             Representations = "10")
+  # 
+  DT_15 <- data.table(MUR_15 = givenDT_ensemble[MUR == "15" & Representation == "Multiple_Representations" & Ensemble == "Average Representations", ..given_metric][, lapply(.SD,mean), .SDcols = 1],
+                      Original_MUR_15 = givenDT_ensemble[MUR == "15" & Representation == "Multiple_Representations" & Ensemble == "Average Ensemble", ..given_metric][, lapply(.SD,mean), .SDcols = 1])
+  setnames(DT_15, names(DT_15), c("MUR_15", "AOMUR_15"))
+  # Average_DT_15 <- data.table(Original = mean(DT_15$Original,na.rm=TRUE), 
+  #                            MUR = mean(DT_15$MUR_15,na.rm=TRUE), 
+  #                            AOMUR = mean(DT_15$Original_MUR_15,na.rm=TRUE), 
+  #                            Representations = "15")
+  # 
+  # allDT <- as.data.table(dplyr::bind_cols(list(DT_21$Original, DT_21$MUR_21, 
+  #                                         DT_5$MUR_5, DT_10$MUR_10, DT_15$MUR_15,
+  #                                         DT_21$Original_MUR_21, DT_5$Original_MUR_5, 
+  #                                         DT_10$Original_MUR_10, DT_15$Original_MUR_15)))
+  all_averageDT <- as.data.table(dplyr::bind_cols(list(DT_21, DT_15, 
+                                  DT_10, DT_5)))
+  
+  return(all_averageDT)
+  }
+
+
+  
+list_ensembles <- list(cardio = Cardio_ensemble, 
+                       glass = Glass_ensemble, 
+                       heart = Heart_ensemble, 
+                       internet = Internet_ensemble, 
+                       page = Page_ensemble, 
+                       pima = Pima_ensemble, 
+                       shuttle = Shuttle_ensemble, 
+                       spam = SpamBase_ensemble, 
+                       stamps = Stamps_ensemble, 
+                       wave = Wave_ensemble,
+                       wilt = Wilt_ensemble,
+                       wbc = WBC_ensemble,
+                       #wdbc = WDBC_ensemble, 
+                       ann = Annthyroid_ensemble,
+                       park = Parkinson_ensemble, 
+                       arr = Arrhythmia_ensemble,
+                       kdd = KDD_ensemble)
+
+
+metric <- "AUC"
+list_names <- list("cardio", 
+                   "glass", 
+                   "heart", 
+                   "internet",
+                   "page",
+                   "pima", 
+                   "shuttle",
+                   "spam",
+                   "stamps", 
+                   "wave", 
+                   "wilt", 
+                   "wbc", 
+                   #"wdbc", 
+                   "annthyroid",
+                   "parkinson", 
+                   "arrhythmia",
+                   "kdd"
+                   )
+
+
+list_typeII <- list(Glass_ensemble, Shuttle_ensemble, Wave_ensemble)
+list_namesII <- list("Glass", "Shuttle", "Wave")
+
+list_res <- list()
+# list_ensembles <- list_typeII
+# list_namesII <- list_namesII
+
+for( i in 1:length(list_ensembles)){
+  
+  tempDT <- get_evaluation_DT(givenDT_ensemble = list_ensembles[[i]], given_metric = metric)
+  tempDT[, Dataset:= list_names[[i]]]
+  tempDT[, Metric:= metric]
+  list_res[[i]] <- tempDT
+  }
+DT <- rbindlist(list_res)
+DT
+DT[, Dataset:= NULL]  
+DT[, Metric:= NULL] 
+# DT[, AOMUR_21:= NULL]
+# DT[, AOMUR_15:= NULL]
+# DT[, AOMUR_10:= NULL]
+# DT[, AOMUR_5:= NULL]
+
+friedmanTest(DT)
+plotCD(DT, alpha = 0.1)
+colMeans(rankMatrix(DT))
+test <- nemenyiTest(DT, alpha = 0.1)
+test
+test$diff.matrix
+abs(test$diff.matrix) > test$statistic
+
+pv.matrix <- friedmanAlignedRanksPost(data=DT, control=NULL)
+pv.matrix
+colMeans(rankMatrix(DT))
+# pv.adj <- adjustBergmannHommel(pv.matrix)
+# pv.adj
+
+
+# pv.adj <- adjustBergmannHommel(pv.matrix)
+# r.means <- colMeans(rankMatrix(DT))
+# drawAlgorithmGraph(pvalue.matrix=pv.adj, mean.value=r.means, alpha=0.05,
+#                    font.size=10, node.width=3, node.height=1)
 
 
 
 
+# iForest -----------------------------------------------------------------
+
+
+Cardio_ensemble_iF <- read_extended_metricsDT(subfolder = "Cardio", 
+                                              datasetname = "Cardiotocography_withoutdupl_norm_02_v05",
+                                              algorithm = "iForest",
+                                              repeatedCV = 30)
+Glass_ensemble_iF <- read_extended_metricsDT(subfolder = "Glass", 
+                                          datasetname = "Glass_withoutdupl_norm",
+                                          algorithm = "iForest",
+                                          repeatedCV = 30)
+Internet_ensemble_iF <- read_extended_metricsDT(subfolder = "InternetAds", 
+                                              datasetname = "InternetAds_withoutdupl_norm_02_v01",
+                                              algorithm = "iForest",
+                                              repeatedCV = 11)
+KDD_ensemble_iF <- read_extended_metricsDT(subfolder = "KDD", 
+                                        datasetname = "KDDCup99_withoutdupl_catremoved",
+                                        algorithm = "iForest",
+                                        repeatedCV = 5)
+Pima_ensemble_iF <- read_extended_metricsDT(subfolder = "Pima", 
+                                         datasetname = "Pima_withoutdupl_norm_02_v01",
+                                         algorithm = "iForest",
+                                         repeatedCV = 30)
+Shuttle_ensemble_iF <- read_extended_metricsDT(subfolder = "Shuttle", 
+                                            datasetname = "Shuttle_withoutdupl_norm_v01",
+                                            algorithm = "iForest",
+                                            repeatedCV = 30)
+SpamBase_ensemble_iF <- read_extended_metricsDT(subfolder = "SpamBase", 
+                                             datasetname = "SpamBase_withoutdupl_norm_02_v02",
+                                             algorithm = "iForest",
+                                             repeatedCV = 30)
+Stamps_ensemble_iF <- read_extended_metricsDT(subfolder = "Stamps", 
+                                           datasetname = "Stamps_withoutdupl_norm_02_v02",
+                                           algorithm = "iForest",
+                                           repeatedCV = 30)
+WBC_ensemble_iF <- read_extended_metricsDT(subfolder = "WBC", 
+                                        datasetname = "WBC_withoutdupl_norm_v05",
+                                        algorithm = "iForest",
+                                        repeatedCV = 30)
+WDBC_ensemble_iF <- read_extended_metricsDT(subfolder = "WDBC", 
+                                         datasetname = "WDBC_withoutdupl_norm_v07",
+                                         algorithm = "iForest",
+                                         repeatedCV = 30)
+Heart_ensemble_iF <- read_extended_metricsDT(subfolder = "HeartDisease",
+                                          datasetname = "HeartDisease_withoutdupl_norm_02_v02",
+                                          algorithm = "iForest",
+                                          repeatedCV = 30)
+Arrhythmia_ensemble_iF <- read_extended_metricsDT(subfolder = "Arrhythmia",
+                                               datasetname = "Arrhythmia_withoutdupl_norm_02_v02",
+                                               algorithm = "iForest",
+                                               repeatedCV = 30)
+
+# Cardio_ensemble_05 <- read_extended_metricsDT(subfolder = "Cardio", 
+#                                               datasetname = "Cardiotocography_withoutdupl_norm_02_v05",
+#                                               algorithm = "OCSVM",
+#                                               repeatedCV = 30)
+
+
+
+
+
+# Wave_ensemble <- read_extended_metricsDT(subfolder = "Waveform", 
+#                                          datasetname = "Waveform_withoutdupl_norm_v03",
+#                                          algorithm = "OCSVM",
+#                                          repeatedCV = 30)
+# Internet_ensemble1 <- read_extended_metricsDT(subfolder = "InternetAds", 
+#                                               datasetname = "InternetAds_withoutdupl_norm_02_v01",
+#                                               algorithm = "OCSVM",
+#                                               repeatedCV = 10)
+# Internet_ensemble2 <- read_extended_metricsDT(subfolder = "InternetAds", 
+#                                               datasetname = "InternetAds_withoutdupl_norm_02_v01",
+#                                               algorithm = "OCSVM",
+#                                               repeatedCV = 11)
+# Internet_ensemble <- rbindlist(list(Internet_ensemble2, Internet_ensemble1))
+# 
+# Stamps_ensemble <- read_extended_metricsDT(subfolder = "Stamps", 
+#                                            datasetname = "Stamps_withoutdupl_norm_05_v04",
+#                                            algorithm = "OCSVM",
+#                                            repeatedCV = 30)
+
+# Wilt_ensemble <- read_extended_metricsDT(subfolder = "Wilt", 
+#                                          datasetname = "Wilt_withoutdupl_norm_02_v02",
+#                                          algorithm = "OCSVM",
+#                                          repeatedCV = 30)
+# Page_ensemble <- read_extended_metricsDT(subfolder = "PageBlocks", 
+#                                          datasetname = "PageBlocks_withoutdupl_norm_02_v02",
+#                                          algorithm = "OCSVM",
+#                                          repeatedCV = 30)
+# 
+# Annthyroid_ensemble <- read_extended_metricsDT(subfolder = "Annthyroid", 
+#                                                datasetname = "Annthyroid_withoutdupl_norm_02_v05",
+#                                                algorithm = "OCSVM",
+#                                                repeatedCV = 30)
+# 
+# Parkinson_ensemble <- read_extended_metricsDT(subfolder = "Parkinson", 
+#                                               datasetname = "Parkinson_withoutdupl_norm_05_v01",
+#                                               algorithm = "OCSVM",
+#                                               repeatedCV = 30)
+# 
+
+
+
+
+list_ensembles_iF <- list(cardio = Cardio_ensemble_iF, 
+                       glass = Glass_ensemble_iF, 
+                       internet = Internet_ensemble_iF, 
+                       pima = Pima_ensemble_iF, 
+                       shuttle = Shuttle_ensemble_iF, 
+                       spam = SpamBase_ensemble_iF, 
+                       stamps = Stamps_ensemble_iF, 
+                       wbc = WBC_ensemble_iF,
+                       wdbc = WDBC_ensemble_iF, 
+                       kdd = KDD_ensemble_iF, 
+                       heart = Heart_ensemble_iF,
+                       arr = Arrhythmia_ensemble_iF)
+
+
+metric <- "AUC"
+list_names_iF <- list("cardio", 
+                   "glass", 
+                   "internet",
+                   "pima", 
+                   "shuttle",
+                   "spam",
+                   "stamps", 
+                   "wbc", 
+                   "wdbc", 
+                   "kdd", 
+                   "heart",
+                   "arr")
+
+
+list_typeII <- list(Glass_ensemble, Shuttle_ensemble, Wave_ensemble)
+list_namesII <- list("Glass", "Shuttle", "Wave")
+
+list_res_iF <- list()
+for( i in 1:length(list_ensembles_iF)){
+  
+  tempDT <- get_evaluation_DT(givenDT_ensemble = list_ensembles_iF[[i]], given_metric = metric)
+  tempDT[, Dataset:= list_names_iF[[i]]]
+  tempDT[, Metric:= metric]
+  list_res_iF[[i]] <- tempDT
+}
+DT_iF <- rbindlist(list_res_iF)
+DT_iF
+DT_iF[, Dataset:= NULL]  
+DT_iF[, Metric:= NULL] 
+# DT[, AOMUR_21:= NULL]
+# DT[, AOMUR_15:= NULL]
+# DT[, AOMUR_10:= NULL]
+# DT[, AOMUR_5:= NULL]
+
+friedmanTest(DT_iF)
+plotCD(DT_iF, alpha = 0.1)
+colMeans(rankMatrix(DT_iF))
+test_iF <- nemenyiTest(DT_iF, alpha = 0.1)
+test_iF
+test_iF$diff.matrix
+abs(test_iF$diff.matrix) > test_iF$statistic
+
+pv.matrix_iF <- friedmanAlignedRanksPost(data=DT_iF, control=NULL)
+pv.matrix_iF
+colMeans(rankMatrix(DT_iF))
+# pv.adj <- adjustBergmannHommel(pv.matrix)
+# pv.adj
+
+
+# pv.adj <- adjustBergmannHommel(pv.matrix)
+# r.means <- colMeans(rankMatrix(DT))
+# drawAlgorithmGraph(pvalue.matrix=pv.adj, mean.value=r.means, alpha=0.05,
+#                    font.size=10, node.width=3, node.height=1)
 
 
