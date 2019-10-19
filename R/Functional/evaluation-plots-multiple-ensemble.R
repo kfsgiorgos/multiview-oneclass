@@ -237,9 +237,7 @@ drawAlgorithmGraph(pvalue.matrix=pv.adj, mean.value=r.means1, alpha=0.05,
 
 
 
-# Evaluation of Ensembles -------------------------------------------------
-
-
+# Evaluation of Ensembles - OCSVM -------------------------------------------------
 
 Glass_ensemble <- read_extended_metricsDT(subfolder = "Glass", 
                                           datasetname = "Glass_withoutdupl_norm",
@@ -255,15 +253,14 @@ Cardio_ensemble <- read_extended_metricsDT(subfolder = "Cardio",
                                            datasetname = "Cardiotocography_withoutdupl_norm_02_v08",
                                            algorithm = "OCSVM",
                                            repeatedCV = 30)
-
-# Cardio_ensemble_05 <- read_extended_metricsDT(subfolder = "Cardio", 
-#                                               datasetname = "Cardiotocography_withoutdupl_norm_02_v05",
-#                                               algorithm = "OCSVM",
-#                                               repeatedCV = 30)
-KDD_ensemble <- read_extended_metricsDT(subfolder = "KDD", 
-                                         datasetname = "KDDCup99_withoutdupl_catremoved",
-                                         algorithm = "iForest",
-                                         repeatedCV = 5)
+Ionosphere_ensemble <- read_extended_metricsDT(subfolder = "Ionosphere",
+                                              datasetname = "Ionosphere_withoutdupl_norm",
+                                              algorithm = "OCSVM",
+                                              repeatedCV = 30)
+# KDD_ensemble <- read_extended_metricsDT(subfolder = "KDD", 
+#                                          datasetname = "KDDCup99_withoutdupl_catremoved",
+#                                          algorithm = "iForest",
+#                                          repeatedCV = 5)
 
 
 Pima_ensemble <- read_extended_metricsDT(subfolder = "Pima", 
@@ -311,6 +308,10 @@ WBC_ensemble <- read_extended_metricsDT(subfolder = "WBC",
 
 WDBC_ensemble <- read_extended_metricsDT(subfolder = "WDBC", 
                                          datasetname = "WDBC_withoutdupl_norm_v09",
+                                         algorithm = "OCSVM",
+                                         repeatedCV = 30)
+WPBC_ensemble <- read_extended_metricsDT(subfolder = "WPBC", 
+                                         datasetname = "WPBC_withoutdupl_norm",
                                          algorithm = "OCSVM",
                                          repeatedCV = 30)
 Annthyroid_ensemble <- read_extended_metricsDT(subfolder = "Annthyroid", 
@@ -391,11 +392,12 @@ list_ensembles <- list(cardio = Cardio_ensemble,
                        wave = Wave_ensemble,
                        wilt = Wilt_ensemble,
                        wbc = WBC_ensemble,
-                       #wdbc = WDBC_ensemble, 
+                       wdbc = WDBC_ensemble, 
                        ann = Annthyroid_ensemble,
                        park = Parkinson_ensemble, 
                        arr = Arrhythmia_ensemble,
-                       kdd = KDD_ensemble)
+                       iono = Ionosphere_ensemble,
+                       wpbc = WPBC_ensemble)
 
 
 metric <- "AUC"
@@ -411,11 +413,12 @@ list_names <- list("cardio",
                    "wave", 
                    "wilt", 
                    "wbc", 
-                   #"wdbc", 
+                   "wdbc", 
                    "annthyroid",
                    "parkinson", 
                    "arrhythmia",
-                   "kdd"
+                   "iono",
+                   "wpbc"
                    )
 
 
@@ -452,6 +455,7 @@ abs(test$diff.matrix) > test$statistic
 
 pv.matrix <- friedmanAlignedRanksPost(data=DT, control=NULL)
 pv.matrix
+friedmanAlignedRanksPost(data=DT, control="Original")
 colMeans(rankMatrix(DT))
 # pv.adj <- adjustBergmannHommel(pv.matrix)
 # pv.adj
@@ -465,7 +469,7 @@ colMeans(rankMatrix(DT))
 
 
 
-# iForest -----------------------------------------------------------------
+# # Evaluation of Ensembles - iForest -----------------------------------------------------------------
 
 
 Cardio_ensemble_iF <- read_extended_metricsDT(subfolder = "Cardio", 
@@ -480,10 +484,19 @@ Internet_ensemble_iF <- read_extended_metricsDT(subfolder = "InternetAds",
                                               datasetname = "InternetAds_withoutdupl_norm_02_v01",
                                               algorithm = "iForest",
                                               repeatedCV = 11)
-KDD_ensemble_iF <- read_extended_metricsDT(subfolder = "KDD", 
+KDD_ensemble_iF1 <- read_extended_metricsDT(subfolder = "KDD", 
                                         datasetname = "KDDCup99_withoutdupl_catremoved",
                                         algorithm = "iForest",
                                         repeatedCV = 5)
+KDD_ensemble_iF2 <- read_extended_metricsDT(subfolder = "KDD", 
+                                           datasetname = "KDDCup99_withoutdupl_catremoved",
+                                           algorithm = "iForest",
+                                           repeatedCV = 6)
+KDD_ensemble_iF <- rbindlist(list(KDD_ensemble_iF1, KDD_ensemble_iF2))
+ALOI_ensemble_iF <- read_extended_metricsDT(subfolder = "ALOI", 
+                                           datasetname = "ALOI_withoutdupl_norm",
+                                           algorithm = "iForest",
+                                           repeatedCV = 5)
 Pima_ensemble_iF <- read_extended_metricsDT(subfolder = "Pima", 
                                          datasetname = "Pima_withoutdupl_norm_02_v01",
                                          algorithm = "iForest",
@@ -516,20 +529,25 @@ Arrhythmia_ensemble_iF <- read_extended_metricsDT(subfolder = "Arrhythmia",
                                                datasetname = "Arrhythmia_withoutdupl_norm_02_v02",
                                                algorithm = "iForest",
                                                repeatedCV = 30)
+Wilt_ensemble_iF <- read_extended_metricsDT(subfolder = "Wilt",
+                                         datasetname = "Wilt_withoutdupl_norm_02_v08",
+                                         algorithm = "iForest",
+                                         repeatedCV = 30)
+Wave_ensemble_iF <- read_extended_metricsDT(subfolder = "Waveform",
+                                         datasetname = "Waveform_withoutdupl_norm_v03",
+                                         algorithm = "iForest",
+                                         repeatedCV = 30)
+Page_ensemble_iF <- read_extended_metricsDT(subfolder = "PageBlocks",
+                                         datasetname = "PageBlocks_withoutdupl_norm_02_v02",
+                                         algorithm = "iForest",
+                                         repeatedCV = 30)
 
-# Cardio_ensemble_05 <- read_extended_metricsDT(subfolder = "Cardio", 
-#                                               datasetname = "Cardiotocography_withoutdupl_norm_02_v05",
-#                                               algorithm = "OCSVM",
-#                                               repeatedCV = 30)
 
 
 
 
 
-# Wave_ensemble <- read_extended_metricsDT(subfolder = "Waveform", 
-#                                          datasetname = "Waveform_withoutdupl_norm_v03",
-#                                          algorithm = "OCSVM",
-#                                          repeatedCV = 30)
+
 # Internet_ensemble1 <- read_extended_metricsDT(subfolder = "InternetAds", 
 #                                               datasetname = "InternetAds_withoutdupl_norm_02_v01",
 #                                               algorithm = "OCSVM",
@@ -540,19 +558,8 @@ Arrhythmia_ensemble_iF <- read_extended_metricsDT(subfolder = "Arrhythmia",
 #                                               repeatedCV = 11)
 # Internet_ensemble <- rbindlist(list(Internet_ensemble2, Internet_ensemble1))
 # 
-# Stamps_ensemble <- read_extended_metricsDT(subfolder = "Stamps", 
-#                                            datasetname = "Stamps_withoutdupl_norm_05_v04",
-#                                            algorithm = "OCSVM",
-#                                            repeatedCV = 30)
 
-# Wilt_ensemble <- read_extended_metricsDT(subfolder = "Wilt", 
-#                                          datasetname = "Wilt_withoutdupl_norm_02_v02",
-#                                          algorithm = "OCSVM",
-#                                          repeatedCV = 30)
-# Page_ensemble <- read_extended_metricsDT(subfolder = "PageBlocks", 
-#                                          datasetname = "PageBlocks_withoutdupl_norm_02_v02",
-#                                          algorithm = "OCSVM",
-#                                          repeatedCV = 30)
+
 # 
 # Annthyroid_ensemble <- read_extended_metricsDT(subfolder = "Annthyroid", 
 #                                                datasetname = "Annthyroid_withoutdupl_norm_02_v05",
@@ -579,7 +586,11 @@ list_ensembles_iF <- list(cardio = Cardio_ensemble_iF,
                        wdbc = WDBC_ensemble_iF, 
                        kdd = KDD_ensemble_iF, 
                        heart = Heart_ensemble_iF,
-                       arr = Arrhythmia_ensemble_iF)
+                       arr = Arrhythmia_ensemble_iF,
+                       aloi = ALOI_ensemble_iF,
+                       wilt = Wilt_ensemble_iF,
+                       wave = Wave_ensemble_iF,
+                       page = Page_ensemble_iF)
 
 
 metric <- "AUC"
@@ -594,7 +605,11 @@ list_names_iF <- list("cardio",
                    "wdbc", 
                    "kdd", 
                    "heart",
-                   "arr")
+                   "arr",
+                   "aloi",
+                   "wilt",
+                   "wave",
+                   "page")
 
 
 list_typeII <- list(Glass_ensemble, Shuttle_ensemble, Wave_ensemble)
@@ -625,7 +640,7 @@ test_iF
 test_iF$diff.matrix
 abs(test_iF$diff.matrix) > test_iF$statistic
 
-pv.matrix_iF <- friedmanAlignedRanksPost(data=DT_iF, control=NULL)
+pv.matrix_iF <- friedmanAlignedRanksPost(data=DT_iF, control="Original")
 pv.matrix_iF
 colMeans(rankMatrix(DT_iF))
 # pv.adj <- adjustBergmannHommel(pv.matrix)
