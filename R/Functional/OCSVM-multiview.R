@@ -25,7 +25,7 @@ create_unsupervised_view <- function(datasetname, percentage_OD, mixed_view_feat
   
   SimplifiedLOFs1 <- paste0("SimplifiedLOF-00", 2:9)
   SimplifiedLOFs2 <- paste0("SimplifiedLOF-0", 10:99)
-  SimplifiedLOFs <- c(SimplifiedLOFs1, SimplifiedLOFs2, "SimplifiedLOF-100")
+  SimplifiedLOFs <- c(SimplifiedLOFs1, SimplifiedLOFs2,"SimplifiedLOF-100" )
   sampleSimplifiedLOFs <- sample(x = SimplifiedLOFs, size = percentage_OD * length(SimplifiedLOFs), replace = F)
   DToutliersSimplifiedLOFs <- DToutliers1[, .SD, .SDcols = sampleSimplifiedLOFs]
   
