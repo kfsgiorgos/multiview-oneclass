@@ -49,21 +49,21 @@ fwrite(Original_scores, paste0(final_path_to_save, "figures/",
 list_MUR_5 <- list()
 for( k in 1:as.numeric(arg3)){
   print(Sys.time())
-  list_MUR_5[[k]] <- get_CV_experiments_paper_5_MUR_iForest_ensemble(datasetname = arg1,
+  list_MUR_5[[k]] <- get_OCSVM_augmented_ensemble_5MUR(datasetname = arg1,
                                                              experiments = "OC_combined_CV",
                                                              CViterations = as.numeric(arg4))
 }
 list_MUR_10 <- list()
 for( k in 1:as.numeric(arg3)){
   print(Sys.time())
-  list_MUR_10[[k]] <- get_CV_experiments_paper_10_MUR_iForest_ensemble(datasetname = arg1,
+  list_MUR_10[[k]] <- get_OCSVM_augmented_ensemble_10MUR(datasetname = arg1,
                                                                experiments = "OC_combined_CV",
                                                                CViterations = as.numeric(arg4))
 }
 list_MUR_15 <- list()
 for( k in 1:as.numeric(arg3)){
   print(Sys.time())
-  list_MUR_15[[k]] <- get_CV_experiments_paper_15_MUR_iForest_ensemble(datasetname = arg1,
+  list_MUR_15[[k]] <- get_OCSVM_augmented_ensemble_15MUR(datasetname = arg1,
                                                                experiments = "OC_combined_CV",
                                                                CViterations = as.numeric(arg4))
 }
