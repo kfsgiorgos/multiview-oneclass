@@ -28,11 +28,22 @@ read_metricsDT <- function(subfolder, datasetname, repeatedCV) {
   return(DT)
 }
 
-read_extended_metricsDT <- function(subfolder, datasetname, algorithm, repeatedCV) {
+read_extended_metricsDT <- function(subfolder, datasetname, algorithm, repeatedCV, augmented_boolean) {
   
-  DT <- fread(paste0(final_path_to_save, "figures/", 
-                     subfolder, "/", 
-                     datasetname, "_", algorithm, "_Multiple_Repres_allMetrics", repeatedCV,"_iters.csv"))
+  
+  if(augmented_boolean == "yes"){
+    DT <- fread(paste0(final_path_to_save, "figures/", 
+                       subfolder, "/", 
+                       datasetname, "_", algorithm, "_Multiple_Repres_allMetrics_Augmented", repeatedCV,"_iters.csv"))
+    
+    
+  }else{
+    DT <- fread(paste0(final_path_to_save, "figures/", 
+                       subfolder, "/", 
+                       datasetname, "_", algorithm, "_Multiple_Repres_allMetrics", repeatedCV,"_iters.csv"))
+  }
+  
+  
   return(DT)
 }
 
@@ -242,7 +253,7 @@ drawAlgorithmGraph(pvalue.matrix=pv.adj, mean.value=r.means1, alpha=0.05,
 Glass_ensemble <- read_extended_metricsDT(subfolder = "Glass", 
                                           datasetname = "Glass_withoutdupl_norm",
                                           algorithm = "OCSVM",
-                                          repeatedCV = 30)
+                                          repeatedCV = 30, augmented_boolean = "no")
 
 SpamBase_ensemble <- read_extended_metricsDT(subfolder = "SpamBase", 
                                           datasetname = "SpamBase_withoutdupl_norm_02_v02",
@@ -301,6 +312,14 @@ Page_ensemble <- read_extended_metricsDT(subfolder = "PageBlocks",
                                          datasetname = "PageBlocks_withoutdupl_norm_02_v02",
                                          algorithm = "OCSVM",
                                          repeatedCV = 30)
+
+# Page_ensemble_augmented <- read_extended_metricsDT(subfolder = "PageBlocks", 
+#                                          datasetname = "PageBlocks_withoutdupl_norm_02_v02",
+#                                          algorithm = "OCSVM",
+#                                          repeatedCV = 10, 
+#                                          augmented_boolean = "yes")
+# get_evaluation_DT(givenDT_ensemble = Page_ensemble_augmented, given_metric = "AUC")
+
 WBC_ensemble <- read_extended_metricsDT(subfolder = "WBC", 
                                          datasetname = "WBC_withoutdupl_norm_v05",
                                          algorithm = "OCSVM",
@@ -334,38 +353,38 @@ get_evaluation_DT <- function(givenDT_ensemble, given_metric) {
 
   givenDT_ensemble <- givenDT_ensemble[!(is.na(R_Prec))]
   
-  DT_21 <- data.table(Original = givenDT_ensemble[MUR == "21" & Representation == "Original", ..given_metric][, lapply(.SD,mean), .SDcols = 1],
-                   MUR_21 = givenDT_ensemble[MUR == "21" & Representation == "Multiple_Representations" & Ensemble == "Average Representations", ..given_metric][, lapply(.SD,mean), .SDcols = 1],
-                   Original_MUR_21 = givenDT_ensemble[MUR == "21" & Representation == "Multiple_Representations" & Ensemble == "Average Ensemble", ..given_metric][, lapply(.SD,mean), .SDcols = 1])
+  DT_21 <- data.table(Original = givenDT_ensemble[MUR == "21" & Representation == "Original", ..given_metric][, lapply(.SD,median), .SDcols = 1],
+                   MUR_21 = givenDT_ensemble[MUR == "21" & Representation == "Multiple_Representations" & Ensemble == "Average Representations", ..given_metric][, lapply(.SD,median), .SDcols = 1],
+                   Original_MUR_21 = givenDT_ensemble[MUR == "21" & Representation == "Multiple_Representations" & Ensemble == "Average Ensemble", ..given_metric][, lapply(.SD,median), .SDcols = 1])
   setnames(DT_21, names(DT_21), c("Original", "MUR_21", "AOMUR_21"))
-  # Average_DT_21 <- data.table(Original = mean(DT_21$Original,na.rm=TRUE), 
-  #                             MUR = mean(DT_21$MUR_21,na.rm=TRUE), 
-  #                             AOMUR = mean(DT_21$Original_MUR_21,na.rm=TRUE), 
+  # Average_DT_21 <- data.table(Original = median(DT_21$Original,na.rm=TRUE), 
+  #                             MUR = median(DT_21$MUR_21,na.rm=TRUE), 
+  #                             AOMUR = median(DT_21$Original_MUR_21,na.rm=TRUE), 
   #                             Representations = "21")
   
-  DT_5 <- data.table(MUR_5 = givenDT_ensemble[MUR == "5" & Representation == "Multiple_Representations" & Ensemble == "Average Representations", ..given_metric][, lapply(.SD,mean), .SDcols = 1],
-                     Original_MUR_5 = givenDT_ensemble[MUR == "5" & Representation == "Multiple_Representations" & Ensemble == "Average Ensemble", ..given_metric][, lapply(.SD,mean), .SDcols = 1])
+  DT_5 <- data.table(MUR_5 = givenDT_ensemble[MUR == "5" & Representation == "Multiple_Representations" & Ensemble == "Average Representations", ..given_metric][, lapply(.SD,median), .SDcols = 1],
+                     Original_MUR_5 = givenDT_ensemble[MUR == "5" & Representation == "Multiple_Representations" & Ensemble == "Average Ensemble", ..given_metric][, lapply(.SD,median), .SDcols = 1])
   setnames(DT_5, names(DT_5), c("MUR_5", "AOMUR_5"))
   
-  # Average_DT_5 <- data.table(Original = mean(DT_5$Original,na.rm=TRUE), 
-  #                             MUR = mean(DT_5$MUR_5,na.rm=TRUE), 
-  #                             AOMUR = mean(DT_5$Original_MUR_5,na.rm=TRUE), 
+  # Average_DT_5 <- data.table(Original = median(DT_5$Original,na.rm=TRUE), 
+  #                             MUR = median(DT_5$MUR_5,na.rm=TRUE), 
+  #                             AOMUR = median(DT_5$Original_MUR_5,na.rm=TRUE), 
   #                             Representations = "5")
   
-  DT_10 <- data.table(MUR_10 = givenDT_ensemble[MUR == "10" & Representation == "Multiple_Representations" & Ensemble == "Average Representations", ..given_metric][, lapply(.SD,mean), .SDcols = 1],
-                      Original_MUR_10 = givenDT_ensemble[MUR == "10" & Representation == "Multiple_Representations" & Ensemble == "Average Ensemble", ..given_metric][, lapply(.SD,mean), .SDcols = 1])
+  DT_10 <- data.table(MUR_10 = givenDT_ensemble[MUR == "10" & Representation == "Multiple_Representations" & Ensemble == "Average Representations", ..given_metric][, lapply(.SD,median), .SDcols = 1],
+                      Original_MUR_10 = givenDT_ensemble[MUR == "10" & Representation == "Multiple_Representations" & Ensemble == "Average Ensemble", ..given_metric][, lapply(.SD,median), .SDcols = 1])
   setnames(DT_10, names(DT_10), c("MUR_10", "AOMUR_10"))
-  # Average_DT_10 <- data.table(Original = mean(DT_10$Original,na.rm=TRUE), 
-  #                             MUR = mean(DT_10$MUR_10,na.rm=TRUE), 
-  #                             AOMUR = mean(DT_10$Original_MUR_10,na.rm=TRUE), 
+  # Average_DT_10 <- data.table(Original = median(DT_10$Original,na.rm=TRUE), 
+  #                             MUR = median(DT_10$MUR_10,na.rm=TRUE), 
+  #                             AOMUR = median(DT_10$Original_MUR_10,na.rm=TRUE), 
   #                             Representations = "10")
   # 
-  DT_15 <- data.table(MUR_15 = givenDT_ensemble[MUR == "15" & Representation == "Multiple_Representations" & Ensemble == "Average Representations", ..given_metric][, lapply(.SD,mean), .SDcols = 1],
-                      Original_MUR_15 = givenDT_ensemble[MUR == "15" & Representation == "Multiple_Representations" & Ensemble == "Average Ensemble", ..given_metric][, lapply(.SD,mean), .SDcols = 1])
+  DT_15 <- data.table(MUR_15 = givenDT_ensemble[MUR == "15" & Representation == "Multiple_Representations" & Ensemble == "Average Representations", ..given_metric][, lapply(.SD,median), .SDcols = 1],
+                      Original_MUR_15 = givenDT_ensemble[MUR == "15" & Representation == "Multiple_Representations" & Ensemble == "Average Ensemble", ..given_metric][, lapply(.SD,median), .SDcols = 1])
   setnames(DT_15, names(DT_15), c("MUR_15", "AOMUR_15"))
-  # Average_DT_15 <- data.table(Original = mean(DT_15$Original,na.rm=TRUE), 
-  #                            MUR = mean(DT_15$MUR_15,na.rm=TRUE), 
-  #                            AOMUR = mean(DT_15$Original_MUR_15,na.rm=TRUE), 
+  # Average_DT_15 <- data.table(Original = median(DT_15$Original,na.rm=TRUE), 
+  #                            MUR = median(DT_15$MUR_15,na.rm=TRUE), 
+  #                            AOMUR = median(DT_15$Original_MUR_15,na.rm=TRUE), 
   #                            Representations = "15")
   # 
   # allDT <- as.data.table(dplyr::bind_cols(list(DT_21$Original, DT_21$MUR_21, 
@@ -380,12 +399,12 @@ get_evaluation_DT <- function(givenDT_ensemble, given_metric) {
 
 
   
-list_ensembles <- list(cardio = Cardio_ensemble, 
+list_ensembles <- list(#cardio = Cardio_ensemble, 
                        glass = Glass_ensemble, 
-                       heart = Heart_ensemble, 
+                       #heart = Heart_ensemble, 
                        internet = Internet_ensemble, 
                        page = Page_ensemble, 
-                       pima = Pima_ensemble, 
+                       #pima = Pima_ensemble, 
                        shuttle = Shuttle_ensemble, 
                        spam = SpamBase_ensemble, 
                        stamps = Stamps_ensemble, 
@@ -393,20 +412,23 @@ list_ensembles <- list(cardio = Cardio_ensemble,
                        wilt = Wilt_ensemble,
                        wbc = WBC_ensemble,
                        wdbc = WDBC_ensemble, 
-                       ann = Annthyroid_ensemble,
+                       #ann = Annthyroid_ensemble
+                       #,
                        park = Parkinson_ensemble, 
-                       arr = Arrhythmia_ensemble,
+                       arr = Arrhythmia_ensemble
+                       ,
                        iono = Ionosphere_ensemble,
-                       wpbc = WPBC_ensemble)
+                       wpbc = WPBC_ensemble
+                       )
 
 
 metric <- "AUC"
-list_names <- list("cardio", 
+list_names <- list(#"cardio", 
                    "glass", 
-                   "heart", 
+                   #"heart", 
                    "internet",
                    "page",
-                   "pima", 
+                   #"pima", 
                    "shuttle",
                    "spam",
                    "stamps", 
@@ -414,9 +436,11 @@ list_names <- list("cardio",
                    "wilt", 
                    "wbc", 
                    "wdbc", 
-                   "annthyroid",
+                   #"annthyroid"
+                   #,
                    "parkinson", 
-                   "arrhythmia",
+                   "arrhythmia"
+                   ,
                    "iono",
                    "wpbc"
                    )
@@ -440,12 +464,18 @@ DT <- rbindlist(list_res)
 DT
 DT[, Dataset:= NULL]  
 DT[, Metric:= NULL] 
-# DT[, AOMUR_21:= NULL]
-# DT[, AOMUR_15:= NULL]
-# DT[, AOMUR_10:= NULL]
-# DT[, AOMUR_5:= NULL]
+#DT[, AOMUR_21:= NULL]
+DT[, AOMUR_15:= NULL]
+DT[, MUR_15:= NULL]
+DT[, AOMUR_10:= NULL]
+DT[, MUR_10:= NULL]
+DT[, AOMUR_5:= NULL]
+DT[, MUR_5:= NULL]
 
 friedmanTest(DT)
+friedmanAlignedRanksTest(DT)
+imanDavenportTest(DT)
+quadeTest(DT)
 plotCD(DT, alpha = 0.1)
 colMeans(rankMatrix(DT))
 test <- nemenyiTest(DT, alpha = 0.1)
@@ -460,6 +490,12 @@ colMeans(rankMatrix(DT))
 # pv.adj <- adjustBergmannHommel(pv.matrix)
 # pv.adj
 
+
+# pv <- quadePost(DT, control = "Original")
+# pv
+# adjustHolland(pvalues=pv)
+# adjustFinner(pv)
+# adjustRom(pvalues=pv, alpha=0.1)
 
 # pv.adj <- adjustBergmannHommel(pv.matrix)
 # r.means <- colMeans(rankMatrix(DT))
@@ -492,7 +528,11 @@ KDD_ensemble_iF2 <- read_extended_metricsDT(subfolder = "KDD",
                                            datasetname = "KDDCup99_withoutdupl_catremoved",
                                            algorithm = "iForest",
                                            repeatedCV = 6)
-KDD_ensemble_iF <- rbindlist(list(KDD_ensemble_iF1, KDD_ensemble_iF2))
+KDD_ensemble_iF3 <- read_extended_metricsDT(subfolder = "KDD", 
+                                            datasetname = "KDDCup99_withoutdupl_catremoved",
+                                            algorithm = "iForest",
+                                            repeatedCV = 7)
+KDD_ensemble_iF <- rbindlist(list(KDD_ensemble_iF1, KDD_ensemble_iF2, KDD_ensemble_iF3))
 ALOI_ensemble_iF <- read_extended_metricsDT(subfolder = "ALOI", 
                                            datasetname = "ALOI_withoutdupl_norm",
                                            algorithm = "iForest",
@@ -541,12 +581,10 @@ Page_ensemble_iF <- read_extended_metricsDT(subfolder = "PageBlocks",
                                          datasetname = "PageBlocks_withoutdupl_norm_02_v02",
                                          algorithm = "iForest",
                                          repeatedCV = 30)
-
-
-
-
-
-
+Annthyroid_ensemble_iF <- read_extended_metricsDT(subfolder = "Annthyroid",
+                                               datasetname = "Annthyroid_withoutdupl_norm_02_v09",
+                                               algorithm = "OCSVM",
+                                               repeatedCV = 30)
 
 # Internet_ensemble1 <- read_extended_metricsDT(subfolder = "InternetAds", 
 #                                               datasetname = "InternetAds_withoutdupl_norm_02_v01",
@@ -561,10 +599,7 @@ Page_ensemble_iF <- read_extended_metricsDT(subfolder = "PageBlocks",
 
 
 # 
-# Annthyroid_ensemble <- read_extended_metricsDT(subfolder = "Annthyroid", 
-#                                                datasetname = "Annthyroid_withoutdupl_norm_02_v05",
-#                                                algorithm = "OCSVM",
-#                                                repeatedCV = 30)
+
 # 
 # Parkinson_ensemble <- read_extended_metricsDT(subfolder = "Parkinson", 
 #                                               datasetname = "Parkinson_withoutdupl_norm_05_v01",
@@ -590,7 +625,8 @@ list_ensembles_iF <- list(cardio = Cardio_ensemble_iF,
                        aloi = ALOI_ensemble_iF,
                        wilt = Wilt_ensemble_iF,
                        wave = Wave_ensemble_iF,
-                       page = Page_ensemble_iF)
+                       page = Page_ensemble_iF,
+                       ann = Annthyroid_ensemble_iF)
 
 
 metric <- "AUC"
@@ -609,7 +645,8 @@ list_names_iF <- list("cardio",
                    "aloi",
                    "wilt",
                    "wave",
-                   "page")
+                   "page",
+                   "ann")
 
 
 list_typeII <- list(Glass_ensemble, Shuttle_ensemble, Wave_ensemble)
@@ -627,10 +664,14 @@ DT_iF <- rbindlist(list_res_iF)
 DT_iF
 DT_iF[, Dataset:= NULL]  
 DT_iF[, Metric:= NULL] 
-# DT[, AOMUR_21:= NULL]
-# DT[, AOMUR_15:= NULL]
-# DT[, AOMUR_10:= NULL]
-# DT[, AOMUR_5:= NULL]
+#DT_iF[, AOMUR_21:= NULL]
+#DT_iF[, AOMUR_21:= NULL]
+DT_iF[, AOMUR_15:= NULL]
+DT_iF[, MUR_15:= NULL]
+DT_iF[, AOMUR_10:= NULL]
+DT_iF[, MUR_10:= NULL]
+DT_iF[, AOMUR_5:= NULL]
+DT_iF[, MUR_5:= NULL]
 
 friedmanTest(DT_iF)
 plotCD(DT_iF, alpha = 0.1)

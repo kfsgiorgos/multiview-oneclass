@@ -1,6 +1,6 @@
 # Augmented space Ensemble ------------------------------------------------
 
-get_OCSVM_augmented_ensemble_21MUR <- function(datasetname, experiments = "OC_combined_CV", CViterations) {
+get_OCSVM_augmented_ensemble_21MUR <- function(datasetname, experiments = "OC_combined_CV", CViterations, print_k) {
   
   
   start2 <- Sys.time()
@@ -275,7 +275,7 @@ get_OCSVM_augmented_ensemble_21MUR <- function(datasetname, experiments = "OC_co
       print("21 MURs")
       print(paste0("Kfold: ", ij))
       print(paste0("Representation: ", feature_col))
-      
+      print(paste0("Iteration: ", print_k))
       for(kernels in c("linear", "rbf", "sigmoid")){
         for(nus in c(0.001, 0.005, 0.01, 0.05, 0.1)){
           for(gammas in c(1/dim(CVtrain_DT)[2], 0.01, 0.05, 0.1, 0.2)){
@@ -387,96 +387,11 @@ get_OCSVM_augmented_ensemble_21MUR <- function(datasetname, experiments = "OC_co
   ensemble_max_auc <- auc(max_scores_testDT$Label, max_scores_testDT$V1)
   gc()
   
-  # Original data  ----------------------------------------------------------
   
-  iters <- 0
-  res_CV <- list()
-  for(ij in 1:10){
-    
-    trainDT <- DToriginal[id %in% list_train_chunks[[ij]]]
-    outliers_train_DT <- copy(trainDT[Label == "yes"])
-    CVtrain_DT <- copy(trainDT[Label == "no"])
-    CVtest_DT1 <- DToriginal[id %in% list_test_chunks[[ij]]]
-    
-    if(CVtest_DT1[Label=="yes", length(id)] <= 1){
-      CVtest_DT <- rbindlist(list(outliers_train_DT[1:3], CVtest_DT1))
-      CVtest_DT <- na.omit(CVtest_DT)
-      CVtest_DT <- unique(CVtest_DT)
-    }else{CVtest_DT <- CVtest_DT1}
-    print(CVtest_DT[, .N, by = Label])
-    
-    CVtest_id_final <- CVtest_DT$id
-    CVtest_Label_final <- CVtest_DT$Label
-    
-    CVtrain_DT[, `:=` (id = NULL, Label = NULL)]
-    CVtest_DT[, `:=` (id = NULL, Label = NULL)]
-    
-    print(paste0("Kfold: ", ij))
-    print(paste0("Representation: ", "Original data"))
-    
-    for(kernels in c("linear", "rbf", "sigmoid")){
-      for(nus in c(0.001, 0.005, 0.01, 0.05, 0.1)){
-        for(gammas in c(1/dim(CVtrain_DT)[2], 0.01, 0.05, 0.1, 0.2)){
-          iters <- iters+1
-          
-          scores_CV <- calculate_OCSVM_params(DTtrain = CVtrain_DT, DTtest = CVtest_DT, 
-                                              given_nu = nus, given_kernel = kernels, given_gamma = gammas)
-          DT_CV <- data.table(scores = scores_CV, 
-                              id = CVtest_id_final,
-                              Label = CVtest_Label_final)
-          DT_CV[, Kfold:=ij]
-          DT_CV[, gamma := gammas]
-          DT_CV[, nu := nus]
-          DT_CV[, kernel := kernels]
-          DT_CV[, Representation_col := "Original"]
-          res_CV[[iters]] <- DT_CV
-        }
-      }
-    }
-  }
-  final_DT_original <- rbindlist(res_CV)
-  
-  final_DT_original[, Model:= paste0(kernel, "_", gamma, "_", nu)]
-  aucCV_original <- final_DT_original[, auc(Label, scores), by = .(Kfold, Model)]
-  best_hyper_original_CV <- aucCV_original[, mean(V1), by = Model][order(V1, decreasing = T)][1]
-  
-  
-  # Train with the best hyperparameter all the 80% data  
-  
-  best_hyper_original <- best_hyper_original_CV[, stringr::str_split(Model, pattern = "_")[[1]]]
-  
-  representation_train_DT <- DToriginal[id %in% list_train_id[[1]]][Label == "no"]
-  representation_train_DT[, .N, by = Label]
-  
-  representation_test_DT <- DToriginal[id %in% list_test_id[[1]]]
-  representation_test_DT[, .N, by = Label]
-  if(representation_test_DT[Label=="yes", length(id)] == 0){
-    representation_test_DT <- rbindlist(list(representation_train_DT[Label == "yes"][1:3], representation_test_DT))
-    representation_test_DT <- na.omit(representation_test_DT)
-  }else{representation_test_DT <- representation_test_DT}
-  
-  ids_labels <- representation_test_DT[, .(id, Label)]
-  representation_train_DT[, `:=` (id = NULL, Label = NULL)]
-  representation_test_DT[, `:=` (id = NULL, Label = NULL)]
-  
-  scores_original <- calculate_OCSVM_params(DTtrain = representation_train_DT, DTtest = representation_test_DT, 
-                                            given_kernel = best_hyper_original[1], 
-                                            given_gamma = as.numeric(best_hyper_original[2]),
-                                            given_nu = as.numeric(best_hyper_original[3]))
-  
-  
-  testDT_original <- data.table(scores = scores_original, 
-                                Label = ids_labels$Label, 
-                                id = ids_labels$id, representation = "Original")
-  
-  auc_original <- auc(testDT_original$Label, testDT_original$scores)
-  
-  
-  
-  return(list(ensemble_auc, ensemble_max_auc, all_representationsDT, testDT_original))
+  return(all_representationsDT)
 }
 
-get_OCSVM_augmented_ensemble_5MUR <- function(datasetname, experiments = "OC_combined_CV", CViterations) {
+get_OCSVM_augmented_ensemble_5MUR <- function(datasetname, experiments = "OC_combined_CV", CViterations, print_k) {
   
   
   start2 <- Sys.time()
@@ -718,7 +633,7 @@ get_OCSVM_augmented_ensemble_5MUR <- function(datasetname, experiments = "OC_com
       print("5 MURs")
       print(paste0("Kfold: ", ij))
       print(paste0("Representation: ", feature_col))
-      
+      print(paste0("Iteration: ", print_k))
       for(kernels in c("linear", "rbf", "sigmoid")){
         for(nus in c(0.001, 0.005, 0.01, 0.05, 0.1)){
           for(gammas in c(1/dim(CVtrain_DT)[2], 0.01, 0.05, 0.1, 0.2)){
@@ -808,7 +723,7 @@ get_OCSVM_augmented_ensemble_5MUR <- function(datasetname, experiments = "OC_com
 }
 
 
-get_OCSVM_augmented_ensemble_10MUR <- function(datasetname, experiments = "OC_combined_CV", CViterations) {
+get_OCSVM_augmented_ensemble_10MUR <- function(datasetname, experiments = "OC_combined_CV", CViterations, print_k) {
   
   
   start2 <- Sys.time()
@@ -1061,7 +976,7 @@ get_OCSVM_augmented_ensemble_10MUR <- function(datasetname, experiments = "OC_co
       print("10 MURs")
       print(paste0("Kfold: ", ij))
       print(paste0("Representation: ", feature_col))
-      
+      print(paste0("Iteration: ", print_k))
       for(kernels in c("linear", "rbf", "sigmoid")){
         for(nus in c(0.001, 0.005, 0.01, 0.05, 0.1)){
           for(gammas in c(1/dim(CVtrain_DT)[2], 0.01, 0.05, 0.1, 0.2)){
@@ -1159,7 +1074,7 @@ get_OCSVM_augmented_ensemble_10MUR <- function(datasetname, experiments = "OC_co
 }
 
 
-get_OCSVM_augmented_ensemble_15MUR <- function(datasetname, experiments = "OC_combined_CV", CViterations) {
+get_OCSVM_augmented_ensemble_15MUR <- function(datasetname, experiments = "OC_combined_CV", CViterations, print_k) {
   
   
   start2 <- Sys.time()
@@ -1423,7 +1338,7 @@ get_OCSVM_augmented_ensemble_15MUR <- function(datasetname, experiments = "OC_co
       print("15 MURs")
       print(paste0("Kfold: ", ij))
       print(paste0("Representation: ", feature_col))
-      
+      print(paste0("Iteration: ", print_k))
       for(kernels in c("linear", "rbf", "sigmoid")){
         for(nus in c(0.001, 0.005, 0.01, 0.05, 0.1)){
           for(gammas in c(1/dim(CVtrain_DT)[2], 0.01, 0.05, 0.1, 0.2)){
