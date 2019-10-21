@@ -26,10 +26,7 @@ if(experiments == "OC_combined_CV"){
   final_path_to_save <- paste0(paste0(path_to_save, folder_to_save))
 }
 
-arg1 <- "Shuttle_withoutdupl_norm_v01"
-arg2 <- "Shuttle"
-arg3 <- 2
-arg4 <- 2
+
 list_res_1 <- list()
 for( k in 1:as.numeric(arg3)){
   print(Sys.time())
