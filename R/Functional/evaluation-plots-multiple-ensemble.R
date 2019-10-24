@@ -264,6 +264,7 @@ Cardio_ensemble <- read_extended_metricsDT(subfolder = "Cardio",
                                            datasetname = "Cardiotocography_withoutdupl_norm_02_v08",
                                            algorithm = "OCSVM",
                                            repeatedCV = 30, augmented_boolean = "no")
+
 Ionosphere_ensemble <- read_extended_metricsDT(subfolder = "Ionosphere",
                                               datasetname = "Ionosphere_withoutdupl_norm",
                                               algorithm = "OCSVM",
@@ -501,14 +502,54 @@ colMeans(rankMatrix(DT))
 # # Evaluation of Augmented Ensembles - OCSVM -----------------------------------------------------------------
 
 
-# Cardio_ensemble_aug <- read_extended_metricsDT(subfolder = "Cardio", 
-#                                               datasetname = "Cardiotocography_withoutdupl_norm_02_v05",
-#                                               algorithm = "iForest",
-#                                               repeatedCV = 30)
-# Glass_ensemble_iF <- read_extended_metricsDT(subfolder = "Glass", 
-#                                              datasetname = "Glass_withoutdupl_norm",
-#                                              algorithm = "iForest",
-#                                              repeatedCV = 30)
+Cardio_ensemble_aug <- read_extended_metricsDT(subfolder = "Cardio",
+                                              datasetname = "Cardiotocography_withoutdupl_norm_02_v08",
+                                              algorithm = "OCSVM",
+                                              repeatedCV = 20, augmented_boolean = "yes")
+Glass_ensemble_aug <- read_extended_metricsDT(subfolder = "Glass",
+                                             datasetname = "Glass_withoutdupl_norm",
+                                             algorithm = "OCSVM",
+                                             repeatedCV = 20, augmented_boolean = "yes")
+
+WPBC_ensemble_aug <- read_extended_metricsDT(subfolder = "WPBC", 
+                                         datasetname = "WPBC_withoutdupl_norm",
+                                         algorithm = "OCSVM",
+                                         repeatedCV = 30, augmented_boolean = "yes")
+
+Wilt_ensemble_aug <- read_extended_metricsDT(subfolder = "Wilt",
+                                            datasetname = "Wilt_withoutdupl_norm_02_v02",
+                                            algorithm = "OCSVM",
+                                            repeatedCV = 19, augmented_boolean = "yes")
+
+WDBC_ensemble_aug <- read_extended_metricsDT(subfolder = "WDBC", 
+                                         datasetname = "WDBC_withoutdupl_norm_v09",
+                                         algorithm = "OCSVM",
+                                         repeatedCV = 30, augmented_boolean = "yes")
+Shuttle_ensemble_aug <- read_extended_metricsDT(subfolder = "Shuttle",
+                                               datasetname = "Shuttle_withoutdupl_norm_v01",
+                                               algorithm = "OCSVM",
+                                               repeatedCV = 20, augmented_boolean = "yes")
+Pima_ensemble_aug <- read_extended_metricsDT(subfolder = "Pima",
+                                            datasetname = "Pima_withoutdupl_norm_02_v02",
+                                            algorithm = "OCSVM",
+                                            repeatedCV = 20, augmented_boolean = "yes")
+Page_ensemble_aug<- read_extended_metricsDT(subfolder = "PageBlocks",
+                                            datasetname = "PageBlocks_withoutdupl_norm_02_v02",
+                                            algorithm = "OCSVM",
+                                            repeatedCV = 20, augmented_boolean = "yes")
+Stamps_ensemble_aug <- read_extended_metricsDT(subfolder = "Stamps", 
+                                           datasetname = "Stamps_withoutdupl_norm_05_v04",
+                                           algorithm = "OCSVM",
+                                           repeatedCV = 10, augmented_boolean = "yes")
+Wave_ensemble_aug <- read_extended_metricsDT(subfolder = "Waveform",
+                                            datasetname = "Waveform_withoutdupl_norm_v03",
+                                            algorithm = "OCSVM",
+                                            repeatedCV = 10, augmented_boolean = "yes")
+SpamBase_ensemble_aug <- read_extended_metricsDT(subfolder = "SpamBase", 
+                                             datasetname = "SpamBase_withoutdupl_norm_02_v02",
+                                             algorithm = "OCSVM",
+                                             repeatedCV = 15, augmented_boolean = "yes")
+
 # Internet_ensemble_iF <- read_extended_metricsDT(subfolder = "InternetAds", 
 #                                                 datasetname = "InternetAds_withoutdupl_norm_02_v01",
 #                                                 algorithm = "iForest",
@@ -530,22 +571,7 @@ colMeans(rankMatrix(DT))
 #                                             datasetname = "ALOI_withoutdupl_norm",
 #                                             algorithm = "iForest",
 #                                             repeatedCV = 5)
-# Pima_ensemble_iF <- read_extended_metricsDT(subfolder = "Pima", 
-#                                             datasetname = "Pima_withoutdupl_norm_02_v01",
-#                                             algorithm = "iForest",
-#                                             repeatedCV = 30)
-# Shuttle_ensemble_iF <- read_extended_metricsDT(subfolder = "Shuttle", 
-#                                                datasetname = "Shuttle_withoutdupl_norm_v01",
-#                                                algorithm = "iForest",
-#                                                repeatedCV = 30)
-# SpamBase_ensemble_iF <- read_extended_metricsDT(subfolder = "SpamBase", 
-#                                                 datasetname = "SpamBase_withoutdupl_norm_02_v02",
-#                                                 algorithm = "iForest",
-#                                                 repeatedCV = 30)
-# Stamps_ensemble_iF <- read_extended_metricsDT(subfolder = "Stamps", 
-#                                               datasetname = "Stamps_withoutdupl_norm_02_v02",
-#                                               algorithm = "iForest",
-#                                               repeatedCV = 30)
+
 # WBC_ensemble_iF <- read_extended_metricsDT(subfolder = "WBC", 
 #                                            datasetname = "WBC_withoutdupl_norm_v05",
 #                                            algorithm = "iForest",
@@ -562,18 +588,7 @@ colMeans(rankMatrix(DT))
 #                                                   datasetname = "Arrhythmia_withoutdupl_norm_02_v02",
 #                                                   algorithm = "iForest",
 #                                                   repeatedCV = 30)
-# Wilt_ensemble_iF <- read_extended_metricsDT(subfolder = "Wilt",
-#                                             datasetname = "Wilt_withoutdupl_norm_02_v08",
-#                                             algorithm = "iForest",
-#                                             repeatedCV = 30)
-# Wave_ensemble_iF <- read_extended_metricsDT(subfolder = "Waveform",
-#                                             datasetname = "Waveform_withoutdupl_norm_v03",
-#                                             algorithm = "iForest",
-#                                             repeatedCV = 30)
-Page_ensemble_aug<- read_extended_metricsDT(subfolder = "PageBlocks",
-                                            datasetname = "PageBlocks_withoutdupl_norm_02_v02",
-                                            algorithm = "OCSVM",
-                                            repeatedCV = 10, augmented_boolean = "yes")
+
 # Annthyroid_ensemble_iF <- read_extended_metricsDT(subfolder = "Annthyroid",
 #                                                   datasetname = "Annthyroid_withoutdupl_norm_02_v09",
 #                                                   algorithm = "OCSVM",
@@ -603,56 +618,74 @@ Page_ensemble_aug<- read_extended_metricsDT(subfolder = "PageBlocks",
 
 
 
-list_ensembles_aug <- list(
-  # cardio = Cardio_ensemble_iF, 
-  # glass = Glass_ensemble_iF, 
-  # internet = Internet_ensemble_iF, 
-  # pima = Pima_ensemble_iF, 
-  # shuttle = Shuttle_ensemble_iF, 
-  # spam = SpamBase_ensemble_iF, 
-  # stamps = Stamps_ensemble_iF, 
-  # wbc = WBC_ensemble_iF,
-  # wdbc = WDBC_ensemble_iF, 
-  # kdd = KDD_ensemble_iF, 
-  # heart = Heart_ensemble_iF,
-  # arr = Arrhythmia_ensemble_iF,
-  # aloi = ALOI_ensemble_iF,
-  # wilt = Wilt_ensemble_iF,
-  # wave = Wave_ensemble_iF,
-  page = Page_ensemble_iF
-  #ann = Annthyroid_ensemble_iF
-  )
+list_ensembles_aug <- list(cardio = Cardio_ensemble_aug, 
+                       glass = Glass_ensemble_aug, 
+                       #heart = Heart_ensemble, 
+                       #internet = Internet_ensemble, 
+                       page = Page_ensemble_aug, 
+                       pima = Pima_ensemble_aug, 
+                       shuttle = Shuttle_ensemble_aug, 
+                       #spam = SpamBase_ensemble, 
+                       stamps = Stamps_ensemble_aug, 
+                       wave = Wave_ensemble,
+                       wilt = Wilt_ensemble_aug
+                       #wbc = WBC_ensemble,
+                       #wdbc = WDBC_ensemble_aug, 
+                       #ann = Annthyroid_ensemble,
+                       #park = Parkinson_ensemble, 
+                       #arr = Arrhythmia_ensemble,
+                       #iono = Ionosphere_ensemble,
+                       #wpbc = WPBC_ensemble_aug
+                       #,pen = PenDigits_ensemble
+)
 
 
 metric <- "AUC"
-list_names_aug <- list(
-  # "cardio", 
-  # "glass", 
-  # "internet",
-  # "pima", 
-  # "shuttle",
-  # "spam",
-  # "stamps", 
-  # "wbc", 
-  # "wdbc", 
-  # "kdd", 
-  # "heart",
-  # "arr",
-  # "aloi",
-  # "wilt",
-  # "wave",
-  "page"
-  #"ann"
-  )
+list_names_aug <- list("cardio", 
+                   "glass", 
+                   #"heart", 
+                   #"internet",
+                   "page",
+                   "pima", 
+                   "shuttle",
+                   #"spam",
+                   "stamps", 
+                   "wave", 
+                   "wilt" 
+                   #"wbc", 
+                   #"wdbc", 
+                   #"annthyroid",
+                   #"parkinson", 
+                   #"arrhythmia",
+                   #"iono",
+                   #"wpbc"
+                   #,"pen"
+)
 
+
+
+get_augmented_evaluationDT <- function(givenDT_ensemble, given_metric) {
+ 
+  temp21 <- givenDT_ensemble[MUR == "21", ..given_metric][, lapply(.SD,median), .SDcols = 1]
+  temp15 <- givenDT_ensemble[MUR == "15", ..given_metric][, lapply(.SD,mean), .SDcols = 1]
+  temp10 <- givenDT_ensemble[MUR == "10", ..given_metric][, lapply(.SD,mean), .SDcols = 1]
+  temp5 <- givenDT_ensemble[MUR == "5", ..given_metric][, lapply(.SD,mean), .SDcols = 1]
+  
+  resDT <- data.table(Augm_21 = temp21$AUC,
+                      Augm_15 = temp15$AUC,
+                      Augm_10 = temp10$AUC,
+                      Augm_5 = temp5$AUC)
+  return(resDT)
+  
+}
 
 
 list_res_aug <- list()
 for( i in 1:length(list_ensembles_aug)){
   
-  tempDT <- get_evaluation_DT(givenDT_ensemble = list_ensembles_aug[[i]], given_metric = metric)
+  tempDT <- get_augmented_evaluationDT(givenDT_ensemble = list_ensembles_aug[[i]], given_metric = metric)
   tempDT[, Dataset:= list_names_aug[[i]]]
-  tempDT[, Metric:= metric]
+  #tempDT[, Metric:= metric]
   list_res_aug[[i]] <- tempDT
 }
 DT_aug <- rbindlist(list_res_aug)

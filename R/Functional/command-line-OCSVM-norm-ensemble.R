@@ -40,10 +40,10 @@ gc()
 
 MUR21_scores <- rbindlist(map(list_res_1[1:4], 3))
 fwrite(MUR21_scores, paste0(final_path_to_save, "figures/",
-                            arg2, "/", arg1, "_OCSVM_Norm_Multiple_Repres_Scores", arg3,"_iters.csv"))
+                            arg2, "/Norm/", arg1, "_OCSVM_Norm_Multiple_Repres_Scores", arg3,"_iters.csv"))
 Original_scores <- rbindlist(map(list_res_1[1:4], 4))
 fwrite(Original_scores, paste0(final_path_to_save, "figures/",
-                               arg2, "/", arg1, "_OCSVM_Norm_Original_Scores", arg3,"_iters.csv"))
+                               arg2, "/Norm/", arg1, "_OCSVM_Norm_Original_Scores", arg3,"_iters.csv"))
 
 list_MUR_5 <- list()
 for( k in 1:as.numeric(arg3)){
@@ -395,7 +395,7 @@ MUR_5 <- get_evaluation_MUR(list_results = list_MUR_5, list_original = list_res_
 all_MUR <- rbindlist(list(MUR_21, MUR_15, MUR_10, MUR_5))
 
 fwrite(all_MUR, paste0(final_path_to_save, "figures/",
-                       arg2, "/", arg1, "_OCSVM_Norm_Multiple_Repres_allMetrics", arg3,"_iters.csv"))
+                       arg2, "/Norm/", arg1, "_OCSVM_Norm_Multiple_Repres_allMetrics", arg3,"_iters.csv"))
 
 
 
