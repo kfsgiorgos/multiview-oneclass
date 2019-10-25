@@ -2381,7 +2381,7 @@ get_CV_experiments_paper_iForest <- function(datasetname, subfolder_name, experi
 
 
 
-get_CV_experiments_paper_ensemble <- function(datasetname, experiments = "OC_combined_CV", CViterations) {
+get_CV_experiments_paper_ensemble <- function(datasetname, experiments = "OC_combined_CV", CViterations, print_k, total_k) {
   
   
   start2 <- Sys.time()
@@ -2653,10 +2653,12 @@ get_CV_experiments_paper_ensemble <- function(datasetname, experiments = "OC_com
       CVtrain_DT[, `:=` (id = NULL, Label = NULL)]
       CVtest_DT[, `:=` (id = NULL, Label = NULL)]
       
-      print("One-random section")
       print("21 MURs")
-      print(paste0("Kfold: ", ij))
+      print(paste0("Total CViterations: ", , total_k))
+      print(paste0("Current Iteration:",print_k))
       print(paste0("Representation: ", feature_col))
+      print(paste0("Kfold: ", ij))
+      
       
       for(kernels in c("linear", "rbf", "sigmoid")){
         for(nus in c(0.001, 0.005, 0.01, 0.05, 0.1)){
@@ -2792,9 +2794,11 @@ get_CV_experiments_paper_ensemble <- function(datasetname, experiments = "OC_com
       
       CVtrain_DT[, `:=` (id = NULL, Label = NULL)]
       CVtest_DT[, `:=` (id = NULL, Label = NULL)]
-      
-      print(paste0("Kfold: ", ij))
+      print(paste0("Total CViterations: ", total_k))
+      print(paste0("Current Iteration:",print_k))
       print(paste0("Representation: ", "Original data"))
+      print(paste0("Kfold: ", ij))
+      
       
       for(kernels in c("linear", "rbf", "sigmoid")){
         for(nus in c(0.001, 0.005, 0.01, 0.05, 0.1)){
@@ -2858,7 +2862,7 @@ get_CV_experiments_paper_ensemble <- function(datasetname, experiments = "OC_com
   return(list(ensemble_auc, ensemble_max_auc, all_representationsDT, testDT_original))
   }
 
-get_CV_experiments_paper_5_MUR_ensemble <- function(datasetname, experiments = "OC_combined_CV", CViterations) {
+get_CV_experiments_paper_5_MUR_ensemble <- function(datasetname, experiments = "OC_combined_CV", CViterations, print_k, total_k) {
   
   
   start2 <- Sys.time()
@@ -3098,10 +3102,12 @@ get_CV_experiments_paper_5_MUR_ensemble <- function(datasetname, experiments = "
       CVtrain_DT[, `:=` (id = NULL, Label = NULL)]
       CVtest_DT[, `:=` (id = NULL, Label = NULL)]
       
-      print("One-random section")
-      print("21 MURs")
-      print(paste0("Kfold: ", ij))
+      
+      print("5 MURs")
+      print(paste0("Total CViterations: ", total_k))
+      print(paste0("Current Iteration:",print_k))
       print(paste0("Representation: ", feature_col))
+      print(paste0("Kfold: ", ij))
       
       for(kernels in c("linear", "rbf", "sigmoid")){
         for(nus in c(0.001, 0.005, 0.01, 0.05, 0.1)){
@@ -3211,8 +3217,12 @@ get_CV_experiments_paper_5_MUR_ensemble <- function(datasetname, experiments = "
     CVtrain_DT[, `:=` (id = NULL, Label = NULL)]
     CVtest_DT[, `:=` (id = NULL, Label = NULL)]
     
-    print(paste0("Kfold: ", ij))
+    
+    print(paste0("Total CViterations: ", total_k))
+    print(paste0("Current Iteration:",print_k))
     print(paste0("Representation: ", "Original data"))
+    print(paste0("Kfold: ", ij))
+    
     
     for(kernels in c("linear", "rbf", "sigmoid")){
       for(nus in c(0.001, 0.005, 0.01, 0.05, 0.1)){
@@ -3276,7 +3286,7 @@ get_CV_experiments_paper_5_MUR_ensemble <- function(datasetname, experiments = "
   return(list(ensemble_auc, ensemble_max_auc, all_representationsDT, testDT_original))
 }
 
-get_CV_experiments_paper_10_MUR_ensemble <- function(datasetname, experiments = "OC_combined_CV", CViterations) {
+get_CV_experiments_paper_10_MUR_ensemble <- function(datasetname, experiments = "OC_combined_CV", CViterations, print_k, total_k) {
   
   
   start2 <- Sys.time()
@@ -3526,10 +3536,13 @@ get_CV_experiments_paper_10_MUR_ensemble <- function(datasetname, experiments = 
       CVtrain_DT[, `:=` (id = NULL, Label = NULL)]
       CVtest_DT[, `:=` (id = NULL, Label = NULL)]
       
-      print("One-random section")
-      print("21 MURs")
-      print(paste0("Kfold: ", ij))
+      print("10 MURs")
+      print(paste0("Total CViterations: ", total_k))
+      print(paste0("Current Iteration:",print_k))
       print(paste0("Representation: ", feature_col))
+      print(paste0("Kfold: ", ij))
+      
+      
       
       for(kernels in c("linear", "rbf", "sigmoid")){
         for(nus in c(0.001, 0.005, 0.01, 0.05, 0.1)){
@@ -3647,8 +3660,11 @@ get_CV_experiments_paper_10_MUR_ensemble <- function(datasetname, experiments = 
     CVtrain_DT[, `:=` (id = NULL, Label = NULL)]
     CVtest_DT[, `:=` (id = NULL, Label = NULL)]
     
-    print(paste0("Kfold: ", ij))
+    print(paste0("Total CViterations: ", total_k))
+    print(paste0("Current Iteration:",print_k))
     print(paste0("Representation: ", "Original data"))
+    print(paste0("Kfold: ", ij))
+    
     
     for(kernels in c("linear", "rbf", "sigmoid")){
       for(nus in c(0.001, 0.005, 0.01, 0.05, 0.1)){
@@ -3712,7 +3728,7 @@ get_CV_experiments_paper_10_MUR_ensemble <- function(datasetname, experiments = 
   return(list(ensemble_auc, ensemble_max_auc, all_representationsDT, testDT_original))
 }
 
-get_CV_experiments_paper_15_MUR_ensemble <- function(datasetname, experiments = "OC_combined_CV", CViterations) {
+get_CV_experiments_paper_15_MUR_ensemble <- function(datasetname, experiments = "OC_combined_CV", CViterations, print_k, total_k) {
   
   
   start2 <- Sys.time()
@@ -3973,10 +3989,13 @@ get_CV_experiments_paper_15_MUR_ensemble <- function(datasetname, experiments = 
       CVtrain_DT[, `:=` (id = NULL, Label = NULL)]
       CVtest_DT[, `:=` (id = NULL, Label = NULL)]
       
-      print("One-random section")
-      print("21 MURs")
-      print(paste0("Kfold: ", ij))
+      print("15 MURs")
+      print(paste0("Total CViterations: ", total_k))
+      print(paste0("Current Iteration:",print_k))
       print(paste0("Representation: ", feature_col))
+      print(paste0("Kfold: ", ij))
+      
+      
       
       for(kernels in c("linear", "rbf", "sigmoid")){
         for(nus in c(0.001, 0.005, 0.01, 0.05, 0.1)){
@@ -4103,8 +4122,11 @@ get_CV_experiments_paper_15_MUR_ensemble <- function(datasetname, experiments = 
     CVtrain_DT[, `:=` (id = NULL, Label = NULL)]
     CVtest_DT[, `:=` (id = NULL, Label = NULL)]
     
-    print(paste0("Kfold: ", ij))
+    print(paste0("Total CViterations: ", total_k))
+    print(paste0("Current Iteration:",print_k))
     print(paste0("Representation: ", "Original data"))
+    print(paste0("Kfold: ", ij))
+    
     
     for(kernels in c("linear", "rbf", "sigmoid")){
       for(nus in c(0.001, 0.005, 0.01, 0.05, 0.1)){
@@ -4168,7 +4190,7 @@ get_CV_experiments_paper_15_MUR_ensemble <- function(datasetname, experiments = 
   return(list(ensemble_auc, ensemble_max_auc, all_representationsDT, testDT_original))
 }
 
-get_CV_experiments_paper_26_MUR_ensemble <- function(datasetname, experiments = "OC_combined_CV", CViterations) {
+get_CV_experiments_paper_26_MUR_ensemble <- function(datasetname, experiments = "OC_combined_CV", CViterations, print_k, total_k) {
   
   
   start2 <- Sys.time()
@@ -4456,10 +4478,12 @@ get_CV_experiments_paper_26_MUR_ensemble <- function(datasetname, experiments = 
       CVtrain_DT[, `:=` (id = NULL, Label = NULL)]
       CVtest_DT[, `:=` (id = NULL, Label = NULL)]
       
-      print("One-random section")
-      print("21 MURs")
-      print(paste0("Kfold: ", ij))
+      print("26 MURs")
+      print(paste0("Total CViterations: ", total_k))
+      print(paste0("Current Iteration:",print_k))
       print(paste0("Representation: ", feature_col))
+      print(paste0("Kfold: ", ij))
+      
       
       for(kernels in c("linear", "rbf", "sigmoid")){
         for(nus in c(0.001, 0.005, 0.01, 0.05, 0.1)){
@@ -4604,8 +4628,11 @@ get_CV_experiments_paper_26_MUR_ensemble <- function(datasetname, experiments = 
     CVtrain_DT[, `:=` (id = NULL, Label = NULL)]
     CVtest_DT[, `:=` (id = NULL, Label = NULL)]
     
-    print(paste0("Kfold: ", ij))
+    print(paste0("Total CViterations: ", total_k))
+    print(paste0("Current Iteration:",print_k))
     print(paste0("Representation: ", "Original data"))
+    print(paste0("Kfold: ", ij))
+    
     
     for(kernels in c("linear", "rbf", "sigmoid")){
       for(nus in c(0.001, 0.005, 0.01, 0.05, 0.1)){
@@ -4669,7 +4696,7 @@ get_CV_experiments_paper_26_MUR_ensemble <- function(datasetname, experiments = 
   return(list(ensemble_auc, ensemble_max_auc, all_representationsDT, testDT_original))
 }
 
-get_CV_experiments_paper_31_MUR_ensemble <- function(datasetname, experiments = "OC_combined_CV", CViterations) {
+get_CV_experiments_paper_31_MUR_ensemble <- function(datasetname, experiments = "OC_combined_CV", CViterations, print_k, total_k) {
   
   
   start2 <- Sys.time()
@@ -4963,10 +4990,12 @@ get_CV_experiments_paper_31_MUR_ensemble <- function(datasetname, experiments = 
       CVtrain_DT[, `:=` (id = NULL, Label = NULL)]
       CVtest_DT[, `:=` (id = NULL, Label = NULL)]
       
-      print("One-random section")
-      print("21 MURs")
-      print(paste0("Kfold: ", ij))
+      print("31 MURs")
+      print(paste0("Total CViterations: ", total_k))
+      print(paste0("Current Iteration:",print_k))
       print(paste0("Representation: ", feature_col))
+      print(paste0("Kfold: ", ij))
+      
       
       for(kernels in c("linear", "rbf", "sigmoid")){
         for(nus in c(0.001, 0.005, 0.01, 0.05, 0.1)){
@@ -5119,8 +5148,10 @@ get_CV_experiments_paper_31_MUR_ensemble <- function(datasetname, experiments = 
     CVtrain_DT[, `:=` (id = NULL, Label = NULL)]
     CVtest_DT[, `:=` (id = NULL, Label = NULL)]
     
-    print(paste0("Kfold: ", ij))
+    print(paste0("Total CViterations: ", total_k))
+    print(paste0("Current Iteration:",print_k))
     print(paste0("Representation: ", "Original data"))
+    print(paste0("Kfold: ", ij))
     
     for(kernels in c("linear", "rbf", "sigmoid")){
       for(nus in c(0.001, 0.005, 0.01, 0.05, 0.1)){
