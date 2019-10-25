@@ -459,6 +459,7 @@ DT <- rbindlist(list_res)
 DT
 DT[, Dataset:= NULL]  
 DT[, Metric:= NULL] 
+#DT[, Original:= NULL] 
 #DT[, AOMUR_21:= NULL]
 DT[, AOMUR_15:= NULL]
 DT[, MUR_15:= NULL]
@@ -549,6 +550,20 @@ SpamBase_ensemble_aug <- read_extended_metricsDT(subfolder = "SpamBase",
                                              datasetname = "SpamBase_withoutdupl_norm_02_v02",
                                              algorithm = "OCSVM",
                                              repeatedCV = 15, augmented_boolean = "yes")
+Annthyroid_ensemble_aug1 <- read_extended_metricsDT(subfolder = "Annthyroid", 
+                                               datasetname = "Annthyroid_withoutdupl_norm_02_v05",
+                                               algorithm = "OCSVM",
+                                               repeatedCV = 14, augmented_boolean = "yes")
+Annthyroid_ensemble_aug2 <- read_extended_metricsDT(subfolder = "Annthyroid", 
+                                                   datasetname = "Annthyroid_withoutdupl_norm_02_v05",
+                                                   algorithm = "OCSVM",
+                                                   repeatedCV = 15, augmented_boolean = "yes")
+Annthyroid_ensemble_aug <- rbindlist(list(Annthyroid_ensemble_aug1, Annthyroid_ensemble_aug2))
+
+Ionosphere_ensemble_aug <- read_extended_metricsDT(subfolder = "Ionosphere",
+                                               datasetname = "Ionosphere_withoutdupl_norm",
+                                               algorithm = "OCSVM",
+                                               repeatedCV = 20, augmented_boolean = "yes")
 
 # Internet_ensemble_iF <- read_extended_metricsDT(subfolder = "InternetAds", 
 #                                                 datasetname = "InternetAds_withoutdupl_norm_02_v01",
@@ -628,14 +643,14 @@ list_ensembles_aug <- list(cardio = Cardio_ensemble_aug,
                        #spam = SpamBase_ensemble, 
                        stamps = Stamps_ensemble_aug, 
                        wave = Wave_ensemble,
-                       wilt = Wilt_ensemble_aug
+                       wilt = Wilt_ensemble_aug,
                        #wbc = WBC_ensemble,
                        #wdbc = WDBC_ensemble_aug, 
-                       #ann = Annthyroid_ensemble,
+                       ann = Annthyroid_ensemble,
                        #park = Parkinson_ensemble, 
                        #arr = Arrhythmia_ensemble,
-                       #iono = Ionosphere_ensemble,
-                       #wpbc = WPBC_ensemble_aug
+                       iono = Ionosphere_ensemble,
+                       wpbc = WPBC_ensemble_aug
                        #,pen = PenDigits_ensemble
 )
 
@@ -651,14 +666,14 @@ list_names_aug <- list("cardio",
                    #"spam",
                    "stamps", 
                    "wave", 
-                   "wilt" 
+                   "wilt", 
                    #"wbc", 
                    #"wdbc", 
-                   #"annthyroid",
+                   "annthyroid",
                    #"parkinson", 
                    #"arrhythmia",
-                   #"iono",
-                   #"wpbc"
+                   "iono",
+                   "wpbc"
                    #,"pen"
 )
 
@@ -691,7 +706,7 @@ for( i in 1:length(list_ensembles_aug)){
 DT_aug <- rbindlist(list_res_aug)
 DT_aug
 DT_aug[, Dataset:= NULL]  
-DT_aug[, Metric:= NULL] 
+#DT_aug[, Metric:= NULL]
 #DT_aug[, AOMUR_21:= NULL]
 #DT_aug[, AOMUR_21:= NULL]
 DT_aug[, AOMUR_15:= NULL]
@@ -723,6 +738,39 @@ colMeans(rankMatrix(DT_aug))
 
 
 
+# Evaluation augmented & URL  ---------------------------------------------
+
+existingDT <- DT[Dataset %in% DT_aug$Dataset]
+finalDT <- dplyr::bind_cols(DT_aug, existingDT) 
+#sub <- finalDT[c(2,8)]
+#finalDT1 <- rbindlist(list(sub, finalDT))
+finalDT <- finalDT[c(-1, -9)]
+finalDT[, Dataset:= NULL]  
+finalDT[, Dataset1:= NULL]  
+finalDT[, Metric:= NULL] 
+#finalDT[, Original:= NULL] 
+#finalDT[, Augm_10:=NULL]
+# finalDT[, MUR_5:=NULL]
+finalDT[, AOMUR_21:=NULL]
+finalDT[, AOMUR_15:=NULL]
+finalDT[, AOMUR_10:=NULL]
+finalDT[, AOMUR_5:=NULL]
+
+friedmanTest(finalDT)
+friedmanAlignedRanksTest(finalDT)
+imanDavenportTest(finalDT)
+quadeTest(finalDT)
+
+plotCD(finalDT, alpha = 0.05)
+colMeans(rankMatrix(finalDT))
+test_f <- nemenyiTest(finalDT, alpha = 0.1)
+test_f
+test_f$diff.matrix
+abs(test_f$diff.matrix) > test_f$statistic
+
+pv.matrix_all <- friedmanAlignedRanksPost(data=finalDT, control="Original")
+pv.matrix_all
+colMeans(rankMatrix(finalDT))
 
 
 # # Evaluation of Ensembles - iForest -----------------------------------------------------------------
