@@ -48,6 +48,26 @@ read_extended_metricsDT <- function(subfolder, datasetname, algorithm, repeatedC
 }
 
 
+read_extended_metricsDT_26 <- function(subfolder, datasetname, algorithm, repeatedCV, augmented_boolean) {
+  
+  
+  if(augmented_boolean == "yes"){
+    DT <- fread(paste0(final_path_to_save, "figures/", 
+                       subfolder, "/", 
+                       datasetname, "_", algorithm, "_Multiple_Repres_26_allMetrics_Augmented", repeatedCV,"_iters.csv"))
+    
+    
+  }else{
+    DT <- fread(paste0(final_path_to_save, "figures/", 
+                       subfolder, "/", 
+                       datasetname, "_", algorithm, "_Multiple_Repres_26_allMetrics", repeatedCV,"_iters.csv"))
+  }
+  
+  
+  return(DT)
+}
+
+
 ALOI_1 <- read_metricsDT(subfolder = "ALOI", 
                                datasetname = "ALOI_withoutdupl_norm",
                                repeatedCV = 5)
@@ -275,10 +295,16 @@ Ionosphere_ensemble <- read_extended_metricsDT(subfolder = "Ionosphere",
 #                                          repeatedCV = 5)
 
 
-Pima_ensemble <- read_extended_metricsDT(subfolder = "Pima", 
+Pima_ensemble1 <- read_extended_metricsDT(subfolder = "Pima", 
                                          datasetname = "Pima_withoutdupl_norm_02_v02",
                                          algorithm = "OCSVM",
                                          repeatedCV = 30, augmented_boolean = "no")
+Pima_ensemble_26 <- read_extended_metricsDT_26(subfolder = "Pima", 
+                                         datasetname = "Pima_withoutdupl_norm_02_v02",
+                                         algorithm = "OCSVM",
+                                         repeatedCV = 2, augmented_boolean = "no")
+Pima_ensemble <- rbindlist(list(Pima_ensemble1, Pima_ensemble_26))
+
 Shuttle_ensemble <- read_extended_metricsDT(subfolder = "Shuttle", 
                                             datasetname = "Shuttle_withoutdupl_norm_v01",
                                             algorithm = "OCSVM",
@@ -394,8 +420,16 @@ get_evaluation_DT <- function(givenDT_ensemble, given_metric) {
   #                                         DT_5$MUR_5, DT_10$MUR_10, DT_15$MUR_15,
   #                                         DT_21$Original_MUR_21, DT_5$Original_MUR_5, 
   #                                         DT_10$Original_MUR_10, DT_15$Original_MUR_15)))
+
+    # DT_26 <- data.table(MUR_26 = givenDT_ensemble[MUR == "26" & Representation == "Multiple_Representations" & Ensemble == "Average Representations", ..given_metric][, lapply(.SD,median), .SDcols = 1],
+  #                     Original_MUR_26 = givenDT_ensemble[MUR == "26" & Representation == "Multiple_Representations" & Ensemble == "Average Ensemble", ..given_metric][, lapply(.SD,median), .SDcols = 1])
+  # setnames(DT_26, names(DT_26), c("MUR_26", "AOMUR_26"))
+  
+  # all_averageDT <- as.data.table(dplyr::bind_cols(list(DT_26, DT_21, DT_15, 
+  #                                 DT_10, DT_5)))
+  
   all_averageDT <- as.data.table(dplyr::bind_cols(list(DT_21, DT_15, 
-                                  DT_10, DT_5)))
+                                                       DT_10, DT_5)))
   
   return(all_averageDT)
   }
@@ -450,7 +484,7 @@ list_names <- list("cardio",
 list_res <- list()
 for( i in 1:length(list_ensembles)){
   
-  tempDT <- get_evaluation_DT(givenDT_ensemble = list_ensembles[[i]], given_metric = metric)
+  tempDT <- get_evaluation_DT(givenDT_ensemble = Pima_ensemble, given_metric = "AUC")
   tempDT[, Dataset:= list_names[[i]]]
   tempDT[, Metric:= metric]
   list_res[[i]] <- tempDT
