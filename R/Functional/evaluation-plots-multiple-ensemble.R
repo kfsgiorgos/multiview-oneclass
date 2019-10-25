@@ -295,15 +295,10 @@ Ionosphere_ensemble <- read_extended_metricsDT(subfolder = "Ionosphere",
 #                                          repeatedCV = 5)
 
 
-Pima_ensemble1 <- read_extended_metricsDT(subfolder = "Pima", 
+Pima_ensemble <- read_extended_metricsDT(subfolder = "Pima", 
                                          datasetname = "Pima_withoutdupl_norm_02_v02",
                                          algorithm = "OCSVM",
                                          repeatedCV = 30, augmented_boolean = "no")
-Pima_ensemble_26 <- read_extended_metricsDT_26(subfolder = "Pima", 
-                                         datasetname = "Pima_withoutdupl_norm_02_v02",
-                                         algorithm = "OCSVM",
-                                         repeatedCV = 2, augmented_boolean = "no")
-Pima_ensemble <- rbindlist(list(Pima_ensemble1, Pima_ensemble_26))
 
 Shuttle_ensemble <- read_extended_metricsDT(subfolder = "Shuttle", 
                                             datasetname = "Shuttle_withoutdupl_norm_v01",
@@ -484,7 +479,7 @@ list_names <- list("cardio",
 list_res <- list()
 for( i in 1:length(list_ensembles)){
   
-  tempDT <- get_evaluation_DT(givenDT_ensemble = Pima_ensemble, given_metric = "AUC")
+  tempDT <- get_evaluation_DT(givenDT_ensemble = list_ensembles[[i]], given_metric = given_metric)
   tempDT[, Dataset:= list_names[[i]]]
   tempDT[, Metric:= metric]
   list_res[[i]] <- tempDT

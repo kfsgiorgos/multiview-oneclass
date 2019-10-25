@@ -93,7 +93,6 @@ get_evaluation_MUR <- function(list_results, col_name) {
     no_original <- original_classification[1:ids_original[length(ids_original)]][, .N, by = Label][Label == "no", N]
     R_precision_original <- yes_original/(yes_original + no_original)
     
-    
     # Calculate evaluation metrics
     
     original_eval <- average_representationsDT[, HMeasure(true.class = Label, scores = Original)]
@@ -130,7 +129,7 @@ get_evaluation_MUR <- function(list_results, col_name) {
     dcasted_representations[, Original:= dcasted_original$Original]
     dcasted_representations[, Original:= (Original - mean(Original))/sd(Original)]
     
-    norm_dcasted_representations <- dcasted_representations[, lapply(.SD, function(x) (x - mean(x))/sd(x)), .SD = 3:23]
+    norm_dcasted_representations <- dcasted_representations[, lapply(.SD, function(x) (x - mean(x))/sd(x)), .SD = 3:dim(dcasted_representations)[2]]
     average_representationsDT <- as.data.table(rowMeans(norm_dcasted_representations))
     average_representationsDT[, Original:= dcasted_representations$Original]
     average_ensembleDT <- as.data.table(rowMeans(average_representationsDT))
@@ -192,7 +191,8 @@ for( k in 1:as.numeric(arg3)){
   print(Sys.time())
   list_MUR_5[[k]] <- get_CV_experiments_paper_5_MUR_ensemble(datasetname = arg1,
                                                              experiments = "OC_combined_CV",
-                                                             CViterations = as.numeric(arg4))
+                                                             CViterations = as.numeric(arg4),
+                                                             print_k = k, total_k = arg3)
   gc()
 }
 MUR_5 <- get_evaluation_MUR(list_results = list_MUR_5, col_name = "5")
@@ -203,7 +203,8 @@ for( k in 1:as.numeric(arg3)){
   print(Sys.time())
   list_MUR_10[[k]] <- get_CV_experiments_paper_10_MUR_ensemble(datasetname = arg1,
                                                                experiments = "OC_combined_CV",
-                                                               CViterations = as.numeric(arg4))
+                                                               CViterations = as.numeric(arg4),
+                                                               print_k = k, total_k = arg3)
   gc()
 }
 MUR_10 <- get_evaluation_MUR(list_results = list_MUR_10, col_name = "10")
@@ -214,7 +215,8 @@ for( k in 1:as.numeric(arg3)){
   print(Sys.time())
   list_MUR_15[[k]] <- get_CV_experiments_paper_15_MUR_ensemble(datasetname = arg1,
                                                                experiments = "OC_combined_CV",
-                                                               CViterations = as.numeric(arg4))
+                                                               CViterations = as.numeric(arg4),
+                                                               print_k = k, total_k = arg3)
   gc()
 }
 MUR_15 <- get_evaluation_MUR(list_results = list_MUR_15, col_name = "15")
@@ -225,7 +227,8 @@ for( k in 1:as.numeric(arg3)){
   print(Sys.time())
   list_MUR_26[[k]] <- get_CV_experiments_paper_26_MUR_ensemble(datasetname = arg1,
                                                                experiments = "OC_combined_CV",
-                                                               CViterations = as.numeric(arg4))
+                                                               CViterations = as.numeric(arg4),
+                                                               print_k = k, total_k = arg3)
   gc()
 }
 MUR_26 <- get_evaluation_MUR(list_results = list_MUR_26, col_name = "26")
@@ -236,7 +239,8 @@ for( k in 1:as.numeric(arg3)){
   print(Sys.time())
   list_MUR_31[[k]] <- get_CV_experiments_paper_31_MUR_ensemble(datasetname = arg1,
                                                                experiments = "OC_combined_CV",
-                                                               CViterations = as.numeric(arg4))
+                                                               CViterations = as.numeric(arg4),
+                                                               print_k = k, total_k = arg3)
   gc()
 }
 MUR_31 <- get_evaluation_MUR(list_results = list_MUR_31, col_name = "31")
@@ -245,5 +249,5 @@ MUR_31 <- get_evaluation_MUR(list_results = list_MUR_31, col_name = "31")
 all_MUR <- rbindlist(list(MUR_5, MUR_10, MUR_15, MUR_26, MUR_31))
 
 fwrite(all_MUR, paste0(final_path_to_save, "figures/",
-                      arg2, "/", arg1, "_OCSVM_Multiple_Repres_allMetrics_New", arg3,"_iters.csv"))
+                      arg2, "/", arg1, "_OCSVM_Multiple_Repres_5_10_15_15_30", arg3,"_iters.csv"))
 
