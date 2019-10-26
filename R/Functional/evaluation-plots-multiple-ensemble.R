@@ -536,6 +536,7 @@ Cardio_ensemble_aug <- read_extended_metricsDT(subfolder = "Cardio",
                                               datasetname = "Cardiotocography_withoutdupl_norm_02_v08",
                                               algorithm = "OCSVM",
                                               repeatedCV = 20, augmented_boolean = "yes", norm_boolean = "no")
+
 Glass_ensemble_aug1 <- read_extended_metricsDT(subfolder = "Glass",
                                              datasetname = "Glass_withoutdupl_norm",
                                              algorithm = "OCSVM",
@@ -565,6 +566,7 @@ WDBC_ensemble_aug <- read_extended_metricsDT(subfolder = "WDBC",
                                          datasetname = "WDBC_withoutdupl_norm_v09",
                                          algorithm = "OCSVM",
                                          repeatedCV = 30, augmented_boolean = "yes", norm_boolean = "no")
+
 Shuttle_ensemble_aug_1 <- read_extended_metricsDT(subfolder = "Shuttle",
                                                datasetname = "Shuttle_withoutdupl_norm_v01",
                                                algorithm = "OCSVM",
@@ -646,38 +648,12 @@ Heart_ensemble_aug <- read_extended_metricsDT(subfolder = "HeartDisease",
                                           algorithm = "OCSVM",
                                           repeatedCV = 20, augmented_boolean = "yes", norm_boolean = "no")
 
-# WBC_ensemble_aug <- read_extended_metricsDT(subfolder = "WBC", 
-#                                         datasetname = "WBC_withoutdupl_norm_v05",
-#                                         algorithm = "OCSVM",
-#                                         repeatedCV = 30, augmented_boolean = "yes")
+WBC_ensemble_aug <- read_extended_metricsDT(subfolder = "WBC", 
+                                        datasetname = "WBC_withoutdupl_norm_v05",
+                                        algorithm = "OCSVM",
+                                        repeatedCV = 30, augmented_boolean = "yes", norm_boolean = "no")
 
 
-# Internet_ensemble_iF <- read_extended_metricsDT(subfolder = "InternetAds", 
-#                                                 datasetname = "InternetAds_withoutdupl_norm_02_v01",
-#                                                 algorithm = "iForest",
-#                                                 repeatedCV = 11)
-# KDD_ensemble_iF1 <- read_extended_metricsDT(subfolder = "KDD", 
-#                                             datasetname = "KDDCup99_withoutdupl_catremoved",
-#                                             algorithm = "iForest",
-#                                             repeatedCV = 5)
-# KDD_ensemble_iF2 <- read_extended_metricsDT(subfolder = "KDD", 
-#                                             datasetname = "KDDCup99_withoutdupl_catremoved",
-#                                             algorithm = "iForest",
-#                                             repeatedCV = 6)
-# KDD_ensemble_iF3 <- read_extended_metricsDT(subfolder = "KDD", 
-#                                             datasetname = "KDDCup99_withoutdupl_catremoved",
-#                                             algorithm = "iForest",
-#                                             repeatedCV = 7)
-# KDD_ensemble_iF <- rbindlist(list(KDD_ensemble_iF1, KDD_ensemble_iF2, KDD_ensemble_iF3))
-# ALOI_ensemble_iF <- read_extended_metricsDT(subfolder = "ALOI", 
-#                                             datasetname = "ALOI_withoutdupl_norm",
-#                                             algorithm = "iForest",
-#                                             repeatedCV = 5)
-
-# WBC_ensemble_iF <- read_extended_metricsDT(subfolder = "WBC", 
-#                                            datasetname = "WBC_withoutdupl_norm_v05",
-#                                            algorithm = "iForest",
-#                                            repeatedCV = 30)
 # WDBC_ensemble_iF <- read_extended_metricsDT(subfolder = "WDBC", 
 #                                             datasetname = "WDBC_withoutdupl_norm_v07",
 #                                             algorithm = "iForest",
@@ -727,14 +703,14 @@ list_ensembles_aug <- list(cardio = Cardio_ensemble_aug,
                        stamps = Stamps_ensemble_aug, 
                        wave = Wave_ensemble,
                        wilt = Wilt_ensemble_aug,
-                       #wbc = WBC_ensemble,
+                       wbc = WBC_ensemble,
                        #wdbc = WDBC_ensemble_aug, 
                        ann = Annthyroid_ensemble,
                        #park = Parkinson_ensemble, 
                        #arr = Arrhythmia_ensemble,
                        iono = Ionosphere_ensemble,
                        wpbc = WPBC_ensemble_aug
-                       ,pen = PenDigits_ensemble_aug
+                      # ,pen = PenDigits_ensemble_aug
 )
 
 
@@ -750,14 +726,14 @@ list_names_aug <- list("cardio",
                    "stamps", 
                    "wave", 
                    "wilt", 
-                   #"wbc", 
+                   "wbc", 
                    #"wdbc", 
                    "annthyroid",
                    #"parkinson", 
                    #"arrhythmia",
                    "iono",
                    "wpbc"
-                   ,"pen"
+                   #,"pen"
 )
 
 
@@ -827,7 +803,7 @@ existingDT <- DT[Dataset %in% DT_aug$Dataset]
 finalDT <- dplyr::bind_cols(DT_aug, existingDT) 
 #sub <- finalDT[c(2,8)]
 #finalDT1 <- rbindlist(list(sub, finalDT))
-finalDT <- finalDT[c(-1, -9)]
+#finalDT <- finalDT[c(-1, -9)]
 finalDT[, Dataset:= NULL]  
 finalDT[, Dataset1:= NULL]  
 finalDT[, Metric:= NULL] 
@@ -853,7 +829,7 @@ abs(test_f$diff.matrix) > test_f$statistic
 
 pv.matrix_all <- friedmanAlignedRanksPost(data=finalDT, control="Original")
 pv.matrix_all
-colMeans(rankMatrix(finalDT))
+which.min(colMeans(rankMatrix(finalDT)))
 
 
 # # Evaluation of Ensembles - iForest -----------------------------------------------------------------
