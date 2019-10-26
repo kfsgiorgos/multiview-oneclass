@@ -249,5 +249,5 @@ MUR_31 <- get_evaluation_MUR(list_results = list_MUR_31, col_name = "31")
 all_MUR <- rbindlist(list(MUR_5, MUR_10, MUR_15, MUR_26, MUR_31))
 
 fwrite(all_MUR, paste0(final_path_to_save, "figures/",
-                      arg2, "/", arg1, "_OCSVM_Multiple_Repres_5_10_15_15_30", arg3,"_iters.csv"))
+                      arg2, "/", arg1, "_OCSVM_Multiple_Repres_5_10_15_15_30_", arg3,"_iters.csv"))
 

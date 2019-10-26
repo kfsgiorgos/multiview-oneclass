@@ -2654,7 +2654,7 @@ get_CV_experiments_paper_ensemble <- function(datasetname, experiments = "OC_com
       CVtest_DT[, `:=` (id = NULL, Label = NULL)]
       
       print("21 MURs")
-      print(paste0("Total CViterations: ", , total_k))
+      print(paste0("Total CViterations: ", total_k))
       print(paste0("Current Iteration:",print_k))
       print(paste0("Representation: ", feature_col))
       print(paste0("Kfold: ", ij))
