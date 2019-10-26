@@ -33,7 +33,7 @@ for( k in 1:as.numeric(arg3)){
   list_res_1[[k]] <- get_OCSVM_augmented_ensemble_21MUR(datasetname = arg1, 
                                                        experiments = "OC_combined_CV", 
                                                        CViterations = as.numeric(arg4),
-                                                       print_k = k)
+                                                       print_k = k, total_k = arg3)
   print(list_res_1[[k]])
 }
 
@@ -53,7 +53,7 @@ for( k in 1:as.numeric(arg3)){
   list_MUR_5[[k]] <- get_OCSVM_augmented_ensemble_5MUR(datasetname = arg1,
                                                        experiments = "OC_combined_CV",
                                                        CViterations = as.numeric(arg4), 
-                                                       print_k = k)
+                                                       print_k = k, total_k = arg3)
   }
 
 list_MUR_10 <- list()
@@ -62,7 +62,7 @@ for( k in 1:as.numeric(arg3)){
   list_MUR_10[[k]] <- get_OCSVM_augmented_ensemble_10MUR(datasetname = arg1,
                                                          experiments = "OC_combined_CV",
                                                          CViterations = as.numeric(arg4),
-                                                         print_k = k)
+                                                         print_k = k, total_k = arg3)
 }
 list_MUR_15 <- list()
 for( k in 1:as.numeric(arg3)){
@@ -70,7 +70,7 @@ for( k in 1:as.numeric(arg3)){
   list_MUR_15[[k]] <- get_OCSVM_augmented_ensemble_15MUR(datasetname = arg1,
                                                          experiments = "OC_combined_CV",
                                                          CViterations = as.numeric(arg4),
-                                                         print_k = k)
+                                                         print_k = k, total_k = arg3)
 }
 
 
