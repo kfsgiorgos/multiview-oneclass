@@ -27,51 +27,70 @@ if(experiments == "OC_combined_CV"){
 }
 
 
-list_res_1 <- list()
+# list_res_1 <- list()
+# for( k in 1:as.numeric(arg3)){
+#   print(Sys.time())
+#   list_res_1[[k]] <- get_OCSVM_augmented_ensemble_21MUR(datasetname = arg1, 
+#                                                        experiments = "OC_combined_CV", 
+#                                                        CViterations = as.numeric(arg4),
+#                                                        print_k = k, total_k = arg3)
+#   print(list_res_1[[k]])
+# }
+# 
+# gc()
+
+
+# MUR21_scores <- rbindlist(list_res_1[1:4])
+# fwrite(MUR21_scores, paste0(final_path_to_save, "figures/",
+#                             arg2, "/", arg1, "_OCSVM_Multiple_Repres_Scores_Augmented", arg3,"_iters.csv"))
+# Original_scores <- rbindlist(list_res_1[1:4])
+# fwrite(Original_scores, paste0(final_path_to_save, "figures/",
+#                                arg2, "/", arg1, "_OCSVM_Original_Scores_Augmented", arg3,"_iters.csv"))
+# 
+# list_MUR_5 <- list()
+# for( k in 1:as.numeric(arg3)){
+#   print(Sys.time())
+#   list_MUR_5[[k]] <- get_OCSVM_augmented_ensemble_5MUR(datasetname = arg1,
+#                                                        experiments = "OC_combined_CV",
+#                                                        CViterations = as.numeric(arg4), 
+#                                                        print_k = k, total_k = arg3)
+#   }
+
+# list_MUR_10 <- list()
+# for( k in 1:as.numeric(arg3)){
+#   print(Sys.time())
+#   list_MUR_10[[k]] <- get_OCSVM_augmented_ensemble_10MUR(datasetname = arg1,
+#                                                          experiments = "OC_combined_CV",
+#                                                          CViterations = as.numeric(arg4),
+#                                                          print_k = k, total_k = arg3)
+# }
+# list_MUR_15 <- list()
+# for( k in 1:as.numeric(arg3)){
+#   print(Sys.time())
+#   list_MUR_15[[k]] <- get_OCSVM_augmented_ensemble_15MUR(datasetname = arg1,
+#                                                          experiments = "OC_combined_CV",
+#                                                          CViterations = as.numeric(arg4),
+#                                                          print_k = k, total_k = arg3)
+# }
+
+
+list_MUR_26 <- list()
 for( k in 1:as.numeric(arg3)){
   print(Sys.time())
-  list_res_1[[k]] <- get_OCSVM_augmented_ensemble_21MUR(datasetname = arg1, 
-                                                       experiments = "OC_combined_CV", 
-                                                       CViterations = as.numeric(arg4),
-                                                       print_k = k, total_k = arg3)
-  print(list_res_1[[k]])
-}
-
-gc()
-
-
-MUR21_scores <- rbindlist(list_res_1[1:4])
-fwrite(MUR21_scores, paste0(final_path_to_save, "figures/",
-                            arg2, "/", arg1, "_OCSVM_Multiple_Repres_Scores_Augmented", arg3,"_iters.csv"))
-Original_scores <- rbindlist(list_res_1[1:4])
-fwrite(Original_scores, paste0(final_path_to_save, "figures/",
-                               arg2, "/", arg1, "_OCSVM_Original_Scores_Augmented", arg3,"_iters.csv"))
-
-list_MUR_5 <- list()
-for( k in 1:as.numeric(arg3)){
-  print(Sys.time())
-  list_MUR_5[[k]] <- get_OCSVM_augmented_ensemble_5MUR(datasetname = arg1,
-                                                       experiments = "OC_combined_CV",
-                                                       CViterations = as.numeric(arg4), 
-                                                       print_k = k, total_k = arg3)
-  }
-
-list_MUR_10 <- list()
-for( k in 1:as.numeric(arg3)){
-  print(Sys.time())
-  list_MUR_10[[k]] <- get_OCSVM_augmented_ensemble_10MUR(datasetname = arg1,
+  list_MUR_26[[k]] <- get_OCSVM_augmented_ensemble_26MUR(datasetname = arg1,
                                                          experiments = "OC_combined_CV",
                                                          CViterations = as.numeric(arg4),
                                                          print_k = k, total_k = arg3)
 }
-list_MUR_15 <- list()
+list_MUR_31 <- list()
 for( k in 1:as.numeric(arg3)){
   print(Sys.time())
-  list_MUR_15[[k]] <- get_OCSVM_augmented_ensemble_15MUR(datasetname = arg1,
+  list_MUR_31[[k]] <- get_OCSVM_augmented_ensemble_31MUR(datasetname = arg1,
                                                          experiments = "OC_combined_CV",
                                                          CViterations = as.numeric(arg4),
                                                          print_k = k, total_k = arg3)
 }
+
 
 
 
@@ -139,17 +158,23 @@ get_evaluation_augmented_MUR <- function(list_results, input_name_col) {
 }
 
 
-MUR_21 <- get_evaluation_augmented_MUR(list_results = list_res_1, 
-                                       input_name_col = "21")
-MUR_15 <- get_evaluation_augmented_MUR(list_results = list_MUR_15, 
-                                       input_name_col =  "15")
-MUR_10 <- get_evaluation_augmented_MUR(list_results = list_MUR_10, 
-                                       input_name_col = "10")
-MUR_5 <- get_evaluation_augmented_MUR(list_results = list_MUR_5, 
-                                      input_name_col = "5")
+# MUR_21 <- get_evaluation_augmented_MUR(list_results = list_res_1, 
+#                                        input_name_col = "21")
+# MUR_15 <- get_evaluation_augmented_MUR(list_results = list_MUR_15, 
+#                                        input_name_col =  "15")
+# MUR_10 <- get_evaluation_augmented_MUR(list_results = list_MUR_10, 
+#                                        input_name_col = "10")
+# MUR_5 <- get_evaluation_augmented_MUR(list_results = list_MUR_5, 
+#                                       input_name_col = "5")
+MUR_26 <- get_evaluation_augmented_MUR(list_results = list_MUR_26,
+                                      input_name_col = "26")
+MUR_31 <- get_evaluation_augmented_MUR(list_results = list_MUR_31,
+                                       input_name_col = "31")
 
-all_MUR <- rbindlist(list(MUR_21, MUR_15, MUR_10, MUR_5))
+
+# all_MUR <- rbindlist(list(MUR_21, MUR_15, MUR_10, MUR_5))
+all_MUR <- rbindlist(list(MUR_31, MUR_26))
 
 fwrite(all_MUR, paste0(final_path_to_save, "figures/",
-                       arg2, "/", arg1, "_OCSVM_Multiple_Repres_allMetrics_Augmented", arg3,"_iters.csv"))
+                       arg2, "/", arg1, "_OCSVM_Multiple_Repres_allMetrics_Augmented_26_31_", arg3,"_iters.csv"))
 
