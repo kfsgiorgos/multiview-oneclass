@@ -7,6 +7,8 @@ if(selected_configuration == "macBook"){
   setwd(config::get("directory", 
                     file = config_file_path, 
                     config = "default"))
+  reticulate::use_python(python = "/Users/georgios.kaiafas/opt/anaconda2/bin/python", 
+                         required = T)
   source(config::get("source_scripts", 
                      file = config_file_path, 
                      config = "default"))
