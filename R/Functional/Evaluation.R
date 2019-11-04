@@ -251,7 +251,7 @@ get_augmDT_21MUR <- function(given_subfolder, given_datasetname, given_algorithm
 # 21 Augmented: Read CSV and automate  --------------------------------------------------
 
 # augmented_21DT <- fread("/Users/georgios.kaiafas/Desktop/Augmented_21MUR.csv")
-augmented_21DT <- fread("Downloads/Augmented_21MUR.csv")
+augmented_21DT <- fread("/home/giorgoslux/Downloads/Augmented_21MUR.csv")
 dim(augmented_21DT)[2]
 
 list_my_datasetname <- list()
