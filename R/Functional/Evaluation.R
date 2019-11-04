@@ -280,8 +280,8 @@ Aug21DT_eval <- rbindlist(temp_list)
 fwrite(Aug21DT_eval, paste0(final_path_to_save, "figures/OCSVM_AllResults_Augmented21.csv"))
 # 26-31 Augmented: Read CSV and automate  --------------------------------------------------
 
-augmented_26_31DT <- fread("/Users/georgios.kaiafas/Desktop/Augmented_26_31.csv")
-augmented_26_31DT <- fread("Downloads/Augmented_26_31.csv")
+# augmented_26_31DT <- fread("/Users/georgios.kaiafas/Desktop/Augmented_26_31.csv")
+augmented_26_31DT <- fread("/home/giorgoslux/Downloads/Augmented_26_31.csv")
 dim(augmented_26_31DT)[2]
 
 list_my_datasetname <- list()
@@ -310,7 +310,7 @@ fwrite(Aug26_31DT_eval, paste0(final_path_to_save, "figures/OCSVM_AllResults_Aug
 # 21 MUR: Read CSV and automate  --------------------------------------------------
 
 #MUR_21DT <- fread("/Users/georgios.kaiafas/Desktop/MUR21.csv")
-MUR_21DT <- fread("Downloads/MUR21.csv")
+MUR_21DT <- fread("/home/giorgoslux/Downloads/MUR21.csv")
 dim(MUR_21DT)[2]
 
 list_my_datasetname <- list()
@@ -340,7 +340,7 @@ fwrite(MUR21_DT_eval, paste0(final_path_to_save, "figures/OCSVM_AllResults_MUR21
 # MUR 5-31: Read CSV and automate  --------------------------------------------------
 
 # MUR_5_31DT <- fread("/Users/georgios.kaiafas/Desktop/MUR5_31.csv")
-MUR_5_31DT <- fread("Downloads/MUR5_31.csv")
+MUR_5_31DT <- fread("/home/giorgoslux/Downloads/MUR5_31.csv")
 dim(MUR_5_31DT)[2]
 
 list_my_datasetname <- list()
