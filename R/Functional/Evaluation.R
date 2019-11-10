@@ -327,7 +327,7 @@ repeatedCV_remove3 <- which(my_list_repeatedCV %>%
 
 x3 <- 1:length(my_list_repeatedCV)
 temp_list <- list()
-for(i in x3[-repeatedCV_remove3]){
+for(i in x3){
   tempDT <- get_DT_21MUR(given_subfolder = list_my_subfolder[[i]], 
                          given_datasetname = list_my_datasetname[[i]], 
                          given_algorithm = "OCSVM", list_given_repeatedCV = my_list_repeatedCV[[i]])
@@ -357,7 +357,7 @@ repeatedCV_remove4 <- which(my_list_repeatedCV %>%
 
 x4 <- 1:length(my_list_repeatedCV)
 temp_list <- list()
-for(i in x4[-repeatedCV_remove4]){
+for(i in x4){
   tempDT <- get_DT_5_31MUR(given_subfolder = list_my_subfolder[[i]], 
                            given_datasetname = list_my_datasetname[[i]], 
                            given_algorithm = "OCSVM", list_given_repeatedCV = my_list_repeatedCV[[i]])
