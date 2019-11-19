@@ -1,0 +1,652 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"Pen",
+				"PenDigits_withoutdupl_norm_v01"
+			],
+			[
+				"Sa",
+				"Satimage_laplacian3"
+			],
+			[
+				"CA",
+				"Cardio_NDFS"
+			],
+			[
+				"int",
+				"interpret"
+			],
+			[
+				"kerne",
+				"kernel1"
+			],
+			[
+				"MY",
+				"My_Gamma"
+			],
+			[
+				"My",
+				"My_Nu"
+			],
+			[
+				"OCS",
+				"OCSVM_Original"
+			],
+			[
+				"My_",
+				"My_Nu"
+			],
+			[
+				"IF_",
+				"IF_HyperParameters"
+			],
+			[
+				"my",
+				"my_max_features1"
+			],
+			[
+				"my_",
+				"my_max_features"
+			],
+			[
+				"fun",
+				"function"
+			],
+			[
+				"Norm",
+				"NormalizedScores_SVMs_99"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+		[
+			[
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					""
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"Traditional"
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"PdfLaTeX"
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"XeLaTeX"
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"LuaLaTeX"
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"Basic Builder"
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"Basic Builder - PdfLaTeX"
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"Basic Builder - XeLaTeX"
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"Basic Builder - LuaLaTeX"
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"Script Builder"
+				]
+			],
+			[
+				"Packages/LaTeXTools/LaTeX.sublime-build",
+				"PdfLaTeX"
+			]
+		]
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"stat",
+				"git: status"
+			],
+			[
+				"ins",
+				"Package Control: Install Package"
+			],
+			[
+				"remove",
+				"Package Control: Remove Package"
+			],
+			[
+				"git",
+				"GitSavvy: help"
+			],
+			[
+				"status",
+				"git: status"
+			],
+			[
+				"gitsa",
+				"GitSavvy: enable logging"
+			],
+			[
+				"packa",
+				"Package Control: List Packages"
+			],
+			[
+				"termi",
+				"Terminus: Open Default Shell in View"
+			],
+			[
+				"log",
+				"git: log"
+			],
+			[
+				"mar",
+				"MarkdownLivePreview: Clear the cache"
+			],
+			[
+				"dif",
+				"git: diff"
+			],
+			[
+				"gits",
+				"GitSavvy: view recorded log"
+			],
+			[
+				"term",
+				"Terminus: Open Default Shell in View"
+			],
+			[
+				"terminus",
+				"Terminus: Open Default Shell in View"
+			],
+			[
+				"lo",
+				"git: log"
+			],
+			[
+				"livepre",
+				"MarkdownLivePreview: Edit Current File"
+			],
+			[
+				"log ",
+				"git: log"
+			],
+			[
+				"gitsavvy",
+				"GitSavvy: enable logging"
+			],
+			[
+				"snippet",
+				"Snippet: Read From File"
+			],
+			[
+				"Snippet: ",
+				"Snippet: Function"
+			],
+			[
+				"snipp",
+				"Snippet: Attach"
+			],
+			[
+				"termin",
+				"Terminus: Open Default Shell in View"
+			],
+			[
+				"bind",
+				"Preferences: Key Bindings"
+			],
+			[
+				"sencode",
+				"SendCode: Choose Program"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"project",
+				"LSP: Enable Language Server in Project"
+			],
+			[
+				"LSP glo",
+				"LSP: Enable Language Server Globally"
+			],
+			[
+				"LSP",
+				"LSP: Enable Language Server in Project"
+			],
+			[
+				"LSP ",
+				"LSP: Enable Language Server Globally"
+			],
+			[
+				"choo",
+				"SendCode: Choose Program"
+			],
+			[
+				"send",
+				"SendCode: Choose Program"
+			],
+			[
+				"sendco",
+				"SendCode: Choose Program"
+			],
+			[
+				"terminu",
+				"Terminus: Open Default Shell in View"
+			],
+			[
+				"lsp",
+				"LSP: Enable Language Server in Project"
+			],
+			[
+				"",
+				"A File Icon: Clean Patches"
+			],
+			[
+				"R-IDE ",
+				"Preferences: R-IDE Key Bindings"
+			],
+			[
+				"R-IDE",
+				"Preferences: R-IDE Settings"
+			],
+			[
+				"LPS ena",
+				"LSP: Enable Language Server in Project"
+			],
+			[
+				"choose",
+				"SendCode: Choose Program"
+			],
+			[
+				"terminus open",
+				"Terminus: Open Default Shell in View"
+			],
+			[
+				"install packages",
+				"Package Control: Install Package"
+			],
+			[
+				"install ",
+				"Package Control: Install Package"
+			],
+			[
+				"open",
+				"github: open repo"
+			],
+			[
+				"markdo",
+				"Markdown Preview: Preview in Browser"
+			],
+			[
+				"live",
+				"MarkdownLivePreview: Clear the cache"
+			],
+			[
+				"markd",
+				"Markdown Preview: Preview in Browser"
+			],
+			[
+				"liver",
+				"Preferences: MarkdownLivePreview Settings"
+			],
+			[
+				"brow",
+				"Markdown Preview: Preview in Browser"
+			],
+			[
+				"mark",
+				"Markdown Preview: Preview in Browser"
+			],
+			[
+				"livere",
+				"LiveReload: Enable/disable plug-ins"
+			],
+			[
+				"inst",
+				"Package Control: Install Package"
+			],
+			[
+				"markdownpre",
+				"Markdown Preview: Preview in Browser"
+			],
+			[
+				"preview",
+				"MarkdownLivePreview: Edit Current File"
+			],
+			[
+				"preview in ",
+				"Preferences: MarkdownLivePreview Settings"
+			],
+			[
+				"csv",
+				"CSV: Set delimiter"
+			],
+			[
+				"advanced",
+				"Package Control: Advanced Install Package"
+			],
+			[
+				"word",
+				"Word Wrap: Toggle"
+			],
+			[
+				"edit",
+				"MarkdownLivePreview: Edit Current File"
+			],
+			[
+				"syntax m",
+				"Set Syntax: Markdown"
+			],
+			[
+				"materi",
+				"Material Theme: Configuration"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"instal",
+				"Package Control: Install Package"
+			],
+			[
+				"latex",
+				"Build With: LaTeX - XeLaTeX"
+			],
+			[
+				"Package Control: insta",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/Users/georgios.kaiafas/R Language Default Dir/Github-projects/multiview-oneclass/R/Functional/OCSVM_CrossV-1.R",
+		"/Users/georgios.kaiafas/Desktop/screen_augmented",
+		"/Users/georgios.kaiafas/R Language Default Dir/Github-projects/multiview-oneclass/R/Functional/OCSVM-multiview.R",
+		"/Users/georgios.kaiafas/R Language Default Dir/Github-projects/multiview-oneclass/src.R",
+		"/Users/georgios.kaiafas/R Language Default Dir/Github-projects/multiview-oneclass/R/Functional/construct-tabular-outlier.R",
+		"/Users/georgios.kaiafas/.ssh/id_rsa.pub",
+		"/Users/georgios.kaiafas/GitHub_Downloaded/BASTILLE-Outlier-Detection/OCSVM-train_results_producedBYallsubspaces",
+		"/Users/georgios.kaiafas/R Language Default Dir/Github-projects/multiview-oneclass/train-OCSVM.py",
+		"/Users/georgios.kaiafas/R Language Default Dir/Github-projects/multiview-oneclass/OCSVM_producedbyAll.R",
+		"/Users/georgios.kaiafas/R Language Default Dir/Github-projects/multiview-oneclass/supporting-functions.R",
+		"/Users/georgios.kaiafas/R Language Default Dir/Github-projects/multiview-oneclass/LOF-iF.R",
+		"/Users/georgios.kaiafas/R Language Default Dir/Github-projects/multiview-oneclass/sklearn-detectors.py",
+		"/Users/georgios.kaiafas/R Language Default Dir/Github-projects/multiview-oneclass/OCSVM_train-results-producedBY900.R",
+		"/Users/georgios.kaiafas/GitHub_Downloaded/BASTILLE-Outlier-Detection/create-datasample.R",
+		"/Users/georgios.kaiafas/GitHub_Downloaded/BASTILLE-Outlier-Detection/run-logisitcPCA.R",
+		"/Users/georgios.kaiafas/GitHub_Downloaded/BASTILLE-Outlier-Detection/run_logosotcPCA.R",
+		"/Users/georgios.kaiafas/Desktop/sample-auth-dataset.md",
+		"/Users/georgios.kaiafas/untitled.R",
+		"/Users/georgios.kaiafas/.ssh/config",
+		"/Users/georgios.kaiafas/POST authentication/AuthDataDesc-4.md",
+		"/Users/georgios.kaiafas/Desktop/POST authentication data.md",
+		"/Users/georgios.kaiafas/Desktop/untitled.md",
+		"/Users/georgios.kaiafas/Desktop/jshsahashhashsahshas",
+		"/Users/georgios.kaiafas/Desktop/untitled1111",
+		"/Users/georgios.kaiafas/Library/Application Support/Sublime Text 3/Packages/User/MarkdownLivePreview.sublime-settings",
+		"/Users/georgios.kaiafas/Library/Application Support/Sublime Text 3/Packages/MarkdownLivePreview/.sublime/MarkdownLivePreview.sublime-settings",
+		"/Users/georgios.kaiafas/Desktop/dasssadasdas",
+		"/Users/georgios.kaiafas/Desktop/Dynamic Attack Scoring using Distributed Local Detection",
+		"/Users/georgios.kaiafas/Desktop/Review of ECML paper",
+		"/Users/georgios.kaiafas/R Language Default Dir/VM143-Rscripts-command-line-maestro",
+		"/Users/georgios.kaiafas/.bash_profile",
+		"/private/etc/ssh/ssh_config",
+		"/Users/georgios.kaiafas/Desktop/Friedman",
+		"/AUC_friedman",
+		"/Users/georgios.kaiafas/Desktop/Results_AUC",
+		"/Users/georgios.kaiafas/GitHub_Downloaded/KitNET-py-master/README.md",
+		"/Users/georgios.kaiafas/Desktop/paper.tex",
+		"/Users/georgios.kaiafas/Downloads/Oger/src/Oger/datasets/datasets.py",
+		"/Users/georgios.kaiafas/Downloads/files_practical_session/exp1.py",
+		"/Users/georgios.kaiafas/Downloads/Oger/src/Oger/__init__.py",
+		"/Users/georgios.kaiafas/R Language Default Dir/ShortDescription.tex",
+		"/Users/georgios.kaiafas/RelatedWork.md",
+		"/Users/georgios.kaiafas/R Language Default Dir/FraudDetection/Python-Scripts/iForest.py",
+		"/Users/georgios.kaiafas/Library/Application Support/Sublime Text 3/Packages/User/MarkdownLivePreview.css",
+		"/Users/georgios.kaiafas/Documents/untitled.py",
+		"/Users/georgios.kaiafas/Documents/BaggingPrincipalComponents.py",
+		"/Users/georgios.kaiafas/Desktop/Nov23_Cumeeting.md",
+		"/Users/georgios.kaiafas/R Language Default Dir/FraudDetection/data/raw_data/ContinentsCountries.csv",
+		"/Users/georgios.kaiafas/R Language Default Dir/FraudDetection/data/raw_data/telco-fraud-102018.csv",
+		"/Users/georgios.kaiafas/Desktop/test_markdown.md",
+		"/Users/georgios.kaiafas/R Language Default Dir/FraudDetection/data/raw_data/telco-fraud-052018.csv",
+		"/Users/georgios.kaiafas/Fraud Data/telco-fraud-052018.csv",
+		"/Users/georgios.kaiafas/R Language Default Dir/ContinentsCountries.csv",
+		"/Users/georgios.kaiafas/R Language Default Dir/bash-script-project layout",
+		"/Users/georgios.kaiafas/R Language Default Dir/FraudDetection/data/cache/readme.md",
+		"/Users/georgios.kaiafas/R Language Default Dir/FraudDetection/R/munge/readme.md",
+		"/Users/georgios.kaiafas/R Language Default Dir/FraudDetection/R/lib/readme.md",
+		"/Users/georgios.kaiafas/R Language Default Dir/FraudDetection/src/readme.md",
+		"/Users/georgios.kaiafas/R Language Default Dir/FraudDetection/R/readme.md",
+		"/Users/georgios.kaiafas/R Language Default Dir/FraudDetection/.git/config",
+		"/Users/georgios.kaiafas/ICT Dataset details.md",
+		"/Users/georgios.kaiafas/Documents/GitHub/OutlierDetectionProject_plan/LANL/FrequentPatternMining.md",
+		"/Users/georgios.kaiafas/Documents/GitHub/GitLab/MLCyberSec/README.md",
+		"/Users/georgios.kaiafas/Documents/GitHub/OutlierDetectionProject_plan/POST Luxembourg/ICTdataset.md",
+		"/Users/georgios.kaiafas/Fraud Data/telco-fraud-102018.csv",
+		"/Users/georgios.kaiafas/Documents/GitHub/OutlierDetectionProject_plan/POST Luxembourg/EnterpriseAuthData.md",
+		"/Users/georgios.kaiafas/Documents/GitHub/OutlierDetectionProject_plan/README.md",
+		"/Users/georgios.kaiafas/Desktop/IFscript.R",
+		"/Users/georgios.kaiafas/Downloads/AuthDataDesc-2.md",
+		"/Users/georgios.kaiafas/Library/Application Support/Sublime Text 3/Packages/User/LaTeXTools.sublime-settings",
+		"/Users/georgios.kaiafas/Documents/ROUTE paper/outlier-ensemble-approach/main.tex",
+		"/Users/georgios.kaiafas/Downloads/vldb_sample.tex",
+		"/Users/georgios.kaiafas/Downloads/AuthDataDesc-1.md",
+		"/Users/georgios.kaiafas/Downloads/AuthDataDesc.md",
+		"/Users/georgios.kaiafas/Documents/OCSVM_Original_BestBagging.py",
+		"/Users/georgios.kaiafas/Documents/OCSVM_Original_BestFull.py",
+		"/Users/georgios.kaiafas/Documents/OCSVM_LosAlamos.py",
+		"/Users/georgios.kaiafas/Documents/UserUser.py",
+		"/Users/georgios.kaiafas/Documents/OCSVM_AllEdges.py",
+		"/Users/georgios.kaiafas/Documents/OCSVM_SourceComputer.py",
+		"/Users/georgios.kaiafas/Desktop/ThirdDraftMethodology.svg",
+		"/Users/georgios.kaiafas/Documents/OCSVM_screens",
+		"/Users/georgios.kaiafas/Documents/UNIX commands",
+		"/Users/georgios.kaiafas/Documents/Lof_functio.R",
+		"/Users/georgios.kaiafas/Documents/OCSVM_UserUser.py",
+		"/Users/georgios.kaiafas/Documents/OCSVM_SourceComputer_DestComputer.py",
+		"/Users/georgios.kaiafas/Documents/LogisticPCA screen",
+		"/Users/georgios.kaiafas/Documents/SCREENSensitivity.R",
+		"/Users/georgios.kaiafas/Documents/UserUser",
+		"/Users/georgios.kaiafas/Documents/SourceComputer",
+		"/Users/georgios.kaiafas/Documents/ComputerComputer",
+		"/Users/georgios.kaiafas/Documents/ALL_EDGES",
+		"/Users/georgios.kaiafas/Documents/Original",
+		"/Users/georgios.kaiafas/Documents/screen -S Mean_NONnormalized_boot_R",
+		"/Users/georgios.kaiafas/Documents/screen -r Avg_boot_R",
+		"/Users/georgios.kaiafas/Documents/screen Median_boot_R",
+		"/Users/georgios.kaiafas/Documents/OCSVM_poly",
+		"/Users/georgios.kaiafas/Documents/OCSVM_tuneMore_1.py",
+		"/Users/georgios.kaiafas/Documents/OCSVM_tuneMore.py",
+		"/Users/georgios.kaiafas/Documents/word_cloud/word_cloud.py"
+	],
+	"find":
+	{
+		"height": 29.0
+	},
+	"find_in_files":
+	{
+		"height": 158.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": true,
+		"find_history":
+		[
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 29.0
+	},
+	"input":
+	{
+		"height": 67.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.GitSavvy":
+	{
+		"height": 51.0
+	},
+	"output.diagnostics":
+	{
+		"height": 144.0
+	},
+	"output.exec":
+	{
+		"height": 49.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.latextools":
+	{
+		"height": 126.0
+	},
+	"output.mdpopups":
+	{
+		"height": 0.0
+	},
+	"output.show_commit_info":
+	{
+		"height": 228.0
+	},
+	"pinned_build_system": "",
+	"project": "multiview-oneclass.sublime-project",
+	"replace":
+	{
+		"height": 54.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"",
+				"STATUS: BASTILLE-Outlier-Detection"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 254.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
