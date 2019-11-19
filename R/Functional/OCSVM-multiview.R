@@ -1,8 +1,8 @@
 create_unsupervised_view <- function(datasetname, percentage_OD, mixed_view_features) {
 
 
-  DToutliers1 <- fread(paste0("data/derived-data/", datasetname, ".results.csv"))
-  #DToutliers1 <- fread(paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname, ".results.csv"))
+  # DToutliers1 <- fread(paste0("data/derived-data/", datasetname, ".results.csv"))
+  DToutliers1 <- fread(paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname, ".results.csv"))
 
 
   KNNs1 <- paste0("KNN-00", 1:9)
