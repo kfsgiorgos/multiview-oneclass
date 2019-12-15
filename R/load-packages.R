@@ -2,7 +2,7 @@
 pkg <- c("ggplot2", "lubridate", "data.table", "purrr", "reticulate", "foreign",
         "pROC", "caret", "dplyr", "esquisse", "stringr", "readtext", "esquisse",
         "dbscan", "philentropy", "glue", "readtext", "config", "doParallel",
-        "foreach", "devtools", "scmamp", "hmeasure", "rlist", "fst")
+        "foreach", "devtools", "scmamp", "hmeasure", "rlist", "fst", "rsample")
 new.pkg <- pkg[!(pkg %in% installed.packages())]
 if (length(new.pkg)) {
   install.packages(new.pkg, dependencies = TRUE)
