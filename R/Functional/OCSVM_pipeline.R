@@ -1,3 +1,27 @@
+# source("~/R Language Default Dir/Github-projects/multiview-oneclass/src.R")
+source("src.R")
+experiments <- "OC_combined_CV"
+path_to_read <- config::get("path_to_read_datasets", 
+                            file = config_file_path,
+                            config = loaded_config_type)
+path_to_save <- config::get("path_to_save_derived_datasets", 
+                            file = config_file_path,
+                            config = loaded_config_type)
+
+if(experiments == "OC_combined"){
+  folder_to_save <- config::get("OC_combined_experiments", 
+                                file = config_file_path,
+                                config = loaded_config_type)
+  final_path_to_save <- paste0(paste0(path_to_save, folder_to_save))
+}
+if(experiments == "OC_combined_CV"){
+  folder_to_save <- config::get("OC_CV_combined_experiments", 
+                                file = config_file_path,
+                                config = loaded_config_type)
+  final_path_to_save <- paste0(paste0(path_to_save, folder_to_save))
+}
+
+
 # This function read a XXXXXresults.csv from the DAMI repository and 
 # transforms it to a proper tabular csv file. Before we apply thid function, 
 # we have to unzip the XXXX.results.csv file
@@ -29,8 +53,8 @@ GetTabularOutlierScore <- function(datasetname) {
     DTtabular <- dplyr::bind_cols(list.columns)
     
     
-    # fwrite(DTtabular, paste0("data/derived-data/", datasetname, ".results.csv"), nThread = 2)
-    fwrite(DTtabular, paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname, ".results.csv"), nThread = 20)
+    fwrite(DTtabular, paste0("data/derived-data/", datasetname, ".results.csv"), nThread = 2)
+    #fwrite(DTtabular, paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname, ".results.csv"), nThread = 20)
     
   }
 }
@@ -59,8 +83,8 @@ GetCsvFromArff <- function(datasetname) {
 create_unsupervised_scoresDT <- function(datasetname, percentage_OD, mixed_view_features) {
   
   
-  # DToutliers1 <- fread(paste0("data/derived-data/", datasetname, ".results.csv"))
-  DToutliers1 <- fread(paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname, ".results.csv"))
+  DToutliers1 <- fread(paste0("data/derived-data/", datasetname, ".results.csv"))
+  #DToutliers1 <- fread(paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname, ".results.csv"))
   
   
   outlier_algorithms <- names(DToutliers1)[2:length(names(DToutliers1))] %>%
@@ -382,8 +406,8 @@ get_10folds_id_positive_scenario <- function(given_datasetname, experiments = "O
     # We repeat the following process iterations times to split the datasets to 
     # training & test but we demend the test set to have at least 2 outlier examples
     DT_split <- rsample::initial_split(data = DToriginal, prop = 0.8, strata = "Label") 
-    trainDT <- training(DT_split)
-    testDT <- testing(DT_split)
+    trainDT <- rsample::training(DT_split)
+    testDT <- rsample::testing(DT_split)
     
     if(testDT[Label == "yes", .N] < 2){
       list_train_id[[i]] <- NULL
@@ -411,7 +435,7 @@ get_10folds_id_positive_scenario <- function(given_datasetname, experiments = "O
   # We divide the 80% training data to 10folds. For the training folds 1:9 we have to exclude all the outliers. 
   # Inside the testing fold 10 we must have all the outliers that exist to folds 1:9. 
   # We do the same for the training folds c(1:8 & 10) and testing fold 9....
-  Folds <- vfold_cv(train_data, v = 10, repeats = 1, strata = 'Label')
+  Folds <- rsample::vfold_cv(train_data, v = 10, repeats = 1, strata = 'Label')
   
   Fold1 <- as.data.table(Folds$splits$`1`, data = "assessment")
   Fold2 <- as.data.table(Folds$splits$`2`, data = "assessment")
@@ -863,23 +887,20 @@ run_OCSVM_original_representation <- function(datasetname, given_folds) {
 # Step 1) unzip the outlier scores CSV 
 # Step 2) us the above unzipped CSV to run the function "GetTabularOutlierScore" 
 # Step 3) run the function "GetCsvFromArff" to transform the original data to CSV file
-
-
-# for loop for the following
-
-dataset_name <- "Cardiotocography_withoutdupl_norm_02_v01"
-list_new_repres <- list()
-list_original <- list()
-iter_for_loop <- 10
-for( i in 1:iter_for_loop){
+get_pipeline_res <- function(iteration, input_datasetname, folds_iterations) {
   
-  folds_id <- get_10folds_id_positive_scenario(given_datasetname = dataset_name, iterations = 50)
+  dataset_name <- input_datasetname
+  list_new_repres <- list()
+  list_original <- list()  
+  folds_id <- get_10folds_id_positive_scenario(given_datasetname = dataset_name, iterations = folds_iterations)
   
   augmented_res <- run_OCSVM_augmented_representation(datasetname = dataset_name, 
                                                       given_folds = folds_id, 
                                                       number_of_representations = 30)
-  augmented_aucDT <- augmented_res[, pROC::auc(Label, scores, quiet = T), by = .(Representation)]
-  augmented_aucDT[, Representation:= "Augmented"]
+  augmented_res[, Iteration:= iteration]
+  augmented_res[, Representation1:= "Augmented"]
+  # augmented_aucDT <- augmented_res[, pROC::auc(Label, scores, quiet = T), by = .(Representation)]
+  # augmented_aucDT[, Representation:= "Augmented"]
   # gg2 <- augmented_res[, sum(Outlier), by=.(id)]
   # gg2[, Label:= augmented_res[Representation=="Augmented_1", Label]]
   # gg2[V1>7, Outlier:= 1]
@@ -902,8 +923,10 @@ for( i in 1:iter_for_loop){
   unsupervised_res <- run_OCSVM_unsupervised_representation(datasetname = dataset_name, 
                                                             given_folds = folds_id, 
                                                             number_of_representations = 30)
-  unsupervised_aucDT <- unsupervised_res[, pROC::auc(Label, scores, quiet = T), by = .(Representation)]
-  unsupervised_aucDT[, Representation:= "Unsupervised"]
+  unsupervised_res[, Iteration:= iteration]
+  unsupervised_res[, Representation1:= "Unsupervised"]
+  # unsupervised_aucDT <- unsupervised_res[, pROC::auc(Label, scores, quiet = T), by = .(Representation)]
+  # unsupervised_aucDT[, Representation:= "Unsupervised"]
   # gg1 <- unsupervised_res[, sum(Outlier), by=.(id)]
   # gg1[, Label:= unsupervised_res[Representation=="Unsupervised_1", Label]]
   # gg1[V1>14, Outlier:= 1]
@@ -917,38 +940,93 @@ for( i in 1:iter_for_loop){
   
   original_res <- run_OCSVM_original_representation(datasetname = dataset_name, 
                                                     given_folds = folds_id)
-  original_res[, .N, by = .(Label, Outlier)]
-  original_aucDT <- original_res[, pROC::auc(Label, scores, quiet = T)]                                                  
+  original_res[, Iteration:= iteration]
+  original_res[, Representation1:= "Original"]
+  # original_res[, .N, by = .(Label, Outlier)]
+  # original_aucDT <- original_res[, pROC::auc(Label, scores, quiet = T)]                                                  
+  # 
+  # DT <- rbindlist(list(augmented_aucDT, unsupervised_aucDT))
+  # DT[, Representation:= as.factor(Representation)]
   
-  DT <- rbindlist(list(augmented_aucDT, unsupervised_aucDT))
-  DT[, Representation:= as.factor(Representation)]
+  print(paste0("Iter-", iteration))
+  return(list(augmented_res, unsupervised_res, original_res))
+  }
+
   
-  list_new_repres[[i]] <- data.table::copy(DT)
-  list_original[[i]] <- data.table::copy(original_aucDT)
-  print(paste0("Iter-",i))
-  
+#library("doParallel")
+# for loop for the following
+dataset_name <- "Pima_withoutdupl_norm_05_v07"
+
+list_new_repres <- list()
+for( i in 1:5){
+  list_new_repres[[i]] <- get_pipeline_res(iteration = i, input_datasetname = dataset_name, folds_iterations = 20)
 }
 
-# plot the results of the first iteration of the above loop
-j <- 1
-DT1 <- list_new_repres[[j]]
-DT1[Representation == "Augmented", mean(V1)]
-DT1[Representation == "Unsupervised", mean(V1)]
-original_aucDT <- list_original[[j]]
+augmentedDT <- data.table::rbindlist(purrr::map(list_new_repres, 1)) 
+unsupervisedDT <- data.table::rbindlist(purrr::map(list_new_repres, 2))
+originalDT <- data.table::rbindlist(purrr::map(list_new_repres, 3))
 
+df <- data.table::rbindlist(list(augmentedDT, unsupervisedDT, originalDT))
+  
+fst::write.fst(df, "~/Desktop/dataset.fst", 100)
+data.table::fwrite(df, "~/Desktop/dataset.csv")
 
-p <- ggplot(data = DT1) +
-  aes(x = Representation, y = V1, fill = Representation) +
-  geom_boxplot() +
-  theme_bw()+
-  geom_hline(yintercept = original_aucDT[[1]], color = "red")+
-  geom_text(aes( 0, original_aucDT[[1]], label = "Original", hjust=-1, vjust=-1), size = 3)+
-  geom_hline(yintercept = DT1[Representation == "Augmented", mean(V1)], color = "green")+
-  geom_text(aes( 0, DT1[Representation == "Augmented", mean(V1)], label = "Augmented", hjust=-1, vjust=-1), size = 3)+
-  geom_hline(yintercept = DT1[Representation == "Unsupervised", mean(V1)], color = "yellow")+
-  geom_text(aes( 0, DT1[Representation == "Unsupervised", mean(V1)], label = "Unsupervised", hjust=-1, vjust=-1), size = 3)+
-  ggtitle(label = paste0("Experiment Iteration: ", j))
-p
+# cl <- makeCluster(2)
+# registerDoParallel(cl)
+# system.time(r <- foreach( k=1:2, .packages =  c("data.table","magrittr")) %dopar% get_pipeline_res(iteration = k, input_datasetname = dataset_name, folds_iterations = 20))
+# stopCluster(cl)
+# registerDoSEQ()
+# print(r)
+# print("END")
+# code to plot mean auc values from each iteration
+# augmented_meanAUC <- list()
+# unsupervised_meanAUC <- list()
+# originalDT <- list()
+# for(j in 1:30){
+#   
+#   augmentedDT <- list_new_repres[[j]][[1]][, pROC::auc(Label, scores, quiet = T), by = .(Representation)]
+#   augmentedDT[, Representation1:= "Augmented"]
+#   augmented_meanAUC[[j]] <- augmentedDT[, mean(V1)]
+#   unsupervisedDT <- list_new_repres[[j]][[2]][, pROC::auc(Label, scores, quiet = T), by = .(Representation)]
+#   unsupervisedDT[, Representation1:= "Unsupervised"]
+#   unsupervised_meanAUC[[j]] <- unsupervisedDT[, mean(V1)]
+#   originalDT[[j]] <- list_new_repres[[j]][[3]][, pROC::auc(Label, scores, quiet = T)]
+#   
+# }
+# 
+# aug1 <- as.data.table(unlist(augmented_meanAUC))
+# aug1[, Repre:= "Augmented"]
+# unsuper1 <- as.data.table(unlist(unsupervised_meanAUC))
+# unsuper1[, Repre:= "Unsupervised"]
+# or1 <- as.data.table(unlist(originalDT))
+# or1[, Repre:= "Original"]
+# 
+# DT_all <- rbindlist(list(aug1, unsuper1, or1))
+# esquisse::esquisser()
+# j <- 5
+# augmentedDT <- list_new_repres[[j]][[1]][, pROC::auc(Label, scores, quiet = T), by = .(Representation)]
+# augmentedDT[, Representation1:= "Augmented"]
+# augmented_meanAUC <- augmentedDT[, mean(V1)]
+# unsupervisedDT <- list_new_repres[[j]][[2]][, pROC::auc(Label, scores, quiet = T), by = .(Representation)]
+# unsupervisedDT[, Representation1:= "Unsupervised"]
+# unsupervised_meanAUC <- unsupervisedDT[, mean(V1)]
+# originalDT <- list_new_repres[[j]][[3]][, pROC::auc(Label, scores, quiet = T)]
+# 
+# DT1 <- rbindlist(list(augmentedDT, unsupervisedDT))
+# 
+# 
+# p <- ggplot(data = DT1) +
+#   aes(x = Representation1, y = V1, fill = Representation1) +
+#   geom_boxplot() +
+#   theme_bw()+
+#   geom_hline(yintercept = originalDT[[1]], color = "red")+
+#   geom_text(aes( 0, originalDT[[1]], label = "Original", hjust=-1, vjust=-1), size = 3)+
+#   geom_hline(yintercept = augmented_meanAUC, color = "green")+
+#   geom_text(aes( 0, augmented_meanAUC, label = "Augmented", hjust=-1, vjust=-1), size = 3)+
+#   geom_hline(yintercept = unsupervised_meanAUC, color = "yellow")+
+#   geom_text(aes( 0, unsupervised_meanAUC, label = "Unsupervised", hjust=-1, vjust=-1), size = 3)+
+#   ggtitle(label = paste0("Experiment Iteration: ", j))
+# p
 
 
 
