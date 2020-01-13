@@ -1,5 +1,6 @@
 # source("~/R Language Default Dir/Github-projects/multiview-oneclass/src.R")
-source("src.R")
+source("~/GitHub_projects/multiview-oneclass/src.R")
+# source("src.R")
 experiments <- "OC_combined_CV"
 path_to_read <- config::get("path_to_read_datasets", 
                             file = config_file_path,
