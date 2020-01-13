@@ -215,9 +215,28 @@ fwrite(Parkinson_01, "data/derived-data/OC_Combined_CV/figures/Parkinson/Parkins
 
 
 
+temp <- readRDS("~/Desktop/resultsList.rds")
+temp1 <- temp[[5]]$dataset[, .N, by = Label]
+
+temp[[5]]$dataset[, .N, by = Label]
+
+DT_99 <- rbindlist(list(temp[[1]]$dataset, temp[[2]]$dataset, temp[[3]]$dataset, temp[[4]]$dataset, temp[[5]]$dataset))
+setkey(DT_99, Time)
+
+DT_99[, SourceDestUserListQuantile5:= replace_na(SourceDestUserListQuantile5, 0)]
+DT_99[, SourceDestUserListQuantile75:= replace_na(SourceDestUserListQuantile75, 0)]
+DT_99[, SourceDestUserListQuantile99:= replace_na(SourceDestUserListQuantile99, 0)]
+
+DT_99[, SourceUserDestCompListQuantile5:= replace_na(SourceUserDestCompListQuantile5, 0)]
+DT_99[, SourceUserDestCompListQuantile75:= replace_na(SourceUserDestCompListQuantile75, 0)]
+DT_99[, SourceUserDestCompListQuantile99:= replace_na(SourceUserDestCompListQuantile99, 0)]
+
+DT_99[, SourceDestCompListQuantile5:= replace_na(SourceDestCompListQuantile5, 0)]
+DT_99[, SourceDestCompListQuantile75:= replace_na(SourceDestCompListQuantile75, 0)]
+DT_99[, SourceDestCompListQuantile99:= replace_na(SourceDestCompListQuantile99, 0)]
 
 
-
+fwrite(DT_99, "~/Desktop/FeatureEngineering_5_users.csv")
 
 
 
