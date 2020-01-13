@@ -54,8 +54,8 @@ GetTabularOutlierScore <- function(datasetname) {
     DTtabular <- dplyr::bind_cols(list.columns)
     
     
-    fwrite(DTtabular, paste0("data/derived-data/", datasetname, ".results.csv"), nThread = 2)
-    #fwrite(DTtabular, paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname, ".results.csv"), nThread = 20)
+    # fwrite(DTtabular, paste0("data/derived-data/", datasetname, ".results.csv"), nThread = 2)
+    fwrite(DTtabular, paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname, ".results.csv"), nThread = 20)
     
   }
 }
@@ -894,7 +894,7 @@ get_pipeline_res <- function(iteration, input_datasetname, folds_iterations) {
   list_new_repres <- list()
   list_original <- list()  
   folds_id <- get_10folds_id_positive_scenario(given_datasetname = dataset_name, iterations = folds_iterations)
-  
+  print(paste0("START: Iter-",i, ". Augmented Representation part"))
   augmented_res <- run_OCSVM_augmented_representation(datasetname = dataset_name, 
                                                       given_folds = folds_id, 
                                                       number_of_representations = 30)
@@ -918,9 +918,9 @@ get_pipeline_res <- function(iteration, input_datasetname, folds_iterations) {
   # #1,4
   
   # augmented_aucDT <- augmented_res[, pROC::auc(Label, scores, quiet = T), by = .(Representation)]
+  print(paste0("END: Iter-",i, ". Augmented Representation part"))
   
-  
-  
+  print(paste0("START: Iter-",i, ". Unsupervised Representation part"))
   unsupervised_res <- run_OCSVM_unsupervised_representation(datasetname = dataset_name, 
                                                             given_folds = folds_id, 
                                                             number_of_representations = 30)
@@ -937,8 +937,9 @@ get_pipeline_res <- function(iteration, input_datasetname, folds_iterations) {
   
   
   # cor(unsupervised_res[Representation=="Unsupervised_1", Outlier], unsupervised_res[Representation=="Unsupervised_10", Outlier]) 
+  print(paste0("END: Iter-",i, ". Unsupervised Representation part"))
   
-  
+  print(paste0("START: Iter-",i, ". Original Representation part"))
   original_res <- run_OCSVM_original_representation(datasetname = dataset_name, 
                                                     given_folds = folds_id)
   original_res[, Iteration:= iteration]
@@ -948,6 +949,7 @@ get_pipeline_res <- function(iteration, input_datasetname, folds_iterations) {
   # 
   # DT <- rbindlist(list(augmented_aucDT, unsupervised_aucDT))
   # DT[, Representation:= as.factor(Representation)]
+  print(paste0("END: Iter-",i, ". Original Representation part"))
   
   print(paste0("Iter-", iteration))
   return(list(augmented_res, unsupervised_res, original_res))
@@ -959,24 +961,88 @@ arg1 <- args[1]
 arg2 <- args[2]
 arg3 <- args[3]
 arg4 <- args[4]
+arg5 <- args[5]
 
-# dataset_name <- "Cardiotocography_withoutdupl_norm_02_v01"
-list_new_repres <- list()
-for( i in 1:arg3){
-  list_new_repres[[i]] <- get_pipeline_res(iteration = i, input_datasetname = arg2, folds_iterations = arg4)
+if(arg5 == "yes"){
+  list_new_repres <- list()
+  for( i in 1:arg3){
+    list_new_repres[[i]] <- get_pipeline_res(iteration = i, input_datasetname = arg2, folds_iterations = arg4)
+  }
+  
+  augmentedDT <- data.table::rbindlist(purrr::map(list_new_repres, 1)) 
+  unsupervisedDT <- data.table::rbindlist(purrr::map(list_new_repres, 2))
+  originalDT <- data.table::rbindlist(purrr::map(list_new_repres, 3))
+  
+  df <- data.table::rbindlist(list(augmentedDT, unsupervisedDT, originalDT))
+  
+  
+  fst::write.fst(df, paste0(final_path_to_save, "ECML_exp/", 
+                            arg1, "/", arg2, "_OCSVM_DT_all_repres_", 
+                            arg3,"_iters.fst"), 100)
+  
+} else{
+  # GetTabularOutlierScore(datasetname = "Pima_withoutdupl_norm_02_v04.results.csv")
+  # GetTabularOutlierScore(datasetname = "Pima_withoutdupl_norm_02_v05.results.csv")
+  # GetTabularOutlierScore(datasetname = "Pima_withoutdupl_norm_02_v06.results.csv")
+  # GetTabularOutlierScore(datasetname = "Pima_withoutdupl_norm_02_v07.results.csv")
+  # GetTabularOutlierScore(datasetname = "Pima_withoutdupl_norm_02_v08.results.csv")
+  # GetTabularOutlierScore(datasetname = "Pima_withoutdupl_norm_02_v09.results.csv")
+  # GetTabularOutlierScore(datasetname = "Pima_withoutdupl_norm_02_v10.results.csv")
+  
+  GetTabularOutlierScore(datasetname = "WBC_withoutdupl_norm_v02.results.csv")
+  GetTabularOutlierScore(datasetname = "WBC_withoutdupl_norm_v03.results.csv")
+  GetTabularOutlierScore(datasetname = "WBC_withoutdupl_norm_v04.results.csv")
+  GetTabularOutlierScore(datasetname = "WBC_withoutdupl_norm_v06.results.csv")
+  GetTabularOutlierScore(datasetname = "WBC_withoutdupl_norm_v07.results.csv")
+  GetTabularOutlierScore(datasetname = "WBC_withoutdupl_norm_v08.results.csv")
+  GetTabularOutlierScore(datasetname = "WBC_withoutdupl_norm_v09.results.csv")
+  GetTabularOutlierScore(datasetname = "WBC_withoutdupl_norm_v10.results.csv")
+  
+  GetTabularOutlierScore(datasetname = "WDBC_withoutdupl_norm_v02.results.csv")
+  GetTabularOutlierScore(datasetname = "WDBC_withoutdupl_norm_v03.results.csv")
+  GetTabularOutlierScore(datasetname = "WDBC_withoutdupl_norm_v04.results.csv")
+  GetTabularOutlierScore(datasetname = "WDBC_withoutdupl_norm_v05.results.csv")
+  GetTabularOutlierScore(datasetname = "WDBC_withoutdupl_norm_v06.results.csv")
+  GetTabularOutlierScore(datasetname = "WDBC_withoutdupl_norm_v08.results.csv")
+  GetTabularOutlierScore(datasetname = "WDBC_withoutdupl_norm_v09.results.csv")
+  GetTabularOutlierScore(datasetname = "WDBC_withoutdupl_norm_v10.results.csv")
+  
+  
+
+
+  # GetCsvFromArff(datasetname = "Pima_withoutdupl_norm_02_v04.arff")
+  # GetCsvFromArff(datasetname = "Pima_withoutdupl_norm_02_v05.arff")
+  # GetCsvFromArff(datasetname = "Pima_withoutdupl_norm_02_v06.arff")
+  # GetCsvFromArff(datasetname = "Pima_withoutdupl_norm_02_v07.arff")
+  # GetCsvFromArff(datasetname = "Pima_withoutdupl_norm_02_v08.arff")
+  # GetCsvFromArff(datasetname = "Pima_withoutdupl_norm_02_v09.arff")
+  # GetCsvFromArff(datasetname = "Pima_withoutdupl_norm_02_v10.arff")
+  
+  GetCsvFromArff(datasetname = "WBC_withoutdupl_norm_v02.arff")
+  GetCsvFromArff(datasetname = "WBC_withoutdupl_norm_v03.arff")
+  GetCsvFromArff(datasetname = "WBC_withoutdupl_norm_v04.arff")
+  GetCsvFromArff(datasetname = "WBC_withoutdupl_norm_v06.arff")
+  GetCsvFromArff(datasetname = "WBC_withoutdupl_norm_v07.arff")
+  GetCsvFromArff(datasetname = "WBC_withoutdupl_norm_v08.arff")
+  GetCsvFromArff(datasetname = "WBC_withoutdupl_norm_v09.arff")
+  GetCsvFromArff(datasetname = "WBC_withoutdupl_norm_v10.arff")
+ 
+  GetCsvFromArff(datasetname = "WDBC_withoutdupl_norm_v02.arff")
+  GetCsvFromArff(datasetname = "WDBC_withoutdupl_norm_v03.arff")
+  GetCsvFromArff(datasetname = "WDBC_withoutdupl_norm_v04.arff")
+  GetCsvFromArff(datasetname = "WDBC_withoutdupl_norm_v05.arff")
+  GetCsvFromArff(datasetname = "WDBC_withoutdupl_norm_v06.arff")
+  GetCsvFromArff(datasetname = "WDBC_withoutdupl_norm_v08.arff")
+  GetCsvFromArff(datasetname = "WDBC_withoutdupl_norm_v09.arff")
+  GetCsvFromArff(datasetname = "WDBC_withoutdupl_norm_v10.arff")
+  
+  
 }
-
-augmentedDT <- data.table::rbindlist(purrr::map(list_new_repres, 1)) 
-unsupervisedDT <- data.table::rbindlist(purrr::map(list_new_repres, 2))
-originalDT <- data.table::rbindlist(purrr::map(list_new_repres, 3))
-
-df <- data.table::rbindlist(list(augmentedDT, unsupervisedDT, originalDT))
 
 
 fst::write.fst(df, paste0(final_path_to_save, "ECML_exp/", 
                           arg1, "/", arg2, "_OCSVM_DT_all_repres_", 
                           arg3,"_iters.fst"), 100)
-
 
 # fst::write.fst(df, "~/Desktop/dataset.fst", 100)
 # data.table::fwrite(df, "~/Desktop/dataset.csv")
