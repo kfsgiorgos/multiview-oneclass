@@ -963,7 +963,7 @@ arg4 <- args[4]
 # dataset_name <- "Cardiotocography_withoutdupl_norm_02_v01"
 list_new_repres <- list()
 for( i in 1:arg3){
-  list_new_repres[[i]] <- get_pipeline_res(iteration = i, input_datasetname = dataset_name, folds_iterations = arg4)
+  list_new_repres[[i]] <- get_pipeline_res(iteration = i, input_datasetname = arg2, folds_iterations = arg4)
 }
 
 augmentedDT <- data.table::rbindlist(purrr::map(list_new_repres, 1)) 
@@ -975,7 +975,7 @@ df <- data.table::rbindlist(list(augmentedDT, unsupervisedDT, originalDT))
 
 fst::write.fst(df, paste0(final_path_to_save, "ECML_exp/", 
                           arg1, "/", arg2, "_OCSVM_DT_all_repres_", 
-                          arg3,"_iters.csv"))
+                          arg3,"_iters.fst"), 100)
 
 
 # fst::write.fst(df, "~/Desktop/dataset.fst", 100)
