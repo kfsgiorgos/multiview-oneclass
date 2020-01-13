@@ -955,10 +955,10 @@ get_pipeline_res <- function(iteration, input_datasetname, folds_iterations) {
   
 #library("doParallel")
 # for loop for the following
-dataset_name <- "Pima_withoutdupl_norm_05_v07"
+dataset_name <- "Cardiotocography_withoutdupl_norm_02_v01"
 
 list_new_repres <- list()
-for( i in 1:5){
+for( i in 1:2){
   list_new_repres[[i]] <- get_pipeline_res(iteration = i, input_datasetname = dataset_name, folds_iterations = 20)
 }
 

@@ -1,8 +1,8 @@
 create_unsupervised_scoresDT <- function(datasetname, percentage_OD, mixed_view_features) {
   
   
-  # DToutliers1 <- fread(paste0("data/derived-data/", datasetname, ".results.csv"))
-  DToutliers1 <- fread(paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname, ".results.csv"))
+  DToutliers1 <- fread(paste0("data/derived-data/", datasetname, ".results.csv"))
+  #DToutliers1 <- fread(paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname, ".results.csv"))
   
   
   outlier_algorithms <- names(DToutliers1)[2:length(names(DToutliers1))] %>%
@@ -316,8 +316,8 @@ get_10folds_id_positive_scenario <- function(given_datasetname, experiments = "O
   list_train_id <- list()
   list_test_id <- list()
   for(i in 1:iterations){
-    # We repeat the following process iterations times to split the datasets to 
-    # training & test but we demend the test set to have at least 2 outlier examples
+    # We repeat the following process "iterations" times to split the datasets to 
+    # training & test but we demand the test set to have at least 2 outlier examples
     DT_split <- rsample::initial_split(data = DToriginal, prop = 0.8, strata = "Label") 
     trainDT <- training(DT_split)
     testDT <- testing(DT_split)
@@ -335,7 +335,8 @@ get_10folds_id_positive_scenario <- function(given_datasetname, experiments = "O
   list_train_id <- list_train_id[!sapply(list_train_id, is.null)]
   list_test_id <- list_test_id[!sapply(list_test_id, is.null)]
   
-  
+  # We assign as train_data & test_data the 1st list element that fulfills the 
+  # -if- requirement. 
   train_data <- DToriginal[id %in% list_train_id[[1]]]
   print("train data")
   print(train_data)
@@ -467,10 +468,12 @@ get_10folds_id_positive_scenario <- function(given_datasetname, experiments = "O
   #just to evaluate that training folds do not contain outliers but the testing folds contain. 
   print("Training folds")
   for(i in 1:10){
+    print(paste0("Training fold-", i, " : Number of outliers" ))
     print(DToriginal[id %in% list_train_chunks[[i]] & Label == "yes", .N])
   }
   print("Testing folds")
   for(i in 1:10){
+    print(paste0("Testing fold-", i, " : Number of outliers" ))
     print(DToriginal[id %in% list_test_chunks[[i]] & Label == "yes", .N])
   }
   
@@ -785,12 +788,14 @@ run_OCSVM_original_representation <- function(datasetname, given_folds) {
 
 # for loop for the following
 
-list_new_repres <- list()
-list_original <- list()
+# list_new_repres <- list()
+# list_original <- list()
+all_res <- list()
+dataset_name <- "Cardiotocography_withoutdupl_norm_02_v01"
 for( i in 1:2){
-  dataset_name <- "Cardiotocography_withoutdupl_norm_02_v01"
+
   folds_id <- get_10folds_id_positive_scenario(given_datasetname = dataset_name, iterations = 50)
-  
+  print(paste0("Iter-",i, ". Augmented Representation part"))
   augmented_res <- run_OCSVM_augmented_representation(datasetname = dataset_name, 
                                                       given_folds = folds_id, 
                                                       number_of_representations = 30)
@@ -814,12 +819,12 @@ for( i in 1:2){
   # augmented_aucDT <- augmented_res[, pROC::auc(Label, scores, quiet = T), by = .(Representation)]
   
   
-  
+  print(paste0("Iter-",i, ". Unsupervised Representation part"))
   unsupervised_res <- run_OCSVM_unsupervised_representation(datasetname = dataset_name, 
                                                             given_folds = folds_id, 
                                                             number_of_representations = 30)
   unsupervised_aucDT <- unsupervised_res[, pROC::auc(Label, scores, quiet = T), by = .(Representation)]
-  unsupervised_aucDT[, Representation:= "Unsupervised"]
+  # unsupervised_aucDT[, Representation:= "Unsupervised"]
   # gg1 <- unsupervised_res[, sum(Outlier), by=.(id)]
   # gg1[, Label:= unsupervised_res[Representation=="Unsupervised_1", Label]]
   # gg1[V1>14, Outlier:= 1]
@@ -830,26 +835,30 @@ for( i in 1:2){
   
   # cor(unsupervised_res[Representation=="Unsupervised_1", Outlier], unsupervised_res[Representation=="Unsupervised_10", Outlier]) 
   
-  
+  print(paste0("Iter-",i, ". Original Representation part"))
   original_res <- run_OCSVM_original_representation(datasetname = dataset_name, 
                                                     given_folds = folds_id)
   original_res[, .N, by = .(Label, Outlier)]
-  original_aucDT <- original_res[, pROC::auc(Label, scores, quiet = T)]                                                  
+  # original_aucDT <- original_res[, pROC::auc(Label, scores, quiet = T)]                                                  
   
-  DT <- rbindlist(list(augmented_aucDT, unsupervised_aucDT))
-  DT[, Representation:= as.factor(Representation)]
+  #DT <- rbindlist(list(augmented_aucDT, unsupervised_aucDT))
+  #DT[, Representation:= as.factor(Representation)]
   
-  list_new_repres[[i]] <- data.table::copy(DT)
-  list_original[[i]] <- data.table::copy(original_aucDT)
-  print(paste0("Iter-",i))
+  #list_new_repres[[i]] <- data.table::copy(DT)
+  #list_original[[i]] <- data.table::copy(original_aucDT)
+  all_res[[i]] <- rbindlist(list(augmented_res, unsupervised_res, original_res))
+  print(paste0("End of Iter-", i))
   
 }
 
-j <- 2
-DT1 <- list_new_repres[[j]]
-DT1[Representation == "Augmented", mean(V1)]
-DT1[Representation == "Unsupervised", mean(V1)]
-original_aucDT <- list_original[[j]]
+
+DT <- rbindlist(all_res)
+DT[, .N, by = .(Representation)]
+# j <- 1
+# DT1 <- list_new_repres[[j]]
+# DT1[Representation == "Augmented", mean(V1)]
+# DT1[Representation == "Unsupervised", mean(V1)]
+# original_aucDT <- list_original[[j]]
 
 # for(jj in 1:2){
 #   DT1 <- list_new_repres[[jj]]
