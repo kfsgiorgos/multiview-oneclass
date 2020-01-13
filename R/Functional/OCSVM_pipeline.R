@@ -83,8 +83,8 @@ GetCsvFromArff <- function(datasetname) {
 create_unsupervised_scoresDT <- function(datasetname, percentage_OD, mixed_view_features) {
   
   
-  DToutliers1 <- fread(paste0("data/derived-data/", datasetname, ".results.csv"))
-  #DToutliers1 <- fread(paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname, ".results.csv"))
+  # DToutliers1 <- fread(paste0("data/derived-data/", datasetname, ".results.csv"))
+  DToutliers1 <- fread(paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname, ".results.csv"))
   
   
   outlier_algorithms <- names(DToutliers1)[2:length(names(DToutliers1))] %>%
@@ -953,13 +953,16 @@ get_pipeline_res <- function(iteration, input_datasetname, folds_iterations) {
   }
 
   
-#library("doParallel")
-# for loop for the following
-dataset_name <- "Cardiotocography_withoutdupl_norm_02_v01"
+args <- commandArgs(TRUE)
+arg1 <- args[1]
+arg2 <- args[2]
+arg3 <- args[3]
+arg4 <- args[4]
 
+# dataset_name <- "Cardiotocography_withoutdupl_norm_02_v01"
 list_new_repres <- list()
-for( i in 1:2){
-  list_new_repres[[i]] <- get_pipeline_res(iteration = i, input_datasetname = dataset_name, folds_iterations = 20)
+for( i in 1:arg3){
+  list_new_repres[[i]] <- get_pipeline_res(iteration = i, input_datasetname = dataset_name, folds_iterations = arg4)
 }
 
 augmentedDT <- data.table::rbindlist(purrr::map(list_new_repres, 1)) 
@@ -967,9 +970,15 @@ unsupervisedDT <- data.table::rbindlist(purrr::map(list_new_repres, 2))
 originalDT <- data.table::rbindlist(purrr::map(list_new_repres, 3))
 
 df <- data.table::rbindlist(list(augmentedDT, unsupervisedDT, originalDT))
-  
-fst::write.fst(df, "~/Desktop/dataset.fst", 100)
-data.table::fwrite(df, "~/Desktop/dataset.csv")
+
+
+fst::write.fst(df, paste0(final_path_to_save, "ECML_exp/", 
+                          arg1, "/", arg2, "_OCSVM_DT_all_repres_", 
+                          arg3,"_iters.csv"))
+
+
+# fst::write.fst(df, "~/Desktop/dataset.fst", 100)
+# data.table::fwrite(df, "~/Desktop/dataset.csv")
 
 # cl <- makeCluster(2)
 # registerDoParallel(cl)
