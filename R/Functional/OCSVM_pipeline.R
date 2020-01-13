@@ -981,6 +981,8 @@ if(arg5 == "yes"){
                             arg3,"_iters.fst"), 100)
   
 } else{
+  
+  # the *following* have not run ---
   # GetTabularOutlierScore(datasetname = "Pima_withoutdupl_norm_02_v04")
   # GetTabularOutlierScore(datasetname = "Pima_withoutdupl_norm_02_v05")
   # GetTabularOutlierScore(datasetname = "Pima_withoutdupl_norm_02_v06")
@@ -988,25 +990,28 @@ if(arg5 == "yes"){
   # GetTabularOutlierScore(datasetname = "Pima_withoutdupl_norm_02_v08")
   # GetTabularOutlierScore(datasetname = "Pima_withoutdupl_norm_02_v09")
   # GetTabularOutlierScore(datasetname = "Pima_withoutdupl_norm_02_v10")
+  # the *above* have not run ---
   
-  GetTabularOutlierScore(datasetname = "WBC_withoutdupl_norm_v02")
-  GetTabularOutlierScore(datasetname = "WBC_withoutdupl_norm_v03")
-  GetTabularOutlierScore(datasetname = "WBC_withoutdupl_norm_v04")
-  GetTabularOutlierScore(datasetname = "WBC_withoutdupl_norm_v06")
-  GetTabularOutlierScore(datasetname = "WBC_withoutdupl_norm_v07")
-  GetTabularOutlierScore(datasetname = "WBC_withoutdupl_norm_v08")
-  GetTabularOutlierScore(datasetname = "WBC_withoutdupl_norm_v09")
-  GetTabularOutlierScore(datasetname = "WBC_withoutdupl_norm_v10")
   
-  GetTabularOutlierScore(datasetname = "WDBC_withoutdupl_norm_v02")
-  GetTabularOutlierScore(datasetname = "WDBC_withoutdupl_norm_v03")
-  GetTabularOutlierScore(datasetname = "WDBC_withoutdupl_norm_v04")
-  GetTabularOutlierScore(datasetname = "WDBC_withoutdupl_norm_v05")
-  GetTabularOutlierScore(datasetname = "WDBC_withoutdupl_norm_v06")
-  GetTabularOutlierScore(datasetname = "WDBC_withoutdupl_norm_v08")
-  GetTabularOutlierScore(datasetname = "WDBC_withoutdupl_norm_v09")
-  GetTabularOutlierScore(datasetname = "WDBC_withoutdupl_norm_v10")
-  
+  # the *following* have run ---
+  # GetTabularOutlierScore(datasetname = "WBC_withoutdupl_norm_v02")
+  # GetTabularOutlierScore(datasetname = "WBC_withoutdupl_norm_v03")
+  # GetTabularOutlierScore(datasetname = "WBC_withoutdupl_norm_v04")
+  # GetTabularOutlierScore(datasetname = "WBC_withoutdupl_norm_v06")
+  # GetTabularOutlierScore(datasetname = "WBC_withoutdupl_norm_v07")
+  # GetTabularOutlierScore(datasetname = "WBC_withoutdupl_norm_v08")
+  # GetTabularOutlierScore(datasetname = "WBC_withoutdupl_norm_v09")
+  # GetTabularOutlierScore(datasetname = "WBC_withoutdupl_norm_v10")
+  # 
+  # GetTabularOutlierScore(datasetname = "WDBC_withoutdupl_norm_v02")
+  # GetTabularOutlierScore(datasetname = "WDBC_withoutdupl_norm_v03")
+  # GetTabularOutlierScore(datasetname = "WDBC_withoutdupl_norm_v04")
+  # GetTabularOutlierScore(datasetname = "WDBC_withoutdupl_norm_v05")
+  # GetTabularOutlierScore(datasetname = "WDBC_withoutdupl_norm_v06")
+  # GetTabularOutlierScore(datasetname = "WDBC_withoutdupl_norm_v08")
+  # GetTabularOutlierScore(datasetname = "WDBC_withoutdupl_norm_v09")
+  # GetTabularOutlierScore(datasetname = "WDBC_withoutdupl_norm_v10")
+  # the *above* have run ---
   
   
   # GetCsvFromArff(datasetname = "Pima_withoutdupl_norm_02_v04")
