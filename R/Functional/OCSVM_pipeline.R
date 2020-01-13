@@ -981,7 +981,7 @@ if(arg5 == "yes"){
                             arg3,"_iters.fst"), 100)
   
 } else{
-  
+  print("Convert dtaframes")
   # the *following* have not run ---
   # GetTabularOutlierScore(datasetname = "Pima_withoutdupl_norm_02_v04")
   # GetTabularOutlierScore(datasetname = "Pima_withoutdupl_norm_02_v05")
@@ -1021,32 +1021,43 @@ if(arg5 == "yes"){
   # GetCsvFromArff(datasetname = "Pima_withoutdupl_norm_02_v08")
   # GetCsvFromArff(datasetname = "Pima_withoutdupl_norm_02_v09")
   # GetCsvFromArff(datasetname = "Pima_withoutdupl_norm_02_v10")
-  
+  print("1")
   GetCsvFromArff(datasetname = "WBC_withoutdupl_norm_v02")
+  print("2")
   GetCsvFromArff(datasetname = "WBC_withoutdupl_norm_v03")
+  print("3")
   GetCsvFromArff(datasetname = "WBC_withoutdupl_norm_v04")
+  print("4")
   GetCsvFromArff(datasetname = "WBC_withoutdupl_norm_v06")
+  print("5")
   GetCsvFromArff(datasetname = "WBC_withoutdupl_norm_v07")
+  print("6")
   GetCsvFromArff(datasetname = "WBC_withoutdupl_norm_v08")
+  print("7")
   GetCsvFromArff(datasetname = "WBC_withoutdupl_norm_v09")
+  print("8")
   GetCsvFromArff(datasetname = "WBC_withoutdupl_norm_v10")
-
+  print("9")
   GetCsvFromArff(datasetname = "WDBC_withoutdupl_norm_v02")
+  print("10")
   GetCsvFromArff(datasetname = "WDBC_withoutdupl_norm_v03")
+  print("11")
   GetCsvFromArff(datasetname = "WDBC_withoutdupl_norm_v04")
+  print("12")
   GetCsvFromArff(datasetname = "WDBC_withoutdupl_norm_v05")
+  print("13")
   GetCsvFromArff(datasetname = "WDBC_withoutdupl_norm_v06")
+  print("14")
   GetCsvFromArff(datasetname = "WDBC_withoutdupl_norm_v08")
+  print("15")
   GetCsvFromArff(datasetname = "WDBC_withoutdupl_norm_v09")
+  print("16")
   GetCsvFromArff(datasetname = "WDBC_withoutdupl_norm_v10")
   
   
 }
 
 
-fst::write.fst(df, paste0(final_path_to_save, "ECML_exp/", 
-                          arg1, "/", arg2, "_OCSVM_DT_all_repres_", 
-                          arg3,"_iters.fst"), 100)
 
 # fst::write.fst(df, "~/Desktop/dataset.fst", 100)
 # data.table::fwrite(df, "~/Desktop/dataset.csv")
