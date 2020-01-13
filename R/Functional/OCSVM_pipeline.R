@@ -1008,26 +1008,7 @@ if(arg5 == "yes"){
   GetTabularOutlierScore(datasetname = "WDBC_withoutdupl_norm_v10")
   
   
-
-<<<<<<< HEAD
-
-  # GetCsvFromArff(datasetname = "Pima_withoutdupl_norm_02_v04.arff")
-  # GetCsvFromArff(datasetname = "Pima_withoutdupl_norm_02_v05.arff")
-  # GetCsvFromArff(datasetname = "Pima_withoutdupl_norm_02_v06.arff")
-  # GetCsvFromArff(datasetname = "Pima_withoutdupl_norm_02_v07.arff")
-  # GetCsvFromArff(datasetname = "Pima_withoutdupl_norm_02_v08.arff")
-  # GetCsvFromArff(datasetname = "Pima_withoutdupl_norm_02_v09.arff")
-  # GetCsvFromArff(datasetname = "Pima_withoutdupl_norm_02_v10.arff")
   
-  GetCsvFromArff(datasetname = "WBC_withoutdupl_norm_v02.arff")
-  GetCsvFromArff(datasetname = "WBC_withoutdupl_norm_v03.arff")
-  GetCsvFromArff(datasetname = "WBC_withoutdupl_norm_v04.arff")
-  GetCsvFromArff(datasetname = "WBC_withoutdupl_norm_v06.arff")
-  GetCsvFromArff(datasetname = "WBC_withoutdupl_norm_v07.arff")
-  GetCsvFromArff(datasetname = "WBC_withoutdupl_norm_v08.arff")
-  GetCsvFromArff(datasetname = "WBC_withoutdupl_norm_v09.arff")
-  GetCsvFromArff(datasetname = "WBC_withoutdupl_norm_v10.arff")
-=======
   # GetCsvFromArff(datasetname = "Pima_withoutdupl_norm_02_v04")
   # GetCsvFromArff(datasetname = "Pima_withoutdupl_norm_02_v05")
   # GetCsvFromArff(datasetname = "Pima_withoutdupl_norm_02_v06")
@@ -1044,8 +1025,7 @@ if(arg5 == "yes"){
   GetCsvFromArff(datasetname = "WBC_withoutdupl_norm_v08")
   GetCsvFromArff(datasetname = "WBC_withoutdupl_norm_v09")
   GetCsvFromArff(datasetname = "WBC_withoutdupl_norm_v10")
->>>>>>> ae3a5e666a9278c906f420651f787d4b426a068b
- 
+
   GetCsvFromArff(datasetname = "WDBC_withoutdupl_norm_v02")
   GetCsvFromArff(datasetname = "WDBC_withoutdupl_norm_v03")
   GetCsvFromArff(datasetname = "WDBC_withoutdupl_norm_v04")
