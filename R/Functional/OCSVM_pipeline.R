@@ -431,8 +431,9 @@ get_10folds_id_positive_scenario <- function(given_datasetname, experiments = "O
   
   test_data <- DToriginal[id %in% list_test_id[[1]]]
   test_data[, .N, by = Label]
-  
-  
+  rm(list_test_id)
+  rm(list_train_id)
+  gc()
   # We divide the 80% training data to 10folds. For the training folds 1:9 we have to exclude all the outliers. 
   # Inside the testing fold 10 we must have all the outliers that exist to folds 1:9. 
   # We do the same for the training folds c(1:8 & 10) and testing fold 9....
