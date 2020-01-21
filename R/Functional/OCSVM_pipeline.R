@@ -983,19 +983,19 @@ if(arg5 == "yes"){
   
 } else{
   print("Convert dtaframes")
-  # the *following* had run ---
- print("1")
- GetTabularOutlierScore(datasetname = "PageBlocks_withoutdupl_norm_02_v01")
- print("2")
- GetTabularOutlierScore(datasetname = "PageBlocks_withoutdupl_norm_02_v03")
- print("3")
- GetTabularOutlierScore(datasetname = "PageBlocks_withoutdupl_norm_02_v04")
- print("4")
- GetTabularOutlierScore(datasetname = "PageBlocks_withoutdupl_norm_02_v06")
- print("5")
- GetTabularOutlierScore(datasetname = "PageBlocks_withoutdupl_norm_02_v07")
- print("6")
- GetTabularOutlierScore(datasetname = "PageBlocks_withoutdupl_norm_02_v08")
+ #  # the *following* had run ---
+ # print("1")
+ # GetTabularOutlierScore(datasetname = "PageBlocks_withoutdupl_norm_02_v01")
+ # print("2")
+ # GetTabularOutlierScore(datasetname = "PageBlocks_withoutdupl_norm_02_v03")
+ # print("3")
+ # GetTabularOutlierScore(datasetname = "PageBlocks_withoutdupl_norm_02_v04")
+ # print("4")
+ # GetTabularOutlierScore(datasetname = "PageBlocks_withoutdupl_norm_02_v06")
+ # print("5")
+ # GetTabularOutlierScore(datasetname = "PageBlocks_withoutdupl_norm_02_v07")
+ # print("6")
+ # GetTabularOutlierScore(datasetname = "PageBlocks_withoutdupl_norm_02_v08")
  print("7")
  GetTabularOutlierScore(datasetname = "PageBlocks_withoutdupl_norm_02_v09")
  
