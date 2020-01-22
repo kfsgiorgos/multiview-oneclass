@@ -984,11 +984,58 @@ if(arg5 == "yes"){
 } else{
   print("Convert dtaframes")
  #  # the *following* had run --
- print("38")
- GetTabularOutlierScore(datasetname = "WBC_withoutdupl_norm_v01")
- print("39")
- GetCsvFromArff(datasetname = "WBC_withoutdupl_norm_v01")
-  # the *above* had run ---
+ print("1")
+ GetTabularOutlierScore(datasetname = "WBC_withoutdupl_norm_v02")
+ # print("2")
+ # GetCsvFromArff(datasetname = "WBC_withoutdupl_norm_v02")
+ print("3")
+ GetTabularOutlierScore(datasetname = "WBC_withoutdupl_norm_v03")
+ # print("4")
+ # GetCsvFromArff(datasetname = "WBC_withoutdupl_norm_v03")
+ print("5")
+ GetTabularOutlierScore(datasetname = "WBC_withoutdupl_norm_v04")
+ # print("6")
+ # GetCsvFromArff(datasetname = "WBC_withoutdupl_norm_v04")
+ print("7")
+ GetTabularOutlierScore(datasetname = "WBC_withoutdupl_norm_v05")
+ print("8")
+ # GetCsvFromArff(datasetname = "WBC_withoutdupl_norm_v05")
+ print("9")
+ GetTabularOutlierScore(datasetname = "WBC_withoutdupl_norm_v06")
+ # print("10")
+ # GetCsvFromArff(datasetname = "WBC_withoutdupl_norm_v06")
+ print("11")
+ GetTabularOutlierScore(datasetname = "WBC_withoutdupl_norm_v07")
+ # print("12")
+ # GetCsvFromArff(datasetname = "WBC_withoutdupl_norm_v07")
+ print("13")
+ GetTabularOutlierScore(datasetname = "WBC_withoutdupl_norm_v09")
+ # print("14")
+ # GetCsvFromArff(datasetname = "WBC_withoutdupl_norm_v09")
+ print("15")
+ GetTabularOutlierScore(datasetname = "WBC_withoutdupl_norm_v10")
+ # print("16")
+ # GetCsvFromArff(datasetname = "WBC_withoutdupl_norm_v10")
+ print("17")
+ GetTabularOutlierScore(datasetname = "Cardiotocography_withoutdupl_norm_02_v01")
+ # print("18")
+ # GetCsvFromArff(datasetname = "Cardiotocography_withoutdupl_norm_02_v01")
+ print("19")
+ GetTabularOutlierScore(datasetname = "InternetAds_withoutdupl_norm_02_v01")
+ # print("20")
+ # GetCsvFromArff(datasetname = "InternetAds_withoutdupl_norm_02_v01")
+ print("21")
+ GetTabularOutlierScore(datasetname = "Lymphography_withoutdupl_norm_catremoved")
+ # print("22")
+ # GetCsvFromArff(datasetname = "Lymphography_withoutdupl_norm_catremoved")
+ 
+ 
+  
+ 
+ 
+ 
+ 
+   # the *above* had run ---
   
 }
 
