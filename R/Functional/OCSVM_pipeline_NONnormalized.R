@@ -283,8 +283,8 @@ create_unsupervised_scores_non_normalized_DT <- function(datasetname, percentage
   }
   
   DToutliers_all <- dplyr::bind_cols(KNN_DT, KNNW_DT, LOF_DT, SimplifiedLOF_DT, 
-                                     LoOP_DT, LDOF_DT, ODIN_DT, FastABOD_DT,
-                                     KDEOS_DT, LDF_DT, INFLO_DT, COF_DT)
+                                     LoOP_DT2, LDOF_DT, ODIN_DT, FastABOD_DT,
+                                     KDEOS_DT2, LDF_DT, INFLO_DT, COF_DT)
   
   
   
