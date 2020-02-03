@@ -118,7 +118,7 @@ create_unsupervised_scoresDT <- function(datasetname, percentage_OD, mixed_view_
     setnames(KNN_DT, 1, "KNN")
     KNN_DT1 <- copy(KNN_DT[order(KNN, decreasing = T)])
     KNN_DT1[, rank:= 1:.N]
-    KNN_DT1[, KNN_normalized_rank:= (rank-1)/(.N-1)]
+    KNN_DT1[, KNN_normalized_rank:= round((rank-1)/(.N-1), digits = 9)]
     setkey(x = KNN_DT1, "id")
     KNN_DT2 <- as.data.table(KNN_DT1$KNN_normalized_rank)
     setnames(KNN_DT2, 1, "KNN")
@@ -140,7 +140,7 @@ create_unsupervised_scoresDT <- function(datasetname, percentage_OD, mixed_view_
     setnames(KNNW_DT, 1, "KNNW")
     KNNW_DT1 <- copy(KNNW_DT[order(KNNW, decreasing = T)])
     KNNW_DT1[, rank:= 1:.N]
-    KNNW_DT1[, KNNW_normalized_rank:= (rank-1)/(.N-1)]
+    KNNW_DT1[, KNNW_normalized_rank:= round((rank-1)/(.N-1), digits = 9)]
     setkey(KNNW_DT1, "id")
     KNNW_DT2 <- as.data.table(KNNW_DT1$KNNW_normalized_rank)
     setnames(KNNW_DT2, 1, "KNNW")
@@ -162,7 +162,7 @@ create_unsupervised_scoresDT <- function(datasetname, percentage_OD, mixed_view_
     setnames(LOF_DT, 1, "LOF")
     LOF_DT1 <- copy(LOF_DT[order(LOF, decreasing = T)])
     LOF_DT1[, rank:= 1:.N]
-    LOF_DT1[, LOF_normalized_rank:= (rank-1)/(.N-1)]
+    LOF_DT1[, LOF_normalized_rank:= round((rank-1)/(.N-1), digits = 9)]
     setkey(LOF_DT1, "id")
     LOF_DT2 <- as.data.table(LOF_DT1$LOF_normalized_rank)
     setnames(LOF_DT2, 1, "LOF")
@@ -183,7 +183,7 @@ create_unsupervised_scoresDT <- function(datasetname, percentage_OD, mixed_view_
     setnames(SimplifiedLOF_DT, 1, "SimplifiedLOF")
     SimplifiedLOF_DT1 <- copy(SimplifiedLOF_DT[order(SimplifiedLOF, decreasing = T)])
     SimplifiedLOF_DT1[, rank:= 1:.N]
-    SimplifiedLOF_DT1[, SimplifiedLOF_normalized_rank:= (rank-1)/(.N-1)]
+    SimplifiedLOF_DT1[, SimplifiedLOF_normalized_rank:= round((rank-1)/(.N-1), digits = 9)]
     setkey(SimplifiedLOF_DT1, "id")
     SimplifiedLOF_DT2 <- as.data.table(SimplifiedLOF_DT1$SimplifiedLOF_normalized_rank)
     setnames(SimplifiedLOF_DT2, 1, "SimplifiedLOF")
@@ -219,7 +219,7 @@ create_unsupervised_scoresDT <- function(datasetname, percentage_OD, mixed_view_
     setnames(LDOF_DT, 1, "LDOF")
     LDOF_DT1 <- copy(LDOF_DT[order(LDOF, decreasing = T)])
     LDOF_DT1[, rank:= 1:.N]
-    LDOF_DT1[, LDOF_normalized_rank:= (rank-1)/(.N-1)]
+    LDOF_DT1[, LDOF_normalized_rank:= round((rank-1)/(.N-1), digits = 9)]
     setkey(LDOF_DT1, "id")
     LDOF_DT2 <- as.data.table(LDOF_DT1$LDOF_normalized_rank)
     setnames(LDOF_DT2, 1, "LDOF")
@@ -242,7 +242,7 @@ create_unsupervised_scoresDT <- function(datasetname, percentage_OD, mixed_view_
     # That is why we order with decreasing = F
     ODIN_DT1 <- copy(ODIN_DT[order(ODIN, decreasing = F)])
     ODIN_DT1[, rank:= 1:.N]
-    ODIN_DT1[, ODIN_normalized_rank:= (rank-1)/(.N-1)]
+    ODIN_DT1[, ODIN_normalized_rank:= round((rank-1)/(.N-1), digits = 9)]
     setkey(ODIN_DT1, "id")
     ODIN_DT2 <- as.data.table(ODIN_DT1$ODIN_normalized_rank)
     setnames(ODIN_DT2, 1, "ODIN")
@@ -297,7 +297,7 @@ create_unsupervised_scoresDT <- function(datasetname, percentage_OD, mixed_view_
     setnames(LDF_DT, 1, "LDF")
     LDF_DT1 <- copy(LDF_DT[order(LDF, decreasing = T)])
     LDF_DT1[, rank:= 1:.N]
-    LDF_DT1[, LDF_normalized_rank:= (rank-1)/(.N-1)]
+    LDF_DT1[, LDF_normalized_rank:= round((rank-1)/(.N-1), digits = 9)]
     setkey(LDF_DT1, "id")
     LDF_DT2 <- as.data.table(LDF_DT1$LDF_normalized_rank)
     setnames(LDF_DT2, 1, "LDF")
@@ -318,7 +318,7 @@ create_unsupervised_scoresDT <- function(datasetname, percentage_OD, mixed_view_
     setnames(INFLO_DT, 1, "INFLO")
     INFLO_DT1 <- copy(INFLO_DT[order(INFLO, decreasing = T)])
     INFLO_DT1[, rank:= 1:.N]
-    INFLO_DT1[, INFLO_normalized_rank:= (rank-1)/(.N-1)]
+    INFLO_DT1[, INFLO_normalized_rank:= round((rank-1)/(.N-1), digits = 9)]
     setkey(INFLO_DT1, "id")
     INFLO_DT2 <- as.data.table(INFLO_DT1$INFLO_normalized_rank)
     setnames(INFLO_DT2, 1, "INFLO")
@@ -339,7 +339,7 @@ create_unsupervised_scoresDT <- function(datasetname, percentage_OD, mixed_view_
     setnames(COF_DT, 1, "COF")
     COF_DT1 <- copy(COF_DT[order(COF, decreasing = T)])
     COF_DT1[, rank:= 1:.N]
-    COF_DT1[, COF_normalized_rank:= (rank-1)/(.N-1)]
+    COF_DT1[, COF_normalized_rank:= round((rank-1)/(.N-1), digits = 9)]
     setkey(COF_DT1, "id")
     COF_DT2 <- as.data.table(COF_DT1$COF_normalized_rank)
     setnames(COF_DT2, 1, "COF")
