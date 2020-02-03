@@ -263,7 +263,7 @@ create_unsupervised_scoresDT <- function(datasetname, percentage_OD, mixed_view_
     
     FastABOD_DT[, inv:= -log(FastABOD/max(FastABOD))]
     
-    FastABOD_DT2 <- as.data.table(FastABOD_DT[, (inv-min(inv))/ (max(inv) - min(inv))])
+    FastABOD_DT2 <- as.data.table(FastABOD_DT[, round((inv-min(inv))/ (max(inv) - min(inv)), digits = 9)])
     setnames(FastABOD_DT2, 1, "FastABOD") 
     
   } else{
