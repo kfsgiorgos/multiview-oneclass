@@ -389,7 +389,7 @@ get_results_DT_average <- function(given_datasetname_1, version_string, col_name
                           paste0(given_datasetname_1, "_withoutdupl_norm_", version_string1, "v10")))
   list_names_short <- as.list(c(paste0(given_datasetname_1, "_v0", 1:9), 
                                     paste0(given_datasetname_1, "_v10" )))
-  res_auc <- rbindlist(pmap(list(list_names, list_namesshort), get_res_dataset))
+  res_auc <- rbindlist(pmap(list(list_names, list_names_short), get_res_dataset))
   res_auc[, col:= col_name]
   return(res_auc)
 }
