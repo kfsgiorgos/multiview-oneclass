@@ -383,12 +383,23 @@ get_results_DT_average <- function(given_datasetname_1, version_string, col_name
   
   if(version_string == "none"){
     version_string1 <- ""
-  } else{version_string1 <-  paste0(version_string, "_")}
+    list_names <- as.list(c(paste0(given_datasetname_1, "_withoutdupl_norm_", version_string1, "v0", 1:9),
+                            paste0(given_datasetname_1, "_withoutdupl_norm_", version_string1, "v10")))
+    list_names_short <- as.list(c(paste0(given_datasetname_1, "_v0", 1:9), 
+                                  paste0(given_datasetname_1, "_v10" )))
+  } else if(version_string == "no_versions"){
+    version_string1 <- ""
+    list_names <- as.list(paste0(given_datasetname_1, "_withoutdupl_norm"))
+    list_names_short <- as.list(given_datasetname_1)
+  }  else{
+    version_string1 <-  paste0(version_string, "_")
+    list_names <- as.list(c(paste0(given_datasetname_1, "_withoutdupl_norm_", version_string1, "v0", 1:9),
+                            paste0(given_datasetname_1, "_withoutdupl_norm_", version_string1, "v10")))
+    list_names_short <- as.list(c(paste0(given_datasetname_1, "_v0", 1:9), 
+                                  paste0(given_datasetname_1, "_v10" )))
+    }
   
-  list_names <- as.list(c(paste0(given_datasetname_1, "_withoutdupl_norm_", version_string1, "v0", 1:9),
-                          paste0(given_datasetname_1, "_withoutdupl_norm_", version_string1, "v10")))
-  list_names_short <- as.list(c(paste0(given_datasetname_1, "_v0", 1:9), 
-                                    paste0(given_datasetname_1, "_v10" )))
+
   res_auc <- rbindlist(pmap(list(list_names, list_names_short), get_res_dataset))
   res_auc[, col:= col_name]
   return(res_auc)
