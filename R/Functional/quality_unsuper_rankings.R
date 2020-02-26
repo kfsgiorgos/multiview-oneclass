@@ -364,6 +364,7 @@ get_res_dataset <- function(given_datasetname1, col_name) {
   
   list_auc <- list()
   for(i in 1:30){
+    print(paste0("Iteration-", i))
     Stamps_temp <- get_augmented_and_unsupervisedDT_temp(given_datasetname = given_datasetname1)[["unsupervised"]]
     dim1 <- (dim(Stamps_temp)[2])-2
     auc_res <- copy(data.table::transpose(Stamps_temp[, lapply(.SD, function(x) pROC::auc(Label, x, quiet = T)), .SDcols = 1:dim1]))
@@ -376,7 +377,7 @@ get_res_dataset <- function(given_datasetname1, col_name) {
   resDT[, Iteration:= as.factor(Iteration)]
   mean_resDT <- resDT[, mean(V1), by = .(Algorithm)]
   mean_resDT[, dataset:= col_name]
-  return(mean_resDT)
+  return(resDT)
 }
 
 get_results_DT_average <- function(given_datasetname_1, version_string, col_name) {
