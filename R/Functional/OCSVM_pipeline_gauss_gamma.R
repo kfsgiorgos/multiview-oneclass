@@ -297,7 +297,7 @@ create_unsupervised_scoresDT <- function(datasetname, percentage_OD, mixed_view_
   for(i in 1:dimension){
     temp_list[[i]] <- as.data.table(dnorm(as.vector(unlist(DToutliers_all[, .SD, .SDcols = i])), 
                                           mean = mean_values[i, V1], 
-                                          sd = (squared_mean_values1[i, V1] - squared_mean_values[i, V1])))
+                                          sd = (squared_mean_values[i, V1] - mean_squared_values[i, V1])))
     }
   
   
