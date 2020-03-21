@@ -84,8 +84,8 @@ GetCsvFromArff <- function(datasetname) {
 create_unsupervised_scoresDT <- function(datasetname, percentage_OD, mixed_view_features) {
   
   
-  # DToutliers1 <- fread(paste0("data/derived-data/", datasetname, ".results.csv"))
-  DToutliers1 <- fread(paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname, ".results.csv"))
+  DToutliers1 <- fread(paste0("data/derived-data/", datasetname, ".results.csv"))
+  #DToutliers1 <- fread(paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname, ".results.csv"))
   
   
   outlier_algorithms <- names(DToutliers1)[2:length(names(DToutliers1))] %>%
@@ -619,6 +619,10 @@ get_augmented_and_unsupervisedDT <- function(given_datasetname, experiments = "O
   DToriginal[, .N, by = Label]
   
   one_randomOD <- create_unsupervised_scoresDT(given_datasetname, percentage_OD=1, mixed_view_features=1)
+  if("id" %in% names(one_randomOD)){
+    one_randomOD[, id:= NULL]
+  }
+  
   dimension <- dim(one_randomOD)[2]
   
   if(length(which(one_randomOD[, lapply(.SD, function(x) sum(is.infinite(x))), .SDcols = 1:dimension] != 0))){
@@ -1138,7 +1142,7 @@ if(arg5 == "yes"){
 #   geom_hline(yintercept = unsupervised_meanAUC, color = "yellow")+
 #   geom_text(aes( 0, unsupervised_meanAUC, label = "Unsupervised", hjust=-1, vjust=-1), size = 3)+
 #   ggtitle(label = paste0("Experiment Iteration: ", j))
-# p
+# 
 
 
 

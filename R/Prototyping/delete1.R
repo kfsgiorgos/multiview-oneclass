@@ -239,6 +239,157 @@ DT_99[, SourceDestCompListQuantile99:= replace_na(SourceDestCompListQuantile99, 
 fwrite(DT_99, "~/Desktop/FeatureEngineering_5_users.csv")
 
 
+# test code ---------------------------------------------------------------
+
+
+# string_temp <- "abcd10jk"
+string_temp <- "hutg9mnd!nk9"
+string_temp_letters <- strsplit(string_temp, "")[[1]]
+
+DT <- data.table(letters = strsplit(string_temp, "")[[1]])
+DT[, N:= 1]
+DT[, .N,  by = letters][N>1, ]
+
+# Check if two strings are permutation of each other
+string_temp1 <- "hutg9mnd!nk9"
+string_temp2 <- "tg9mnd!nk9hu"
+
+combn(2:3, 2)
+
+
+
+
+string_temp_letters <- strsplit(string_temp, "")[[1]]
+
+DT <- data.table(letters = strsplit(string_temp, "")[[1]])
+DT[, N:= 1]
+DT[, .N,  by = letters][N>1]
+
+# Given two strings, write a function to check if they are one edit (or zero edits) away
+string_temp1 <- "baleswpoiq"
+string_temp2 <- "baleswpoiqz"
+
+
+if(abs(length(strsplit(string_temp2, "")[[1]]) - length(strsplit(string_temp1, "")[[1]])) <=1){
+  if(sum(strsplit(string_temp2, "")[[1]] == strsplit(string_temp1, "")[[1]]) <=1){
+    print("yes")
+  } else {
+    print("more than 1 edits")
+  }
+  }else {
+    print("more than 1 edits")
+    }
+
+# Left Rotation
+
+rotLeft <- function(a, d) {
+  temp_array <- a
+  d1 <- d
+  
+  if((d1 %% length(temp_array)) == 0){
+    print("No left rotation needed")
+    res <- temp_array
+ 
+  }else{
+    list1 <- list()
+    for (i in 1:length(temp_array)) {
+      if((i+d1) %% length(temp_array) == 0){
+        list1[[i]] <- length(temp_array)
+      } else{
+        list1[[i]] <- (i+d1) %% length(temp_array)
+      }
+      
+    }
+    
+    rotated_left <- list()
+    for (i in 1:length(temp_array)) {
+      rotated_left[[i]] <- (temp_array[which(unlist(list1) == i)])
+    }
+    res <- unlist(rotated_left)
+    }
+  
+  
+  return(res)
+}
+
+temp_array1 <- c(19,124,-23,264,115)
+d2 <- 15
+
+rotLeft(a = temp_array1, d = d2)
+
+# replace whitespaces
+
+
+temp_str <- "Mr  John Smith" 
+true_length <- 14
+temp_str1 <- strsplit(temp_str, "")[[1]][1:true_length]
+temp_str2 <- str_flatten(temp_str1)
+
+stringr::str_replace_all(string = temp_str2, pattern = " ", replacement = "%20")
+
+
+# factorial 
+# take input from the user
+num = as.integer(readline(prompt="Enter a number: "))
+factorial = 1
+# check is the number is negative, positive or zero
+if(num < 0) {
+  print("Sorry, factorial does not exist for negative numbers")
+} else if(num == 0) {
+  print("The factorial of 0 is 1")
+} else {
+  for(i in 1:num) {
+    factorial = factorial * i
+  }
+  print(paste("The factorial of", num ,"is",factorial))
+}
+
+# permutations of a given string
+
+temp_string <- "elama"
+temp_string_splitted <- strsplit(temp_string, "")[[1]]
+temp_string_index <- strsplit(temp_string, "")[[1]]
+
+DT1 <- as.data.table(expand.grid(rep(list(1:5), 5)))
+DT1[, col:= rowSums(DT1)]
+DT2 <- DT1[col==15]
+DT2[, col:= NULL]
+DT4 <- DT2[(Var1 != Var2) &  Var1!=Var3 & (Var1 != Var4) & (Var1 != Var5) & (Var2 != Var3) 
+    & (Var2 != Var4) & (Var2 != Var5) & (Var3 != Var4) & (Var3 != Var5) & (Var4 != Var5)]
+
+
+
+
+# fibonacci
+# take input from the user
+nterms = as.integer(readline(prompt="How many terms? "))
+# first two terms
+n1 = 0
+n2 = 1
+count = 2
+# check if the number of terms is valid
+if(nterms <= 0) {
+  print("Plese enter a positive integer")
+} else {
+  if(nterms == 1) {
+    print("Fibonacci sequence:")
+    print(n1)
+  } else {
+    print("Fibonacci sequence:")
+    print(n1)
+    print(n2)
+    while(count < nterms) {
+      nth = n1 + n2
+      print(nth)
+      # update values
+      n1 = n2
+      n2 = nth
+      count = count + 1
+    }
+  }
+}
+
+
 
 
 

@@ -23,71 +23,14 @@ if(experiments == "OC_combined_CV"){
 }
 
 
-# This function read a XXXXXresults.csv from the DAMI repository and 
-# transforms it to a proper tabular csv file. Before we apply thid function, 
-# we have to unzip the XXXX.results.csv file
-
-# Examples:
-# GetTabularOutlierScore(datasetname = "Ionosphere_withoutdupl_norm")
-# GetTabularOutlierScore(datasetname = "Parkinson_withoutdupl_norm_10_v03")
-GetTabularOutlierScore <- function(datasetname) {
-  
-  # fnames <- list.files(paste0("~/Downloads/", datasetname,  "/"))
-  # text.loaded <- readtext::readtext(paste0("data/downloaded-data/", datasetname, ".results.csv"))
-  text.loaded <- readtext::readtext(paste0("~/Downloads/", datasetname, ".results.csv"))
-  
-  
-  
-  list.columns <- list()
-  for (i in 1:dim(text.loaded)[1]) {
-    DTtext <- as.data.table(text.loaded$text[i])
-    DTtext1 <- as.data.table(str_split(DTtext, " "))
-    if(i == 1){
-      setnames(DTtext1, "V1", "Label")
-      DT <- DTtext1[-1] 
-      list.columns[[i]] <- DT
-    } else{
-      setnames(DTtext1, "V1", DTtext1$V1[1])
-      DT <- DTtext1[-1] 
-      list.columns[[i]] <- DT
-    }
-    DTtabular <- dplyr::bind_cols(list.columns)
-    
-    
-    # fwrite(DTtabular, paste0("data/derived-data/", datasetname, ".results.csv"), nThread = 2)
-    fwrite(DTtabular, paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname, ".results.csv"), nThread = 20)
-    
-  }
-}
-
-
-# This function creates .csv from .arff when you have downloaded already the.arff 
-# dataset that you want to analyze from specific directory
-
-# Examples
-# GetCsvFromArff(datasetname = "Ionosphere_withoutdupl_norm")
-# GetCsvFromArff(datasetname = "Pima_withoutdupl_norm_02_v01")
-GetCsvFromArff <- function(datasetname) {
-  
-  # DT <- as.data.table(foreign::read.arff(paste0("data/downloaded-data/", datasetname, ".arff")))
-  DT<- as.data.table(foreign::read.arff(paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname, ".arff")))
-  setnames(DT, old = "outlier", "Label")
-  # fwrite(DT, paste0("data/derived-data/", datasetname, ".csv"), nThread = 2)
-  fwrite(DT, paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname, ".csv"), nThread = 20)
-  
-}
-
-
 
 # This function read the csv file of the corresponding datasetname and outputs 
 # a dataset with 12 columns for 12 outlier detection algorithms. 
-
-
-create_unsupervised_scores_non_normalized_DT <- function(datasetname, percentage_OD, mixed_view_features) {
+create_unsupervised_scoresDT <- function(datasetname, percentage_OD, mixed_view_features) {
   
   
-  #DToutliers1 <- fread(paste0("data/derived-data/", datasetname, ".results.csv"))
-  DToutliers1 <- fread(paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname, ".results.csv"))
+  DToutliers1 <- fread(paste0("data/derived-data/", datasetname, ".results.csv"))
+  #DToutliers1 <- fread(paste0("~/Downloads/DAMI_datasets/derived_data/", datasetname, ".results.csv"))
   
   
   outlier_algorithms <- names(DToutliers1)[2:length(names(DToutliers1))] %>%
@@ -116,10 +59,17 @@ create_unsupervised_scores_non_normalized_DT <- function(datasetname, percentage
     
     # Rank Normalization: https://people.revoledu.com/kardi/tutorial/Similarity/Normalized-Rank.html 
     KNN_DT <- DToutliers1[, .SD, .SDcols = c(sampleKNN)]
+    KNN_DT[, id:= 1:.N]
     setnames(KNN_DT, 1, "KNN")
+    KNN_DT1 <- copy(KNN_DT[order(KNN, decreasing = T)])
+    KNN_DT1[, rank:= 1:.N]
+    KNN_DT1[, KNN_normalized_rank:= round((rank-1)/(.N-1), digits = 9)]
+    setkey(x = KNN_DT1, "id")
+    KNN_DT2 <- as.data.table(KNN_DT1$KNN_normalized_rank)
+    setnames(KNN_DT2, 1, "KNN")
     
   } else{
-    KNN_DT <- NULL
+    KNN_DT2 <- NULL
   }
   
   
@@ -131,9 +81,16 @@ create_unsupervised_scores_non_normalized_DT <- function(datasetname, percentage
     
     # Rank Normalization
     KNNW_DT <- DToutliers1[, .SD, .SDcols = c(sampleKNNW)]
+    KNNW_DT[, id:= 1:.N]
     setnames(KNNW_DT, 1, "KNNW")
+    KNNW_DT1 <- copy(KNNW_DT[order(KNNW, decreasing = T)])
+    KNNW_DT1[, rank:= 1:.N]
+    KNNW_DT1[, KNNW_normalized_rank:= round((rank-1)/(.N-1), digits = 9)]
+    setkey(KNNW_DT1, "id")
+    KNNW_DT2 <- as.data.table(KNNW_DT1$KNNW_normalized_rank)
+    setnames(KNNW_DT2, 1, "KNNW")
   } else{
-    KNNW_DT <- NULL
+    KNNW_DT2 <- NULL
   }
   
   
@@ -146,9 +103,16 @@ create_unsupervised_scores_non_normalized_DT <- function(datasetname, percentage
     
     # Rank Normalization
     LOF_DT <- DToutliers1[, .SD, .SDcols = c(sampleLOF)]
+    LOF_DT[, id:= 1:.N]
     setnames(LOF_DT, 1, "LOF")
+    LOF_DT1 <- copy(LOF_DT[order(LOF, decreasing = T)])
+    LOF_DT1[, rank:= 1:.N]
+    LOF_DT1[, LOF_normalized_rank:= round((rank-1)/(.N-1), digits = 9)]
+    setkey(LOF_DT1, "id")
+    LOF_DT2 <- as.data.table(LOF_DT1$LOF_normalized_rank)
+    setnames(LOF_DT2, 1, "LOF")
   } else{
-    LOF_DT <- NULL
+    LOF_DT2 <- NULL
   }
   
   
@@ -160,9 +124,16 @@ create_unsupervised_scores_non_normalized_DT <- function(datasetname, percentage
     
     # Rank Normalization
     SimplifiedLOF_DT <- DToutliers1[, .SD, .SDcols = c(sampleSimplifiedLOF)]
+    SimplifiedLOF_DT[, id:= 1:.N]
     setnames(SimplifiedLOF_DT, 1, "SimplifiedLOF")
+    SimplifiedLOF_DT1 <- copy(SimplifiedLOF_DT[order(SimplifiedLOF, decreasing = T)])
+    SimplifiedLOF_DT1[, rank:= 1:.N]
+    SimplifiedLOF_DT1[, SimplifiedLOF_normalized_rank:= round((rank-1)/(.N-1), digits = 9)]
+    setkey(SimplifiedLOF_DT1, "id")
+    SimplifiedLOF_DT2 <- as.data.table(SimplifiedLOF_DT1$SimplifiedLOF_normalized_rank)
+    setnames(SimplifiedLOF_DT2, 1, "SimplifiedLOF")
   } else{
-    SimplifiedLOF_DT <- NULL
+    SimplifiedLOF_DT2 <- NULL
   }
   
   
@@ -189,9 +160,16 @@ create_unsupervised_scores_non_normalized_DT <- function(datasetname, percentage
     sampleLDOF <- sample(x = LDOFs, size = mixed_view_features, replace = F)
     # Rank Normalization
     LDOF_DT <- DToutliers1[, .SD, .SDcols = c(sampleLDOF)]
+    LDOF_DT[, id:= 1:.N]
     setnames(LDOF_DT, 1, "LDOF")
+    LDOF_DT1 <- copy(LDOF_DT[order(LDOF, decreasing = T)])
+    LDOF_DT1[, rank:= 1:.N]
+    LDOF_DT1[, LDOF_normalized_rank:= round((rank-1)/(.N-1), digits = 9)]
+    setkey(LDOF_DT1, "id")
+    LDOF_DT2 <- as.data.table(LDOF_DT1$LDOF_normalized_rank)
+    setnames(LDOF_DT2, 1, "LDOF")
   } else{
-    LDOF_DT <- NULL
+    LDOF_DT2 <- NULL
   }
   
   
@@ -203,11 +181,18 @@ create_unsupervised_scores_non_normalized_DT <- function(datasetname, percentage
     
     # Rank Normalization
     ODIN_DT <- DToutliers1[, .SD, .SDcols = c(sampleODIN)]
+    ODIN_DT[, id:= 1:.N]
     setnames(ODIN_DT, 1, "ODIN")
     # The lower the scores the higher the chance to be an outlier. 
     # That is why we order with decreasing = F
+    ODIN_DT1 <- copy(ODIN_DT[order(ODIN, decreasing = F)])
+    ODIN_DT1[, rank:= 1:.N]
+    ODIN_DT1[, ODIN_normalized_rank:= round((rank-1)/(.N-1), digits = 9)]
+    setkey(ODIN_DT1, "id")
+    ODIN_DT2 <- as.data.table(ODIN_DT1$ODIN_normalized_rank)
+    setnames(ODIN_DT2, 1, "ODIN")
   } else{
-    ODIN_DT <- NULL
+    ODIN_DT2 <- NULL
   }
   
   if("FastABOD" %in% DT[, unique(OD)]){
@@ -221,8 +206,13 @@ create_unsupervised_scores_non_normalized_DT <- function(datasetname, percentage
     FastABOD_DT[, id:= 1:.N]
     setnames(FastABOD_DT, 1, "FastABOD")
     
+    FastABOD_DT[, inv:= -log(FastABOD/max(FastABOD))]
+    
+    FastABOD_DT2 <- as.data.table(FastABOD_DT[, round((inv-min(inv))/ (max(inv) - min(inv)), digits = 9)])
+    setnames(FastABOD_DT2, 1, "FastABOD") 
+    
   } else{
-    FastABOD_DT <- NULL
+    FastABOD_DT2 <- NULL
   }
   
   if("KDEOS" %in% DT[, unique(OD)]){
@@ -248,10 +238,17 @@ create_unsupervised_scores_non_normalized_DT <- function(datasetname, percentage
     
     # Rank Normalization: https://people.revoledu.com/kardi/tutorial/Similarity/Normalized-Rank.html
     LDF_DT <- DToutliers1[, .SD, .SDcols = c(sampleLDF)]
+    LDF_DT[, id:= 1:.N]
     setnames(LDF_DT, 1, "LDF")
+    LDF_DT1 <- copy(LDF_DT[order(LDF, decreasing = T)])
+    LDF_DT1[, rank:= 1:.N]
+    LDF_DT1[, LDF_normalized_rank:= round((rank-1)/(.N-1), digits = 9)]
+    setkey(LDF_DT1, "id")
+    LDF_DT2 <- as.data.table(LDF_DT1$LDF_normalized_rank)
+    setnames(LDF_DT2, 1, "LDF")
     
   } else{
-    LDF_DT <- NULL
+    LDF_DT2 <- NULL
   }
   
   if("INFLO" %in% DT[, unique(OD)]){
@@ -262,9 +259,16 @@ create_unsupervised_scores_non_normalized_DT <- function(datasetname, percentage
     
     # Rank Normalization: https://people.revoledu.com/kardi/tutorial/Similarity/Normalized-Rank.html
     INFLO_DT <- DToutliers1[, .SD, .SDcols = c(sampleINFLO)]
+    INFLO_DT[, id:= 1:.N]
     setnames(INFLO_DT, 1, "INFLO")
+    INFLO_DT1 <- copy(INFLO_DT[order(INFLO, decreasing = T)])
+    INFLO_DT1[, rank:= 1:.N]
+    INFLO_DT1[, INFLO_normalized_rank:= round((rank-1)/(.N-1), digits = 9)]
+    setkey(INFLO_DT1, "id")
+    INFLO_DT2 <- as.data.table(INFLO_DT1$INFLO_normalized_rank)
+    setnames(INFLO_DT2, 1, "INFLO")
   } else{
-    INFLO_DT <- NULL
+    INFLO_DT2 <- NULL
   }
   
   
@@ -276,15 +280,21 @@ create_unsupervised_scores_non_normalized_DT <- function(datasetname, percentage
     sampleCOF <- sample(x = COFs, size = mixed_view_features, replace = F)
     # Rank Normalization: https://people.revoledu.com/kardi/tutorial/Similarity/Normalized-Rank.html
     COF_DT <- DToutliers1[, .SD, .SDcols = c(sampleCOF)]
+    COF_DT[, id:= 1:.N]
     setnames(COF_DT, 1, "COF")
-    
+    COF_DT1 <- copy(COF_DT[order(COF, decreasing = T)])
+    COF_DT1[, rank:= 1:.N]
+    COF_DT1[, COF_normalized_rank:= round((rank-1)/(.N-1), digits = 9)]
+    setkey(COF_DT1, "id")
+    COF_DT2 <- as.data.table(COF_DT1$COF_normalized_rank)
+    setnames(COF_DT2, 1, "COF")
   } else{
-    COF_DT <- NULL
+    COF_DT2 <- NULL
   }
   
-  DToutliers_all <- dplyr::bind_cols(KNN_DT, KNNW_DT, LOF_DT, SimplifiedLOF_DT, 
-                                     LoOP_DT2, LDOF_DT, ODIN_DT, FastABOD_DT,
-                                     KDEOS_DT2, LDF_DT, INFLO_DT, COF_DT)
+  DToutliers_all <- dplyr::bind_cols(KNN_DT2, KNNW_DT2, LOF_DT2, SimplifiedLOF_DT2, 
+                                     LoOP_DT2, LDOF_DT2, ODIN_DT2, FastABOD_DT2,
+                                     KDEOS_DT2, LDF_DT2, INFLO_DT2, COF_DT2)
   
   
   
@@ -553,7 +563,11 @@ get_augmented_and_unsupervisedDT <- function(given_datasetname, experiments = "O
   setnames(DToriginal, "outlier", "Label", skip_absent = T)
   DToriginal[, .N, by = Label]
   
-  one_randomOD <- create_unsupervised_scores_non_normalized_DT(given_datasetname, percentage_OD=1, mixed_view_features=1)
+  one_randomOD <- create_unsupervised_scoresDT(given_datasetname, percentage_OD=1, mixed_view_features=1)
+  if("id" %in% names(one_randomOD)){
+    one_randomOD[, id:= NULL]
+  }
+  
   dimension <- dim(one_randomOD)[2]
   
   if(length(which(one_randomOD[, lapply(.SD, function(x) sum(is.infinite(x))), .SDcols = 1:dimension] != 0))){
@@ -568,6 +582,10 @@ get_augmented_and_unsupervisedDT <- function(given_datasetname, experiments = "O
     DT <- one_randomOD
   }
   combinedDT_1 <- dplyr::bind_cols(DToriginal, DT)
+  if ("id1" %in% names(combinedDT_1)){
+    combinedDT_1[, id1:= NULL]
+  }
+  
   one_randomOD[, `:=` (id = combinedDT_1$id, Label = combinedDT_1$Label)]
   return(list(augmented = combinedDT_1, 
               unsupervised = one_randomOD, 
@@ -818,258 +836,4 @@ run_OCSVM_original_representation <- function(datasetname, given_folds) {
   
   
 }
-
-
-
-# Example of the pipeline -------------------------------------------------
-
-# Step 1) unzip the outlier scores CSV 
-# Step 2) us the above unzipped CSV to run the function "GetTabularOutlierScore" 
-# Step 3) run the function "GetCsvFromArff" to transform the original data to CSV file
-get_pipeline_res <- function(iteration, input_datasetname, folds_iterations) {
-  
-  dataset_name <- input_datasetname
-  list_new_repres <- list()
-  list_original <- list()  
-  folds_id <- get_10folds_id_positive_scenario(given_datasetname = dataset_name, iterations = folds_iterations)
-  print(paste0("START: Iter-",i, ". Augmented Representation part"))
-  augmented_res <- run_OCSVM_augmented_representation(datasetname = dataset_name, 
-                                                      given_folds = folds_id, 
-                                                      number_of_representations = 30)
-  augmented_res[, Iteration:= iteration]
-  augmented_res[, Representation1:= "Augmented"]
-  # augmented_aucDT <- augmented_res[, pROC::auc(Label, scores, quiet = T), by = .(Representation)]
-  # augmented_aucDT[, Representation:= "Augmented"]
-  # gg2 <- augmented_res[, sum(Outlier), by=.(id)]
-  # gg2[, Label:= augmented_res[Representation=="Augmented_1", Label]]
-  # gg2[V1>7, Outlier:= 1]
-  # gg2[V1<=7, Outlier:= 0]
-  # gg2[, .N, by = .(Label, Outlier)]
-  # 
-  # cor(augmented_res[Representation=="Augmented_1", Outlier], augmented_res[Representation=="Augmented_15", Outlier]) 
-  # temp <- augmented_res[Representation %in% c("Augmented_1", "Augmented_4")]
-  # temp2 <- temp[, sum(Outlier), by = id]
-  # temp2[V1==2, outlier:= 1]
-  # temp2[V1<2, outlier:= 0]
-  # temp2[, Label:= augmented_res[Representation=="Augmented_1", Label]]
-  # temp2[, .N, by = .(Label, outlier)]
-  # #1,4
-  
-  # augmented_aucDT <- augmented_res[, pROC::auc(Label, scores, quiet = T), by = .(Representation)]
-  print(paste0("END: Iter-",i, ". Augmented Representation part"))
-  
-  print(paste0("START: Iter-",i, ". Unsupervised Representation part"))
-  unsupervised_res <- run_OCSVM_unsupervised_representation(datasetname = dataset_name, 
-                                                            given_folds = folds_id, 
-                                                            number_of_representations = 30)
-  unsupervised_res[, Iteration:= iteration]
-  unsupervised_res[, Representation1:= "Unsupervised"]
-  # unsupervised_aucDT <- unsupervised_res[, pROC::auc(Label, scores, quiet = T), by = .(Representation)]
-  # unsupervised_aucDT[, Representation:= "Unsupervised"]
-  # gg1 <- unsupervised_res[, sum(Outlier), by=.(id)]
-  # gg1[, Label:= unsupervised_res[Representation=="Unsupervised_1", Label]]
-  # gg1[V1>14, Outlier:= 1]
-  # gg1[V1<=14, Outlier:= 0]
-  # gg1[, .N, by = .(Label, Outlier)]
-  # unsupervised_aucDT <- unsupervised_res[, pROC::auc(Label, scores, quiet = T), by = .(Representation)]
-  
-  
-  # cor(unsupervised_res[Representation=="Unsupervised_1", Outlier], unsupervised_res[Representation=="Unsupervised_10", Outlier]) 
-  print(paste0("END: Iter-",i, ". Unsupervised Representation part"))
-  
-  print(paste0("START: Iter-",i, ". Original Representation part"))
-  original_res <- run_OCSVM_original_representation(datasetname = dataset_name, 
-                                                    given_folds = folds_id)
-  original_res[, Iteration:= iteration]
-  original_res[, Representation1:= "Original"]
-  # original_res[, .N, by = .(Label, Outlier)]
-  # original_aucDT <- original_res[, pROC::auc(Label, scores, quiet = T)]                                                  
-  # 
-  # DT <- rbindlist(list(augmented_aucDT, unsupervised_aucDT))
-  # DT[, Representation:= as.factor(Representation)]
-  print(paste0("END: Iter-",i, ". Original Representation part"))
-  
-  print(paste0("Iter-", iteration))
-  return(list(augmented_res, unsupervised_res, original_res))
-}
-
-
-args <- commandArgs(TRUE)
-arg1 <- args[1]
-arg2 <- args[2]
-arg3 <- args[3]
-arg4 <- args[4]
-arg5 <- args[5]
-
-if(arg5 == "yes"){
-  list_new_repres <- list()
-  for( i in 1:arg3){
-    list_new_repres[[i]] <- get_pipeline_res(iteration = i, input_datasetname = arg2, folds_iterations = arg4)
-  }
-  
-  augmentedDT <- data.table::rbindlist(purrr::map(list_new_repres, 1)) 
-  unsupervisedDT <- data.table::rbindlist(purrr::map(list_new_repres, 2))
-  originalDT <- data.table::rbindlist(purrr::map(list_new_repres, 3))
-  
-  df <- data.table::rbindlist(list(augmentedDT, unsupervisedDT, originalDT))
-  
-  
-  fst::write.fst(df, paste0(final_path_to_save, "ECML_exp/", 
-                            arg1, "/", arg2, "_OCSVM_DT_all_repres_", 
-                            arg3,"_iters_NONnormalizedOD.fst"), 100)
-  
-} else{
-  print("Convert dtaframes")
-  #  # the *following* had run --
-  # print("17")
-  # GetTabularOutlierScore(datasetname = "Cardiotocography_withoutdupl_norm_02_v01")
-  # # print("18")
-  # # GetCsvFromArff(datasetname = "Cardiotocography_withoutdupl_norm_02_v01")
-  # print("19")
-  # GetTabularOutlierScore(datasetname = "InternetAds_withoutdupl_norm_02_v01")
-  # print("20")
-  # GetCsvFromArff(datasetname = "InternetAds_withoutdupl_norm_02_v01")
-  # print("21")
-  # GetTabularOutlierScore(datasetname = "Lymphography_withoutdupl_norm_catremoved")
-  print("1")
-  GetTabularOutlierScore(datasetname = "Parkinson_withoutdupl_norm_20_v03")
-  print("2")
-  GetTabularOutlierScore(datasetname = "Parkinson_withoutdupl_norm_20_v04")
-  print("3")
-  GetTabularOutlierScore(datasetname = "Parkinson_withoutdupl_norm_20_v05")
-  print("4")
-  GetTabularOutlierScore(datasetname = "Parkinson_withoutdupl_norm_20_v06")
-  print("5")
-  GetTabularOutlierScore(datasetname = "Parkinson_withoutdupl_norm_20_v07")
-  print("6")
-  GetTabularOutlierScore(datasetname = "Parkinson_withoutdupl_norm_20_v08")
-  print("7")
-  GetTabularOutlierScore(datasetname = "Parkinson_withoutdupl_norm_20_v09")
-  print("8")
-  GetTabularOutlierScore(datasetname = "Parkinson_withoutdupl_norm_20_v10")
-  print("10")
-  GetTabularOutlierScore(datasetname = "Hepatitis_withoutdupl_norm_10_v01")
-  print("11")
-  GetTabularOutlierScore(datasetname = "Hepatitis_withoutdupl_norm_10_v03")
-  print("12")
-  GetTabularOutlierScore(datasetname = "Hepatitis_withoutdupl_norm_10_v04")
-  print("13")
-  GetTabularOutlierScore(datasetname = "Hepatitis_withoutdupl_norm_10_v05")
-  print("15")
-  GetTabularOutlierScore(datasetname = "Hepatitis_withoutdupl_norm_10_v06")
-  print("16")
-  GetTabularOutlierScore(datasetname = "Hepatitis_withoutdupl_norm_10_v08")
-  print("17")
-  GetTabularOutlierScore(datasetname = "Hepatitis_withoutdupl_norm_10_v09")
-  print("18")
-  GetTabularOutlierScore(datasetname = "Hepatitis_withoutdupl_norm_10_v10")
-  print("arff to csv")
-  print("1")
-  GetCsvFromArff(datasetname = "Parkinson_withoutdupl_norm_20_v03")
-  print("2")
-  GetCsvFromArff(datasetname = "Parkinson_withoutdupl_norm_20_v04")
-  print("3")
-  GetCsvFromArff(datasetname = "Parkinson_withoutdupl_norm_20_v05")
-  print("4")
-  GetCsvFromArff(datasetname = "Parkinson_withoutdupl_norm_20_v06")
-  print("5")
-  GetCsvFromArff(datasetname = "Parkinson_withoutdupl_norm_20_v07")
-  print("6")
-  GetCsvFromArff(datasetname = "Parkinson_withoutdupl_norm_20_v08")
-  print("7")
-  GetCsvFromArff(datasetname = "Parkinson_withoutdupl_norm_20_v09")
-  print("8")
-  GetCsvFromArff(datasetname = "Parkinson_withoutdupl_norm_20_v10")
-  print("10")
-  GetCsvFromArff(datasetname = "Hepatitis_withoutdupl_norm_10_v01")
-  print("11")
-  GetCsvFromArff(datasetname = "Hepatitis_withoutdupl_norm_10_v03")
-  print("12")
-  GetCsvFromArff(datasetname = "Hepatitis_withoutdupl_norm_10_v04")
-  print("13")
-  GetCsvFromArff(datasetname = "Hepatitis_withoutdupl_norm_10_v05")
-  print("15")
-  GetCsvFromArff(datasetname = "Hepatitis_withoutdupl_norm_10_v06")
-  print("16")
-  GetCsvFromArff(datasetname = "Hepatitis_withoutdupl_norm_10_v08")
-  print("17")
-  GetCsvFromArff(datasetname = "Hepatitis_withoutdupl_norm_10_v09")
-  print("18")
-  GetCsvFromArff(datasetname = "Hepatitis_withoutdupl_norm_10_v10")
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  # the *above* had run ---
-  
-}
-
-
-
-# fst::write.fst(df, "~/Desktop/dataset.fst", 100)
-# data.table::fwrite(df, "~/Desktop/dataset.csv")
-
-# cl <- makeCluster(2)
-# registerDoParallel(cl)
-# system.time(r <- foreach( k=1:2, .packages =  c("data.table","magrittr")) %dopar% get_pipeline_res(iteration = k, input_datasetname = dataset_name, folds_iterations = 20))
-# stopCluster(cl)
-# registerDoSEQ()
-# print(r)
-# print("END")
-# code to plot mean auc values from each iteration
-# augmented_meanAUC <- list()
-# unsupervised_meanAUC <- list()
-# originalDT <- list()
-# for(j in 1:30){
-#   
-#   augmentedDT <- list_new_repres[[j]][[1]][, pROC::auc(Label, scores, quiet = T), by = .(Representation)]
-#   augmentedDT[, Representation1:= "Augmented"]
-#   augmented_meanAUC[[j]] <- augmentedDT[, mean(V1)]
-#   unsupervisedDT <- list_new_repres[[j]][[2]][, pROC::auc(Label, scores, quiet = T), by = .(Representation)]
-#   unsupervisedDT[, Representation1:= "Unsupervised"]
-#   unsupervised_meanAUC[[j]] <- unsupervisedDT[, mean(V1)]
-#   originalDT[[j]] <- list_new_repres[[j]][[3]][, pROC::auc(Label, scores, quiet = T)]
-#   
-# }
-# 
-# aug1 <- as.data.table(unlist(augmented_meanAUC))
-# aug1[, Repre:= "Augmented"]
-# unsuper1 <- as.data.table(unlist(unsupervised_meanAUC))
-# unsuper1[, Repre:= "Unsupervised"]
-# or1 <- as.data.table(unlist(originalDT))
-# or1[, Repre:= "Original"]
-# 
-# DT_all <- rbindlist(list(aug1, unsuper1, or1))
-# esquisse::esquisser()
-# j <- 5
-# augmentedDT <- list_new_repres[[j]][[1]][, pROC::auc(Label, scores, quiet = T), by = .(Representation)]
-# augmentedDT[, Representation1:= "Augmented"]
-# augmented_meanAUC <- augmentedDT[, mean(V1)]
-# unsupervisedDT <- list_new_repres[[j]][[2]][, pROC::auc(Label, scores, quiet = T), by = .(Representation)]
-# unsupervisedDT[, Representation1:= "Unsupervised"]
-# unsupervised_meanAUC <- unsupervisedDT[, mean(V1)]
-# originalDT <- list_new_repres[[j]][[3]][, pROC::auc(Label, scores, quiet = T)]
-# 
-# DT1 <- rbindlist(list(augmentedDT, unsupervisedDT))
-# 
-# 
-# p <- ggplot(data = DT1) +
-#   aes(x = Representation1, y = V1, fill = Representation1) +
-#   geom_boxplot() +
-#   theme_bw()+
-#   geom_hline(yintercept = originalDT[[1]], color = "red")+
-#   geom_text(aes( 0, originalDT[[1]], label = "Original", hjust=-1, vjust=-1), size = 3)+
-#   geom_hline(yintercept = augmented_meanAUC, color = "green")+
-#   geom_text(aes( 0, augmented_meanAUC, label = "Augmented", hjust=-1, vjust=-1), size = 3)+
-#   geom_hline(yintercept = unsupervised_meanAUC, color = "yellow")+
-#   geom_text(aes( 0, unsupervised_meanAUC, label = "Unsupervised", hjust=-1, vjust=-1), size = 3)+
-#   ggtitle(label = paste0("Experiment Iteration: ", j))
-# p
-
-
 
